@@ -29,7 +29,7 @@
                         <thead>
                             <tr style="text-align: center; background-color: #28a745;">
                                 <th>No.</th>
-                                <th>Nama Operator</th>
+                                <th>Operator</th>
                                 <th>Proses</th>
                                 <th>Tanggal</th>
                                 <th>Target Quantity</th>
@@ -59,7 +59,7 @@
                         <thead>
                             <tr style="text-align: center; background-color: #ffc107;">
                                 <th>No.</th>
-                                <th>Nama Operator</th>
+                                <th>Operator</th>
                                 <th>Proses</th>
                                 <th>Tanggal</th>
                                 <th>Operating Time</th>
@@ -107,7 +107,7 @@
                         <thead>
                             <tr style="text-align: center; background-color: #dc3545;">
                                 <th>No.</th>
-                                <th>Nama Operator</th>
+                                <th>Operator</th>
                                 <th>Proses</th>
                                 <th>Tanggal</th>
                                 <th>Quantity</th>

@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\DataProduksiController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProduksiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,8 @@ Route::resource('users', \App\Http\Controllers\UserController::class)->middlewar
 Route::resource('produksi', \App\Http\Controllers\ProduksiController::class)->middleware('auth');
 Route::resource('data_produksi', \App\Http\Controllers\DataProduksiController::class)->middleware('auth');
 Route::resource('target', \App\Http\Controllers\TargetController::class)->middleware('auth');
+
+Route::get('/get-target-quantity', [ProduksiController::class, 'getTargetQuantity']);
 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
 Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);

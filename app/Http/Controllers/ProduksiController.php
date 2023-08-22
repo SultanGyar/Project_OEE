@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\models\User;
 use App\Models\Produksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProduksiController extends Controller
 {
@@ -32,6 +33,21 @@ class ProduksiController extends Controller
         );
     }
 
+    public function getTargetQuantity(Request $request)
+    {
+        $proses = $request->input('proses');
+        $tanggal = $request->input('tanggal');
+        
+        $targetQuantity = DB::table('target')
+            ->where('target_proses', $proses)
+            ->where('tanggal_target', $tanggal)
+            ->value('target_quantity_byadmin');
+        
+        return response()->json([
+            'success' => true,
+            'targetQuantity' => $targetQuantity
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      */

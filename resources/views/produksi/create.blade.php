@@ -21,19 +21,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="proses">Proses</label>
-                        <select class="form-control @error('proses') is-invalid @enderror" id="proses" name="proses">
-                            <option value="Winding" @if(old('proses')=='Winding' ) selected @endif>Winding</option>
-                            <option value="Power Press" @if(old('proses')=='Power Press' ) selected @endif>Power Press
-                            </option>
-                            <option value="Assembling" @if(old('proses')=='Assembling' ) selected @endif>Assembling
-                            </option>
-                        </select>
-                        @error('proses')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
                         <label for="tanggal">Tanggal</label>
                         <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
                             placeholder="Tanggal" name="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" readonly>
@@ -45,8 +32,22 @@
                         <label for="target_quantity">Target Quantity</label>
                         <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
                             id="target_quantity" placeholder="Target Quantity" name="target_quantity"
-                            value="{{ old('target_quantity') }}">
+                            value="{{ old('target_quantity') }}" readonly>
                         @error('target_quantity')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="proses">Proses</label>
+                        <select class="form-control @error('proses') is-invalid @enderror" id="proses" name="proses">
+                            <option value="" hidden>Pilih Proses</option>
+                            <option value="Winding" @if(old('proses')=='Winding' ) selected @endif>Winding</option>
+                            <option value="Power Press" @if(old('proses')=='Power Press' ) selected @endif>Power Press
+                            </option>
+                            <option value="Assembling" @if(old('proses')=='Assembling' ) selected @endif>Assembling
+                            </option>
+                        </select>
+                        @error('proses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -398,12 +399,45 @@
 
 @push('js')
 <script>
+
+    function autoFillTargetQuantity() {
+        var selectedProses = $('#proses').val();
+        var selectedTanggal = $('#tanggal').val();
+
+        // Kirim permintaan AJAX ke server untuk mendapatkan nilai target_quantity_byadmin
+        $.ajax({
+            url: '/get-target-quantity', // Ganti dengan URL yang sesuai
+            method: 'GET',
+            data: {
+                proses: selectedProses,
+                tanggal: selectedTanggal
+            },
+            success: function(response) {
+                if (response.success) {
+                    var targetQuantity = response.targetQuantity;
+                    $('#target_quantity').val(targetQuantity); // Mengisi nilai input target_quantity
+                } else {
+                    $('#target_quantity').val(''); // Kosongkan nilai input jika data tidak tersedia
+                }
+            }
+        });
+    }
+
+    // Panggil fungsi autoFillTargetQuantity setiap kali nilai 'proses' atau 'tanggal' berubah
+    $('#proses, #tanggal').on('change', function() {
+        autoFillTargetQuantity();
+    });
+
+    // Panggil fungsi saat halaman pertama kali dimuat
+    autoFillTargetQuantity();
+
+
     $(document).ready(function () {
     // Variabel untuk perhitungan Total
-    var inputQuantity = $('#quantity');
-    var inputFinishGood = $('#finish_good');
-    var inputReject = $('#reject');
-    var inputTotal = $('#total');
+    const inputQuantity = $('#quantity');
+    const inputFinishGood = $('#finish_good');
+    const inputReject = $('#reject');
+    const inputTotal = $('#total');
 
     // Event listener saat input Quantity, Finish Good, dan Reject berubah
     inputQuantity.on('input', hitungTotal);
@@ -412,11 +446,11 @@
 
     // Fungsi untuk menghitung Total
     function hitungTotal() {
-        var quantity = parseInt(inputQuantity.val()) || 0;
-        var finish_good = parseInt(inputFinishGood.val()) || 0;
-        var reject = parseInt(inputReject.val()) || 0;
+        const quantity = parseInt(inputQuantity.val()) || 0;
+        const finish_good = parseInt(inputFinishGood.val()) || 0;
+        const reject = parseInt(inputReject.val()) || 0;
 
-        var total = finish_good + reject;
+        const total = finish_good + reject;
         inputTotal.val(total);
     }
     });
