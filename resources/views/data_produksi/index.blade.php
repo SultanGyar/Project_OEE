@@ -12,30 +12,22 @@
                 <div class="card-header">
                     <h4 class="card-title-center text-center text-dark">Data Produksi Bulanan</h4>
                 </div>
-                <p></p>
-                <div class="filter">
-                    <div class="btn-group">
-                        <button id="filterBulan" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Filter Bulan
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" data-value="">Semua Bulan</a>
-                            <a class="dropdown-item" data-value="january">January</a>
-                            <a class="dropdown-item" data-value="february">February</a>
-                            <a class="dropdown-item" data-value="March">March</a>
-                            <a class="dropdown-item" data-value="april">April</a>
-                            <a class="dropdown-item" data-value="may">May</a>
-                            <a class="dropdown-item" data-value="June">June</a>
-                            <a class="dropdown-item" data-value="july">July</a>
-                            <a class="dropdown-item" data-value="august">August</a>
-                            <a class="dropdown-item" data-value="september">September</a>
-                            <a class="dropdown-item" data-value="october">October</a>
-                            <a class="dropdown-item" data-value="november">November</a>
-                            <a class="dropdown-item" data-value="december">December</a>
-                        </div>
+                <div class="row mb-3 mt-3">
+                    <div class="col-auto">
+                        <form id="filterForm" method="get" class="form-inline">
+                            @php
+                                $currentYear = date('Y');
+                                $currentMonth = date('m');
+                                $currentDate = "{$currentYear}-{$currentMonth}";
+                                $selectedMonth = request('filterMonth', $currentDate); // Mengambil bulan dari permintaan atau bulan saat ini jika tidak ada permintaan
+                            @endphp
+                            <input type="month" class="form-control" id="filterMonth" name="filterMonth"
+                                   value="{{ $selectedMonth }}" max="{{ $currentDate }}">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
                     </div>
                 </div>
+                            
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered table-striped" id="example2">
                         <thead>
@@ -43,9 +35,9 @@
                                 <th>No.</th>
                                 <th>Proses</th>
                                 <th>Target Quantity</th>
-                                <th>Quantity</th>
+                                <th>Actual Quantity</th>
                                 <th>Good Quality</th>
-                                <th>Rejected</th>
+                                <th>Not Good</th>
                                 <th>Operating Time</th>
                                 <th>Actual Time</th>
                                 <th>Down Time</th>
@@ -54,108 +46,58 @@
                         </thead>
                         <tbody>
                             @foreach($data_produksi as $key => $data_produksi)
-                            <tr class="data-row"
-                                data-bulan="{{ strtolower(date('F', strtotime($data_produksi->tanggal))) }}">
-                                <td>{{$key+1}}</td>
-                                <td>{{$data_produksi->proses}}</td>
-                                <td>{{$data_produksi->target_quantity}}</td>
-                                <td>{{$data_produksi->quantity}}</td>
-                                <td>{{$data_produksi->finish_good}}</td>
-                                <td>{{$data_produksi->reject}}</td>
-                                <td>{{ formatDate($data_produksi->operating_time) }}</td>
-                                <td>{{ formatDate($data_produksi->actual_time) }}</td>
-                                <td>{{ formatDate($data_produksi->down_time) }}</td>
-                                <td>{{ \Carbon\Carbon::parse($data_produksi->tanggal)->format('F, Y') }}</td>
-                            </tr>
+                                @php
+                                    $dataBulan = strtolower(date('F', strtotime($data_produksi->tanggal)));
+                                    $filterBulan = strtolower(date('F', strtotime($selectedMonth)));
+                                @endphp
+            
+                                @if($dataBulan === $filterBulan)
+                                    <tr class="data-row" data-bulan="{{ $dataBulan }}">
+                                        <td>{{$key+1}}</td>
+                                        <td>{{$data_produksi->proses}}</td>
+                                        <td>{{$data_produksi->target_quantity}}</td>
+                                        <td>{{$data_produksi->quantity}}</td>
+                                        <td>{{$data_produksi->finish_good}}</td>
+                                        <td>{{$data_produksi->reject}}</td>
+                                        <td>{{ formatDate($data_produksi->operating_time) }}</td>
+                                        <td>{{ formatDate($data_produksi->actual_time) }}</td>
+                                        <td>{{ formatDate($data_produksi->down_time) }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($data_produksi->tanggal)->format('F, Y') }}</td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+            
         </div>
     </div>
 </div>
 @php
 function formatDate($time) {
-$formattedTime = '';
-if ($time) {
-$timeComponents = explode(':', $time);
-$hours = intval($timeComponents[0]);
-$minutes = intval($timeComponents[1]);
-$seconds = intval($timeComponents[2]);
+    $formattedTime = '';
 
-$formattedTime = '';
+    if ($time) {
+        $timeComponents = explode(':', $time);
+        $hours = intval($timeComponents[0]);
+        $minutes = intval($timeComponents[1]);
+        $seconds = intval($timeComponents[2]);
 
-if ($hours > 0) {
-$formattedTime .= $hours . ' Hours ';
-}
+        // Menghitung total waktu dalam hitungan menit
+        $totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
 
-if ($minutes > 0) {
-$formattedTime .= $minutes . ' minutes ';
-}
+        // Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
+        if ($totalMinutes !== 0) {
+            $formattedTime = "{$totalMinutes} Menit";
+        }
+    }
 
-if ($seconds > 0) {
-$formattedTime .= $seconds . ' seconds';
-}
-}
-return $formattedTime;
+    return $formattedTime;
 }
 @endphp
-@stop
-@push('js')
-<form action="" id="delete-form" method="post">
-    @method('delete')
-    @csrf
-</form>
-<script>
-    $('#example2').DataTable({
-    "responsive": true,
-    });
-
-function notificationBeforeDelete(event, el) {
-    event.preventDefault();
-    if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-        $("#delete-form").attr('action', $(el).attr('href'));
-        $("#delete-form").submit();
-    }
-}
-</script>
-@endpush
+@stop   
 @push('js')
 <script>
-    // Mendapatkan elemen filter
-    var filterBulanButton = document.getElementById("filterBulan");
-    var filterBulanSelect = document.querySelectorAll(".dropdown-item");
-
-    // Menambahkan event listener pada tombol filter bulan
-    filterBulanButton.addEventListener("click", function () {
-        this.classList.toggle("active");
-        var dropdownMenu = this.nextElementSibling;
-        dropdownMenu.classList.toggle("show");
-    });
-
-    // Menambahkan event listener untuk setiap pilihan bulan
-    filterBulanSelect.forEach(function (item) {
-        item.addEventListener("click", function () {
-            var selectedMonth = this.getAttribute("data-value");
-            var rows = document.querySelectorAll("#example2 tbody tr");
-
-            // Menggunakan loop untuk mengatur tampilan baris berdasarkan bulan yang dipilih
-            for (var i = 0; i < rows.length; i++) {
-                var rowBulan = rows[i].getAttribute("data-bulan");
-                if (selectedMonth === "" || rowBulan.includes(selectedMonth.toLowerCase())) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
-            }
-
-            // Ubah teks pada tombol filter bulan menjadi bulan yang dipilih
-            filterBulanButton.innerHTML = this.innerHTML;
-            filterBulanButton.classList.remove("active");
-            var dropdownMenu = this.parentNode;
-            dropdownMenu.classList.remove("show");
-        });
-    });
 </script>
 @endpush

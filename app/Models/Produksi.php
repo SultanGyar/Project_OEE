@@ -56,4 +56,13 @@ class Produksi extends Model
     {
         return $this->belongsTo(User::class, 'nama_operator', 'id');
     }
+
+    public function fproses(){
+        return $this->belongsTo(Proses::class, 'proses', 'daftarproses');
+    }
+
+    public function ftbketerangan(){
+        return $this->belongsTo(TbKeterangan::class, 'keterangan', 'dataketerangan');
+    }
+    
 }

@@ -3,14 +3,13 @@
 @section('title', 'AdminLTE')
 
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
 @stop
 
 @section('content')
 <div class="card">
     <div class="card-header">
         <div class="card-body">
-            <div class="card-header">
+            <div class="card-header ">
                 <h4 class="card-title-center text-center text-dark">Overall Equipment Effectiveness</h4>
             </div>
             <p></p>
@@ -18,13 +17,13 @@
                 <div class="row">
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <select class="form-control" id="selectProses">
-                            </select>
+                            <input type="month" class="form-control" id="selectBulan">
                         </div>
                     </div>
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <input type="month" class="form-control" id="selectBulan">
+                            <select class="form-control" id="selectProses">
+                            </select>
                         </div>
                     </div>
                     <div class="col-lg-2 mb-2">
@@ -34,7 +33,7 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-3.8">
+                <div class="col-lg-3 col-md-6 col-xs-6">
                     <div class="card border card-info shadow-lg">
                         <div class="card-header">
                             <h3 class="card-title">Performance Indicator</h3>
@@ -50,7 +49,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-3.5">
+                <div class="col-lg-3 col-md-6 col-xs-6">
                     <div class="card card-success shadow-lg">
                         <div class="card-header">
                             <h3 class="card-title">Performance</h3>
@@ -79,7 +78,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-3.5">
+                <div class="col-lg-3 col-md-6 col-xs-6">
                     <div class="card card-warning shadow-lg">
                         <div class="card-header">
                             <h3 class="card-title">Availability</h3>
@@ -108,7 +107,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 col-sm-3.5">
+                <div class="col-lg-3 col-md-6 col-xs-6">
                     <div class="card card-danger shadow-lg">
                         <div class="card-header">
                             <h3 class="card-title text-center">Quality</h3>
@@ -283,9 +282,9 @@
 
                         $('#textTargetQuantity').text(updateData.performance.target_quantity);
                         $('#textActualQuantity').text(updateData.performance.quantity);
-                        $('#textTotalTime').text(formatTime(updateData.availability.operating_time));
-                        $('#textActualRuntime').text(formatTime(updateData.availability.actual_time));
-                        $('#textDownTime').text(formatTime(updateData.availability.down_time));
+                        $('#textTotalTime').text(formatTimeToMinutes(updateData.availability.operating_time));
+                        $('#textActualRuntime').text(formatTimeToMinutes(updateData.availability.actual_time));
+                        $('#textDownTime').text(formatTimeToMinutes(updateData.availability.down_time));
                         $('#textTotalQuantity').text(updateData.quality.quantity);
                         $('#textGoodQuantity').text(updateData.quality.finish_good);
                         $('#textRejectedQuantity').text(updateData.quality.reject);
@@ -295,14 +294,16 @@
                     clearChartsAndDisplayNoData();
                 }
             });
-            function formatTime(time) {
+            function formatTimeToMinutes(time) {
                 var parts = time.split(':');
                 var hours = parseInt(parts[0]);
                 var minutes = parseInt(parts[1]);
-                var hoursText = hours > 0 ? hours + ' Hours ' : '';
-                var minutesText = minutes > 0 ? minutes + ' Minutes' : '';
-                return hoursText + minutesText;
-            }   
+                var seconds = parseInt(parts[2]);
+
+                var totalMinutes = hours * 60 + minutes + seconds / 60; // Convert hours and seconds to minutes
+
+                return totalMinutes + ' Minutes';
+            } 
         }
         function clearChartsAndDisplayNoData() {
             if (window.performanceChart) {
@@ -424,7 +425,7 @@
             var parts = time.split(':');
             var hours = parseInt(parts[0]);
             var minutes = parseInt(parts[1]);
-            var totalSeconds = (hours * 3600) + (minutes * 60);
+            var totalSeconds = (hours * 60);
             return totalSeconds;
         }
 

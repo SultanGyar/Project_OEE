@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Proses;
 use App\Models\Target;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,8 @@ class TargetController extends Controller
      */
     public function create()
     {
-        return view('target.create');
+        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
+        return view('target.create', compact('dataproses'));
     }
 
     /**
@@ -36,6 +38,20 @@ class TargetController extends Controller
             'tanggal_target' => 'required',
             'target_quantity_byadmin' => 'required'
         ]);
+
+        $targetProses = $request->input('target_proses');
+        $tanggalTarget = $request->input('tanggal_target');
+
+        // Check if the combination of target_proses and tanggal_target already exists
+        $existingTarget = Target::where('target_proses', $targetProses)
+            ->where('tanggal_target', $tanggalTarget)
+            ->first();
+
+        if ($existingTarget) {
+            // If the combination already exists, show a warning notification
+            return redirect()->route('target.index')
+                ->with('warning_message', 'Tidak dapat menyimpan data tersebut, karena "Proses" dan "Tanggal" yang anda input memiliki kesamaan dengan data yang sudah ada');
+        }
         $array = $request->only([
             'target_proses',
             'tanggal_target',
@@ -56,17 +72,48 @@ class TargetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $target = Target::find($id);
+        if (!$target) return redirect()->route('target.index')->with('error_message', 'Penjualan dengan id'.$id.' tidak ditemukan');
+        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
+        return view('target.edit', compact('target', 'dataproses'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'target_proses' => 'required',
+            'tanggal_target' => 'required',
+            'target_quantity_byadmin' => 'required'
+        ]);
+
+        $targetProses = $request->input('target_proses');
+        $tanggalTarget = $request->input('tanggal_target');
+
+        // Check if the combination of target_proses and tanggal_target already exists
+        $existingTarget = Target::where('target_proses', $targetProses)
+            ->where('tanggal_target', $tanggalTarget)
+            ->where('id', '<>', $id) // Exclude the current record being edited
+            ->first();
+
+        if ($existingTarget) {
+            // If the combination already exists, show a warning notification
+            return redirect()->route('target.index')
+                ->with('warning_message', 'Tidak dapat menyimpan data tersebut, karena Proses dan Tanggal memiliki kesamaan dengan data yang sudah ada');
+        }
+
+        $target = Target::findOrFail($id);
+        $target->update([
+            'target_proses' => $targetProses,
+            'tanggal_target' => $tanggalTarget,
+            'target_quantity_byadmin' => $request->input('target_quantity_byadmin')
+        ]);
+
+        return redirect()->route('target.index')->with('success_message', 'Berhasil Memperbarui Data Target');
     }
 
     /**

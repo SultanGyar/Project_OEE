@@ -24,6 +24,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('/advance', \App\Http\Controllers\AdvanceController::class)->middleware('auth');
 Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('auth');
 Route::resource('produksi', \App\Http\Controllers\ProduksiController::class)->middleware('auth');
 Route::resource('data_produksi', \App\Http\Controllers\DataProduksiController::class)->middleware('auth');

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\models\User;
 use App\Models\Produksi;
+use App\Models\Proses;
+use App\Models\TbKeterangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -25,12 +27,13 @@ class ProduksiController extends Controller
      */
     public function create()
     {
+        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
+        $dataketerangan = TbKeterangan::pluck('daftarketerangan', 'daftarketerangan');
         return view(
-            'produksi.create',
-            [
-                'user' => User::all()
-            ]
-        );
+            'produksi.create', compact('dataproses', 'dataketerangan'),
+            [  
+            'user' => User::all()
+        ]);
     }
 
     public function getTargetQuantity(Request $request)
@@ -61,7 +64,7 @@ class ProduksiController extends Controller
             'quantity' => 'required',
             'finish_good' => 'required',
             'reject' => 'required',
-            'keterangan' => 'required',
+            'keterangan' => 'nullable',
             'tanggal' => 'required',
             'operating_start_time' => 'required',
             'operating_end_time' => 'required',

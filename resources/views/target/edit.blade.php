@@ -13,18 +13,20 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="target_proses"> Nama Proses </label>
-                        <select class="form-control @error('target_proses') is-invalid @enderror" id="target_proses"
-                            name="target_proses">
-                            <option value="" hidden>Pilih Proses</option>
-                            <option value="Winding" @if($target->target_proses == 'Winding' || old('target_proses')=='Winding' ) selected @endif>Winding</option>
-                            <option value="Power Press" @if($target->target_proses == 'Power Press' || old('target_proses')=='Power Press' ) selected @endif>Power Press</option>
-                            <option value="Assembling" @if($target->target_proses == 'Assembling' || old('target_proses')=='Assembling' ) selected @endif>Assembling</option>
+                        <label for="target_proses">Nama Proses</label>
+                        <select class="form-control @error('target_proses') is-invalid @enderror" id="target_proses" name="target_proses">
+                            <option value="">Pilih Proses</option>
+                            @foreach ($dataproses as $value => $label)
+                                <option value="{{ $value }}" {{ $target->target_proses == $value ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
                         </select>
                         @error('target_proses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    
                     
                     <div class="form-group">
                         <label for="tanggal_target">Tanggal</label>
@@ -67,3 +69,6 @@
     </div>
 </form>
 @stop
+@push('js')
+
+@endpush

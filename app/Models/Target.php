@@ -14,4 +14,8 @@ class Target extends Model
         'tanggal_target',
         'target_quantity_byadmin'
     ];
+    
+    public function fproses(){
+        return $this->belongsTo(Proses::class, 'target_proses', 'daftarproses');
+    }
 }

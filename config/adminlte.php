@@ -169,11 +169,11 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-primary',
-    'classes_auth_header' => '',
+    'classes_auth_card' => '',
+    'classes_auth_header' => 'bg-gradient-info',
     'classes_auth_body' => '',
-    'classes_auth_footer' => '',
-    'classes_auth_icon' => '',
+    'classes_auth_footer' => 'text-center',
+    'classes_auth_icon' => 'fa-lg text-info',
     'classes_auth_btn' => 'btn-flat btn-primary',
 
     /*
@@ -196,7 +196,7 @@ return [
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-dark navbar-dark',
+    'classes_topnav' => 'navbar-light navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -317,25 +317,26 @@ return [
 
         [
             'header' => 'Pengaturan Pengguna',
-            // 'can' => 'admin-only',
+             'can' => 'admin-only',
         ],
         [
             'text' => 'User',
             'url' => '/users',
             'icon' => 'fa fa-users',
-            // 'can' => 'admin-only',
+             'can' => 'admin-only',
         ],
 
         [
             'header' => 'Target Quantity by Admin',
-            // 'can' => 'admin-only',
+             'can' => 'admin-only',
         ],
 
         [
             'text' => 'Add Target Quantity',
             'url' => '/target',
             'icon' => 'fa fa-table',
-            // 'can' => 'admin-only',
+             'can' => 'admin-only',
+             'class' => 'text-lg',
         ],
 
 
@@ -352,11 +353,6 @@ return [
             'url' => '/data_produksi',
             'icon' => 'fa fa-folder-open',
         ],
-
-        [
-            'header' => 'Masih Dalam Tahap Pengembangan',
-        ],
-
 
     ],
 

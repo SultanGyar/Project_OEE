@@ -44,7 +44,7 @@
                                         Edit
                                     </a>
 
-                                    <a href="{{ route('target.destroy', $data->id) }}"
+                                    <a href="{{ route('target.destroy', $data) }}"
                                         onclick="notificationBeforeDelete(event, this)" class="btn btn-danger btn-xs">
                                         Delete
                                     </a>

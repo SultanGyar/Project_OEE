@@ -12,23 +12,18 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="target_proses"> Nama Proses </label>
-                        <select class="form-control @error('target_proses') is-invalid @enderror" id="target_proses"
-                            name="target_proses">
-                            <option value="" hidden>Pilih Proses</option>
-                            <option value="Winding" @if(old('target_proses')=='Winding' ) selected @endif>Winding
-                            </option>
-                            <option value="Power Press" @if(old('target_proses')=='Power Press' ) selected @endif>Power
-                                Press
-                            </option>
-                            <option value="Assembling" @if(old('target_proses')=='Assembling' ) selected @endif>
-                                Assembling
-                            </option>
+                        <label for="target_proses">Nama Proses</label>
+                        <select class="form-control @error('target_proses') is-invalid @enderror" id="target_proses" name="target_proses">
+                            <option value="" selected disabled>Pilih Proses</option>
+                            @foreach ($dataproses as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
                         </select>
                         @error('target_proses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    
 
                     <div class="form-group">
                         <label for="tanggal_target">Tanggal</label>
@@ -70,3 +65,12 @@
     </div>
 </form>
 @stop
+@push('js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        // In your Javascript (external .js resource or <script> tag)
+        $(document).ready(function() {
+            $('.form-control form-control-select2').select2();
+        });
+    </script>
+@endpush

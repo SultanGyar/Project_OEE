@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label for="tanggal">Tanggal</label>
                         <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
-                            placeholder="Tanggal" name="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" readonly>
+                            placeholder="Tanggal" name="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" >
                         @error('tanggal')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -37,28 +37,32 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    
+                
                     <div class="form-group">
-                        <label for="proses">Proses</label>
-                        <select class="form-control @error('proses') is-invalid @enderror" id="proses" name="proses">
-                            <option value="" hidden>Pilih Proses</option>
-                            <option value="Winding" @if(old('proses')=='Winding' ) selected @endif>Winding</option>
-                            <option value="Power Press" @if(old('proses')=='Power Press' ) selected @endif>Power Press
-                            </option>
-                            <option value="Assembling" @if(old('proses')=='Assembling' ) selected @endif>Assembling
-                            </option>
+                        <label for="proses">Nama Proses</label>
+                        <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses" style="width: 100%">
+                            <option value="" selected disabled>Pilih Proses</option>
+                            @foreach ($dataproses as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
                         </select>
                         @error('proses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    
+
+                    <p></p>
                     <div class="form-group">
-                        <label for="quantity">Quantity</label>
+                        <label for="quantity">Actual Quantity</label>
                         <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity"
                             placeholder="Quantity" name="quantity" value="{{ old('quantity') }}">
                         @error('quantity')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <div class="form-group">
                         <label for="finish_good">Good Quality</label>
                         <input type="number" class="form-control @error('finish_good') is-invalid @enderror"
@@ -76,15 +80,21 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <div class="form-group">
                         <label for="keterangan">Keterangan</label>
-                        <input type="string" class="form-control @error('keterangan') is-invalid @enderror"
-                            id="keterangan" Reject="keterangan" placeholder="Keterangan" name="keterangan"
-                            value="{{ old('keterangan') }}">
-                        @error('reject')
+                        <select class="form-control mb-10 @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" style="width: 100%">
+                            <option value="" selected disabled>Pilih Keterangan</option>
+                            @foreach ($dataketerangan as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('keterangan')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    
+
                     <div class="row">
                         <div class="col-md-6 border">
                             <div class="form-group">
@@ -167,7 +177,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="a_start_time">A Start</label>
+                                    <label for="a_start_time">Kategori A Mulai</label>
                                     <input type="time" class="form-control @error('a_start_time') is-invalid @enderror"
                                         id="a_start_time" placeholder="" name="a_start_time"
                                         value="{{ old('a_start_time') }}">
@@ -175,7 +185,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="a_end_time">A End</label>
+                                    <label for="a_end_time">Kategori A Selesai</label>
                                     <input type="time" class="form-control @error('a_end_time') is-invalid @enderror"
                                         id="a_end_time" placeholder="" name="a_end_time"
                                         value="{{ old('a_end_time') }}">
@@ -183,7 +193,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="a_time">A Time</label>
+                            <label for="a_time">Total Waktu Kategori A</label>
                             <input type="time" class="form-control @error('a_time') is-invalid @enderror" id="a_time"
                                 placeholder="A Time" name="a_time" value="{{ old('a_time') }}" readonly>
                         </div>
@@ -193,7 +203,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="b_start_time">B Start</label>
+                                    <label for="b_start_time">Kategori B Mulai</label>
                                     <input type="time" class="form-control @error('b_start_time') is-invalid @enderror"
                                         id="b_start_time" placeholder="" name="b_start_time"
                                         value="{{ old('b_start_time') }}" />
@@ -202,7 +212,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="b_end_time">B End</label>
+                                    <label for="b_end_time">Kategori B Selesai</label>
                                     <input type="time" class="form-control @error('b_end_time') is-invalid @enderror"
                                         id="b_end_time" placeholder="" name="b_end_time"
                                         value="{{ old('b_end_time') }}">
@@ -210,7 +220,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="b_time">B Time</label>
+                            <label for="b_time">Total Waktu Kategori B</label>
                             <input type="time" class="form-control @error('b_time') is-invalid @enderror" id="b_time"
                                 placeholder="B Time" name="b_time" value="{{ old('b_time') }}" readonly>
                         </div>
@@ -220,7 +230,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="c_start_time">C Start</label>
+                                    <label for="c_start_time">Kategori C Mulai</label>
                                     <input type="time" class="form-control @error('c_start_time') is-invalid @enderror"
                                         id="c_start_time" placeholder="" name="c_start_time"
                                         value="{{ old('c_start_time') }}" />
@@ -228,7 +238,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="c_end_time">C End</label>
+                                    <label for="c_end_time">Kategori C Selesai</label>
                                     <input type="time" class="form-control @error('c_end_time') is-invalid @enderror"
                                         id="c_end_time" placeholder="" name="c_end_time"
                                         value="{{ old('c_end_time') }}">
@@ -236,7 +246,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="c_time">C Time</label>
+                            <label for="c_time">Total Waktu Kategori C</label>
                             <input type="time" class="form-control @error('c_time') is-invalid @enderror" id="c_time"
                                 placeholder="C Time" name="c_time" value="{{ old('c_time') }}" readonly>
                         </div>
@@ -246,7 +256,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="d_start_time">D Start</label>
+                                    <label for="d_start_time">Kategori D Mulai</label>
                                     <input type="time" class="form-control @error('d_start_time') is-invalid @enderror"
                                         id="d_start_time" placeholder="" name="d_start_time"
                                         value="{{ old('d_start_time') }}" />
@@ -254,7 +264,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="d_end_time">D End</label>
+                                    <label for="d_end_time">Kategori D Selesai</label>
                                     <input type="time" class="form-control @error('d_end_time') is-invalid @enderror"
                                         id="d_end_time" placeholder="" name="d_end_time"
                                         value="{{ old('d_end_time') }}">
@@ -262,7 +272,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="d_time">D Time</label>
+                            <label for="d_time">Total Waktu Kategori D</label>
                             <input type="time" class="form-control @error('d_time') is-invalid @enderror" id="d_time"
                                 placeholder="D Time" name="d_time" value="{{ old('d_time') }}" readonly>
                         </div>
@@ -272,7 +282,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="e_start_time">E Start</label>
+                                    <label for="e_start_time">Kategori E Mulai</label>
                                     <input type="time" class="form-control @error('e_start_time') is-invalid @enderror"
                                         id="e_start_time" placeholder="" name="e_start_time"
                                         value="{{ old('e_start_time') }}" />
@@ -280,7 +290,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="e_end_time">E End</label>
+                                    <label for="e_end_time">Kategori E Selesai</label>
                                     <input type="time" class="form-control @error('e_end_time') is-invalid @enderror"
                                         id="e_end_time" placeholder="" name="e_end_time"
                                         value="{{ old('e_end_time') }}">
@@ -288,7 +298,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="e_time">E Time</label>
+                            <label for="e_time">Total Waktu Kategori E</label>
                             <input type="time" class="form-control @error('e_time') is-invalid @enderror" id="e_time"
                                 placeholder="E Time" name="e_time" value="{{ old('e_time') }}" readonly>
                         </div>
@@ -298,7 +308,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="f_start_time">F Start</label>
+                                    <label for="f_start_time">Kategori F Mulai</label>
                                     <input type="time" class="form-control @error('f_start_time') is-invalid @enderror"
                                         id="f_start_time" placeholder="" name="f_start_time"
                                         value="{{ old('f_start_time') }}" />
@@ -306,7 +316,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="f_end_time">F End</label>
+                                    <label for="f_end_time">Kategori F Selesai</label>
                                     <input type="time" class="form-control @error('f_end_time') is-invalid @enderror"
                                         id="f_end_time" placeholder="" name="f_end_time"
                                         value="{{ old('f_end_time') }}">
@@ -314,7 +324,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="f_time">F Time</label>
+                            <label for="f_time">Total Waktu Kategori F</label>
                             <input type="time" class="form-control @error('f_time') is-invalid @enderror" id="f_time"
                                 placeholder="F Time" name="f_time" value="{{ old('f_time') }}" readonly>
                         </div>
@@ -324,7 +334,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="g_start_time">G Start</label>
+                                    <label for="g_start_time">Kategori G Mulai</label>
                                     <input type="time" class="form-control @error('g_start_time') is-invalid @enderror"
                                         id="g_start_time" placeholder="" name="g_start_time"
                                         value="{{ old('g_start_time') }}" />
@@ -332,7 +342,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="g_end_time">G End</label>
+                                    <label for="g_end_time">Kategori G Selesai</label>
                                     <input type="time" class="form-control @error('g_end_time') is-invalid @enderror"
                                         id="g_end_time" placeholder="" name="g_end_time"
                                         value="{{ old('g_end_time') }}">
@@ -340,7 +350,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="g_time">G Time</label>
+                            <label for="g_time">Total Waktu Kategori G</label>
                             <input type="time" class="form-control @error('g_time') is-invalid @enderror" id="g_time"
                                 placeholder="G Time" name="g_time" value="{{ old('g_time') }}" readonly>
                         </div>
@@ -350,7 +360,7 @@
                         <div class="row">
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="h_start_time">H Start</label>
+                                    <label for="h_start_time">Kategori H Mulai</label>
                                     <input type="time" class="form-control @error('h_start_time') is-invalid @enderror"
                                         id="h_start_time" placeholder="" name="h_start_time"
                                         value="{{ old('h_start_time') }}" />
@@ -358,7 +368,7 @@
                             </div>
                             <div class="col-md-6 border">
                                 <div class="form-group">
-                                    <label for="h_end_time">H End</label>
+                                    <label for="h_end_time">Kategori H Selesai</label>
                                     <input type="time" class="form-control @error('h_end_time') is-invalid @enderror"
                                         id="h_end_time" placeholder="" name="h_end_time"
                                         value="{{ old('h_end_time') }}">
@@ -366,7 +376,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="h_time">H Time</label>
+                            <label for="h_time">Total Waktu Kategori H</label>
                             <input type="time" class="form-control @error('h_time') is-invalid @enderror" id="h_time"
                                 placeholder="H Time" name="h_time" value="{{ old('h_time') }}" readonly>
                         </div>
@@ -398,7 +408,22 @@
 @endsection
 
 @push('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
+
+
 <script>
+
+    var timepicker = new TimePicker('operating_start_time', {
+    lang: 'id',
+    theme: 'dark'
+    });
+    timepicker.on('change', function(evt) {
+    
+    var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+    evt.element.value = value;
+
+    });
 
     function autoFillTargetQuantity() {
         var selectedProses = $('#proses').val();
