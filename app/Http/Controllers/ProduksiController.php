@@ -40,15 +40,15 @@ class ProduksiController extends Controller
     {
         $proses = $request->input('proses');
         $tanggal = $request->input('tanggal');
-        
+            
         $targetQuantity = DB::table('target')
             ->where('target_proses', $proses)
             ->where('tanggal_target', $tanggal)
             ->value('target_quantity_byadmin');
-        
+            
         return response()->json([
             'success' => true,
-            'targetQuantity' => $targetQuantity
+            'target_quantity' => $targetQuantity
         ]);
     }
     /**

@@ -1,53 +1,176 @@
 @extends('adminlte::page')
-
 @section('title', 'Daftar Produksi')
-
 @section('content_header')
-<h1 class="m-0 text-dark">Daftar Produksi</h1>
+<div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1>Data Produksi Harian</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Data Produksi Harian</li>
+            </ol>
+        </div>
+    </div>
+</div>
 @stop
-
 @section('content')
-<div class="row">
-    <div class="col">  
-        <div class="card">
-            <div class="card-body">
-                <div class="btn-group mb-2 mt-2">
-                    <a href="{{ route('produksi.create') }}" class="text-btn-center btn btn-md btn-primary"
-                        style="height: 38px;">Tambah</a>
-                    {{-- <a href="#" class="text-btn-center btn btn-md btn-danger ml-2"
-                        style="height: 38px;">Export PDF</a> --}}
-                    <input type="month" class="form-control ml-2" id="selectBulan">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-gradient-gray-dark d-flex justify-content-between align-items-center">
+                    <p class="card-title mb-0" style="color: white">Data Produksi Harian</p>
+                    <button class="btn btn-link text-white text-md mb-0 ml-auto btn-lanjutan">Lanjutan</button>
                 </div>
 
-                @foreach(['example1', 'example2', 'example3'] as $tableId)
-
-                    <div class="table-responsive mt-2">
-                        <div class="card-header mb-2">
-                            <h4 class="card-title-center text-center text-dark">
-                                @if($tableId === 'example1')
-                                    Performance
-                                @elseif($tableId === 'example2')
-                                    Availability
-                                @else
-                                    Quality
-                                @endif
-                            </h4>
-                        </div>
-                        @php
-                            $previousMonth = ''; 
-                        @endphp
-                        <table class="table table-col-12 table-hover table-bordered table-striped " id="{{ $tableId }}">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                        <a href="{{ route('produksi.create') }}"
+                            class="text-btn-center btn btn-md btn-info mb-2 mb-md-0" style="height: 38px;">Tambah</a>
+                        <form id="filterForm" method="get" class="form-inline">
+                            @php
+                            $currentDate = date('Y-m-d');
+                            $selectedDate = request('filterDate', $currentDate); // Ambil tanggal terpilih
+                            @endphp
+                            <div class="d-flex align-items-center">
+                                <label for="filterDate" class="mr-2 mb-2 mb-md-0" style="flex: 0 0 auto;">Tanggal:</label>
+                                <input type="date" class="form-control" id="filterDate" name="filterDate"
+                                    value="{{ $selectedDate }}" max="{{ $currentDate }}">
+                                <button type="submit" class="btn btn-info ml-2">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered table-striped" style="width: 100%" id="example">
                             <thead>
-                                <tr style="text-align: center; background-color: 
-                                    {{ $tableId === 'example1' ? '#28a745' : ($tableId === 'example2' ? '#ffc107' : '#dc3545') }};">
+                                <tr style="text-align: center; background-color: #069eb5;">
                                     <th>No.</th>
                                     <th>Operator</th>
                                     <th>Proses</th>
                                     <th>Tanggal</th>
-                                    @if($tableId === 'example1')
+                                    <th>Target Quantity</th>
+                                    <th>Actual Quantity</th>
+                                    <th>Good Quality</th>
+                                    <th>Not Good</th>
+                                    <th>Keterangan</th>
+                                    <th>Operating Time</th>
+                                    <th>Actual Time</th>
+                                    <th>Down Time</th>
+                                    <th>A (Ganti Order)</th>
+                                    <th>B (Repair)</th>
+                                    <th>C (Material Tunggu)</th>
+                                    <th>D (Operator)</th>
+                                    <th>E (Maintenance)</th>
+                                    <th>F (Checking)</th>
+                                    <th>G (Reject)</th>
+                                    <th>H (Rework)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                $no = 1; // Inisialisasi nomor urut
+                                @endphp
+                                @foreach($produksi as $key => $item)
+                                @php
+                                $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
+                                @endphp
+                                @if($dataTanggal === $selectedDate)
+                                <tr class="data-row"
+                                    data-bulan="{{ strtolower(date('Y-m-d', strtotime($item->tanggal))) }}">
+                                    <td>{{ $no }}</td>
+                                    <td>{{ $item->fuser->name }}</td>
+                                    <td>{{ $item->proses }}</td>
+                                    <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
+                                    <td>{{ $item->target_quantity }}</td>
+                                    <td>{{ $item->quantity }}</td>
+                                    <td>{{ $item->finish_good }}</td>
+                                    <td>{{ $item->reject }}</td>
+                                    <td>{{ $item->keterangan }}</td>
+                                    <td>{{ formatDate($item->operating_time) }}</td>
+                                    <td>{{ formatDate($item->actual_time) }}</td>
+                                    <td>{{ formatDate($item->down_time) }}</td>
+                                    <td>{{ formatDate($item->a_time) }}</td>
+                                    <td>{{ formatDate($item->b_time) }}</td>
+                                    <td>{{ formatDate($item->c_time) }}</td>
+                                    <td>{{ formatDate($item->d_time) }}</td>
+                                    <td>{{ formatDate($item->e_time) }}</td>
+                                    <td>{{ formatDate($item->f_time) }}</td>
+                                    <td>{{ formatDate($item->g_time) }}</td>
+                                    <td>{{ formatDate($item->h_time) }}</td>
+                                </tr>
+                                @php
+                                $no++;
+                                @endphp
+                                @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="lanjutan" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-gradient-green">
+                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">Performance</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
+                                id="example1">
+                                <thead>
+                                    <tr style="text-align: center; background-color: #28a745;">
+                                        <th>No.</th>
+                                        <th>Operator</th>
+                                        <th>Proses</th>
+                                        <th>Tanggal</th>
                                         <th>Target Quantity</th>
-                                        <th>Actual Quantity</th>
-                                    @elseif($tableId === 'example2')
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                    $no = 1; // Inisialisasi nomor urut
+                                    @endphp
+                                    @foreach($produksi as $key => $item)
+                                    @php
+                                    $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
+                                    @endphp
+                                    @if($dataTanggal === $selectedDate)
+                                    <tr class="data-row"
+                                        data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
+                                        <td>{{ $no }}</td>
+                                        <td>{{ $item->fuser->name }}</td>
+                                        <td>{{ $item->proses }}</td>
+                                        <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
+                                        <td>{{ $item->target_quantity }}</td>
+                                        <td>{{ $item->quantity }}</td>
+                                    </tr>
+                                    @php
+                                    $no++;
+                                    @endphp
+                                    @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-gradient-warning">
+                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">Availability</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
+                                id="example2">
+                                <thead>
+                                    <tr style="text-align: center; background-color: #ffc107;">
+                                        <th>No.</th>
+                                        <th>Operator</th>
+                                        <th>Proses</th>
+                                        <th>Tanggal</th>
                                         <th>Operating Time</th>
                                         <th>Actual Time</th>
                                         <th>Down Time</th>
@@ -59,35 +182,23 @@
                                         <th>F (Checking)</th>
                                         <th>G (Reject)</th>
                                         <th>H (Rework)</th>
-                                    @else
-                                        <th>Actual Quantity</th>
-                                        <th>Good Quality</th>
-                                        <th>Not Good</th>
-                                        <th>Keterangan</th>
-                                    @endif
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($produksi as $key => $item)
-                                @php
-                                    $currentMonth = strtolower(date('Y-m', strtotime($item->tanggal))); 
-                                @endphp
-
-                                @if($currentMonth !== $previousMonth)
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @php
-                                        $previousMonth = $currentMonth; 
-                                        $rowNumber = 1; 
+                                    $no = 1; // Inisialisasi nomor urut
                                     @endphp
-                                @endif
-                                <tr class="data-row" data-bulan="{{ strtolower(date('Y-m-d', strtotime($item->tanggal))) }}">
-                                    <td>{{ $rowNumber }}</td>
-                                    <td>{{ $item->fuser->name }}</td>
-                                    <td>{{ $item->proses }}</td>
-                                    <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
-                                    @if($tableId === 'example1')
-                                        <td>{{ $item->target_quantity }}</td>
-                                        <td>{{ $item->quantity }}</td>
-                                    @elseif($tableId === 'example2')
+                                    @foreach($produksi as $key => $item)
+                                    @php
+                                    $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
+                                    @endphp
+                                    @if($dataTanggal === $selectedDate)
+                                    <tr class="data-row"
+                                        data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
+                                        <td>{{ $no }}</td>
+                                        <td>{{ $item->fuser->name }}</td>
+                                        <td>{{ $item->proses }}</td>
+                                        <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                         <td>{{ formatDate($item->operating_time) }}</td>
                                         <td>{{ formatDate($item->actual_time) }}</td>
                                         <td>{{ formatDate($item->down_time) }}</td>
@@ -99,104 +210,128 @@
                                         <td>{{ formatDate($item->f_time) }}</td>
                                         <td>{{ formatDate($item->g_time) }}</td>
                                         <td>{{ formatDate($item->h_time) }}</td>
-                                    @else
+                                    </tr>
+                                    @php
+                                    $no++;
+                                    @endphp
+                                    @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-gradient-danger">
+                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">Quality</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
+                                id="example3">
+                                <thead>
+                                    <tr style="text-align: center; background-color: #dc3545;">
+                                        <th>No.</th>
+                                        <th>Operator</th>
+                                        <th>Proses</th>
+                                        <th>Tanggal</th>
+                                        <th>Quantity</th>
+                                        <th>Good Quality</th>
+                                        <th>Not Good</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                    $no = 1; // Inisialisasi nomor urut
+                                    @endphp
+                                    @foreach($produksi as $key => $item)
+                                    @php
+                                    $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
+                                    @endphp
+                                    @if($dataTanggal === $selectedDate)
+                                    <tr class="data-row"
+                                        data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
+                                        <td>{{ $no }}</td>
+                                        <td>{{ $item->fuser->name }}</td>
+                                        <td>{{ $item->proses }}</td>
+                                        <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                         <td>{{ $item->quantity }}</td>
                                         <td>{{ $item->finish_good }}</td>
                                         <td>{{ $item->reject }}</td>
                                         <td>{{ $item->keterangan }}</td>
-                                    @endif
-                                </tr>
+                                    </tr>
                                     @php
-                                        $rowNumber++; 
+                                    $no++;
                                     @endphp
-                                @endforeach
-                            </tbody>
-                        </table>
+                                    @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                <p></p>
-                @endforeach
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 @stop
+
 @php
 function formatDate($time) {
-    $formattedTime = '';
+$formattedTime = '';
 
-    if ($time) {
-        $timeComponents = explode(':', $time);
-        $hours = intval($timeComponents[0]);
-        $minutes = intval($timeComponents[1]);
-        $seconds = intval($timeComponents[2]);
+if ($time) {
+$timeComponents = explode(':', $time);
+$hours = intval($timeComponents[0]);
+$minutes = intval($timeComponents[1]);
+$seconds = intval($timeComponents[2]);
 
-        // Menghitung total waktu dalam hitungan menit
-        $totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
+// Menghitung total waktu dalam hitungan menit
+$totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
 
-        // Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
-        if ($totalMinutes !== 0) {
-            $formattedTime = "{$totalMinutes} Menit";
-        }
-    }
+// Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
+if ($totalMinutes !== 0) {
+$formattedTime = "{$totalMinutes} Menit";
+}
+}
 
-    return $formattedTime;
+return $formattedTime;
 }
 @endphp
+
 @push('js')
-
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
-        const selectBulan = document.getElementById("selectBulan");
+        var lanjutanButton = document.querySelector(".btn-lanjutan");
+        var lanjutanSection = document.getElementById("lanjutan");
 
-        // Mendapatkan tanggal saat ini
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth() + 1; // Bulan dimulai dari 0 (Januari) - 11 (Desember)
+        lanjutanButton.addEventListener("click", function () {
+            if (lanjutanSection.style.display === "none") {
+                lanjutanSection.style.display = "block";
+            } else {
+                lanjutanSection.style.display = "none";
+            }
+        });
+    });
 
-        // Set nilai bulan saat ini pada input
-        selectBulan.value = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
-
-        // Memfilter data berdasarkan bulan yang dipilih saat halaman dimuat
-        const selectedDate = new Date(selectBulan.value);
-        const selectedYear = selectedDate.getFullYear();
-        const selectedMonth = selectedDate.getMonth() + 1;
-        filterDataByMonth(selectedYear, selectedMonth);
-
-        // Fungsi untuk memfilter data berdasarkan bulan
-        selectBulan.addEventListener("change", function () {
-            const selectedDate = new Date(selectBulan.value);
-            const selectedYear = selectedDate.getFullYear();
-            const selectedMonth = selectedDate.getMonth() + 1;
-
-            // Memfilter data berdasarkan bulan yang dipilih
-            filterDataByMonth(selectedYear, selectedMonth);
+    $(document).ready(function () {
+        var table = 
+        $('#example').DataTable({
+            "responsive": true,
+            "scrollX": true,
         });
 
-        // Fungsi untuk memfilter data berdasarkan bulan yang dipilih
-        function filterDataByMonth(year, month) {
-            const rows = document.querySelectorAll('.data-row');
 
-            rows.forEach(row => {
-                const dataBulan = row.getAttribute('data-bulan');
-                const [dataYear, dataMonth] = dataBulan.split('-');
-
-                if (parseInt(dataYear) === year && parseInt(dataMonth) === month) {
-                    row.style.display = 'table-row';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            // Setelah pemfilteran, panggil ulang DataTable untuk merender ulang tabel
-            for (const tableId of ['example1', 'example2', 'example3']) {
-                $('#' + tableId).DataTable().destroy();
-                $('#' + tableId).DataTable({
-                    "responsive": true,
-                });
+        function notificationBeforeDelete(event, el) {
+            event.preventDefault();
+            if (confirm('Apakah anda yakin akan menghapus data ? ')) {
+                $("#delete-form").attr('action', $(el).attr('href'));
+                $("#delete-form").submit();
             }
         }
     });
 </script>
-
 @endpush

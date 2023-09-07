@@ -33,7 +33,7 @@ Route::resource('target', \App\Http\Controllers\TargetController::class)->middle
 Route::get('/get-target-quantity', [ProduksiController::class, 'getTargetQuantity']);
 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
-Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);
+Route::get('/get-data-for-chart', [HomeController::class, 'getDataForChart']);
 Route::get('/get-data-for-performance-chart', [HomeController::class, 'getDataForPerformanceChart']);
 Route::get('/get-data-for-quality-chart', [HomeController::class, 'getDataForQualityChart']);
 Route::get('/get-data-for-availability-chart', [HomeController::class, 'getDataForAvailabilityChart']);

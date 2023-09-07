@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //data pada tabel data_produksi dikelola menggunakan Observer pada ProduksiObserver.php
         Schema::create('data_produksi', function (Blueprint $table) {
             $table->id();
             $table->string('proses', 50);

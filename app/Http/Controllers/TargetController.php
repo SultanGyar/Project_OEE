@@ -75,7 +75,7 @@ class TargetController extends Controller
     public function edit($id)
     {
         $target = Target::find($id);
-        if (!$target) return redirect()->route('target.index')->with('error_message', 'Penjualan dengan id'.$id.' tidak ditemukan');
+        if (!$target) return redirect()->route('target.index')->with('error_message', 'target dengan'.$id.' tidak ditemukan');
         $dataproses = Proses::pluck('daftarproses', 'daftarproses');
         return view('target.edit', compact('target', 'dataproses'));
     }

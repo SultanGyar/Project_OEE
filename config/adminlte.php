@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'logo' => '<b>Project</b>OEE',
+    'logo' => '<b> Project OEE </b>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
@@ -174,7 +174,7 @@ return [
     'classes_auth_body' => '',
     'classes_auth_footer' => 'text-center',
     'classes_auth_icon' => 'fa-lg text-info',
-    'classes_auth_btn' => 'btn-flat btn-primary',
+    'classes_auth_btn' => 'btn-flat btn-info',
 
     /*
     |--------------------------------------------------------------------------
@@ -194,7 +194,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-dark-info elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-light navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
@@ -294,7 +294,7 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'type'         => 'navbar-search',
+            'type'         => 'navbar-message',
             'text'         => 'search',
             'topnav_right' => true,
         ],
@@ -327,7 +327,7 @@ return [
         ],
 
         [
-            'header' => 'Target Quantity by Admin',
+            'header' => 'Target Quantity',
              'can' => 'admin-only',
         ],
 
@@ -344,12 +344,12 @@ return [
             'header' => 'Production Records',
         ],
         [
-            'text' => 'Produksi',
+            'text' => 'Produksi Harian',
             'url' => '/produksi',
             'icon' => 'fa fa-warehouse',
         ],
         [
-            'text' => 'Data Produksi',
+            'text' => 'Produksi Bulanan',
             'url' => '/data_produksi',
             'icon' => 'fa fa-folder-open',
         ],
@@ -430,11 +430,11 @@ return [
             ],
         ],
         'Chartjs' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
                 ],
             ],

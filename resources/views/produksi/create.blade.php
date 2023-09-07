@@ -11,13 +11,12 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="nama_operator">Nama Operator</label>
+                        <label for="name">Nama Operator</label>
                         <div class="input-group">
-                            <input type="hidden" name="nama_operator" id="nama_operator"
-                                value="{{ old('nama_operator') }}">
+                            <input type="hidden" name="nama_operator" id="nama_operator" value="{{ old('nama_operator') }}">
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                 placeholder="Nama Operator" id="name" name="name" value="{{ auth()->user()->name }}"
-                                aria-label="Nama Operator" aria-describedby="cari" readonly>
+                                aria-describedby="cari" readonly>
                         </div>
                     </div>
                     <div class="form-group">
@@ -28,6 +27,7 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <div class="form-group">
                         <label for="target_quantity">Target Quantity</label>
                         <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
@@ -37,11 +37,11 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
-                
+
                     <div class="form-group">
                         <label for="proses">Nama Proses</label>
-                        <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses" style="width: 100%">
+                        <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses"
+                            style="width: 100%">
                             <option value="" selected disabled>Pilih Proses</option>
                             @foreach ($dataproses as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
@@ -52,8 +52,6 @@
                         @enderror
                     </div>
                     
-
-                    <p></p>
                     <div class="form-group">
                         <label for="quantity">Actual Quantity</label>
                         <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity"
@@ -409,21 +407,8 @@
 
 @push('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
-
 
 <script>
-
-    var timepicker = new TimePicker('operating_start_time', {
-    lang: 'id',
-    theme: 'dark'
-    });
-    timepicker.on('change', function(evt) {
-    
-    var value = (evt.hour || '00') + ':' + (evt.minute || '00');
-    evt.element.value = value;
-
-    });
 
     function autoFillTargetQuantity() {
         var selectedProses = $('#proses').val();
@@ -431,7 +416,7 @@
 
         // Kirim permintaan AJAX ke server untuk mendapatkan nilai target_quantity_byadmin
         $.ajax({
-            url: '/get-target-quantity', // Ganti dengan URL yang sesuai
+            url: '/get-target-quantity', // Ubah menjadi route yang sesuai
             method: 'GET',
             data: {
                 proses: selectedProses,
@@ -439,10 +424,10 @@
             },
             success: function(response) {
                 if (response.success) {
-                    var targetQuantity = response.targetQuantity;
-                    $('#target_quantity').val(targetQuantity); // Mengisi nilai input target_quantity
+                    var targetQuantity = response.target_quantity; // Ubah menjadi 'target_quantity'
+                    $('#target_quantity').val(targetQuantity);
                 } else {
-                    $('#target_quantity').val(''); // Kosongkan nilai input jika data tidak tersedia
+                    $('#target_quantity').val('');
                 }
             }
         });

@@ -27,47 +27,89 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function getProsesData()
+    public function getDataForChart(Request $request)
     {
-        $prosesValues = DataProduksi::select('proses')->distinct()->get();
-        return response()->json($prosesValues);
-    }
+        // Ambil bulan yang dipilih dari formulir input
+    $selectedMonth = $request->input('filterMonth', date('Y-m'));
 
-    public function filterChartData(Request $request)
-    {
-        $proses = $request->input('proses');
-        $bulan = $request->input('bulan');
-
-        // Lakukan pengambilan data sesuai filter yang dipilih
-        $data = DataProduksi::where('proses', $proses)
-            ->whereMonth('tanggal', date('m', strtotime($bulan)))
-            ->first();
-
-        if ($data) {
-            $performanceData = [
-                'target_quantity' => $data->target_quantity,
-                'quantity' => $data->quantity
-            ];
-
-            $availabilityData = [
-                'operating_time' => $data->operating_time,
-                'actual_time' => $data->actual_time,
-                'down_time' => $data->down_time,
-            ];
-
-            $qualityData = [
-                'quantity' => $data->quantity,
-                'finish_good' => $data->finish_good,
-                'reject' => $data->reject,
-            ];
-
-            $updateData = [
-                'performance' => $performanceData,
-                'availability' => $availabilityData,
-                'quality' => $qualityData
-            ];
-            return response()->json($updateData);
+    // Mengambil data dari database berdasarkan bulan yang dipilih
+    $dataProduksi = DataProduksi::whereMonth('tanggal', '=', date('m', strtotime($selectedMonth)))
+    ->whereYear('tanggal', '=', date('Y', strtotime($selectedMonth)))
+    ->get();
+    
+        // Membuat array kosong untuk menampung hasil pengelompokan
+        $groupedData = [];
+    
+        foreach ($dataProduksi as $item) {
+            // Mengambil nilai proses dari setiap baris data
+            $proses = $item->proses;
+    
+            // Menggunakan fungsi preg_split untuk membagi nilai "proses" menjadi array kata-kata
+            $kataKunci = preg_split('/\s+/', $proses);
+    
+            // Menentukan kata kunci dengan mengambil kata pertama (indeks 0)
+            $kunci = $kataKunci[0];
+    
+            // Jika kunci proses belum ada dalam array, maka tambahkan
+            if (!isset($groupedData[$kunci])) {
+                $groupedData[$kunci] = [
+                    'performance' => [
+                        'target_quantity' => 0,
+                        'quantity' => 0
+                    ],
+                    'availability' => [
+                        'operating_time' => '00:00:00',
+                        'actual_time' => '00:00:00',
+                        'down_time' => '00:00:00'
+                    ],
+                    'quality' => [
+                        'quantity' => 0,
+                        'finish_good' => 0,
+                        'reject' => 0
+                    ]
+                ];
+            }
+    
+            // Tambahkan data ke dalam grup yang sesuai
+    
+            // Jumlahkan kolom yang ingin Anda jumlahkan
+            $groupedData[$kunci]['performance']['target_quantity'] += $item->target_quantity;
+            $groupedData[$kunci]['performance']['quantity'] += $item->quantity;
+    
+            // Menambahkan waktu operasi, waktu aktual, dan waktu downtime
+            $groupedData[$kunci]['availability']['operating_time'] = $this->addTime($groupedData[$kunci]['availability']['operating_time'], $item->operating_time);
+            $groupedData[$kunci]['availability']['actual_time'] = $this->addTime($groupedData[$kunci]['availability']['actual_time'], $item->actual_time);
+    
+            if ($item->down_time) {
+                $groupedData[$kunci]['availability']['down_time'] = $this->addTime($groupedData[$kunci]['availability']['down_time'], $item->down_time);
+            }
+    
+            $groupedData[$kunci]['quality']['quantity'] += $item->quantity;
+            $groupedData[$kunci]['quality']['finish_good'] += $item->finish_good;
+            $groupedData[$kunci]['quality']['reject'] += $item->reject;
         }
-        return response()->json(['error' => 'No data available']);
+    
+        // Mengembalikan hasil dalam bentuk JSON
+        return response()->json($groupedData);
     }
+    
+
+    private function addTime($time1, $time2)
+    {
+        $time1Parts = explode(':', $time1);
+        $time2Parts = explode(':', $time2);
+
+        $hours = (int)$time1Parts[0] + (int)$time2Parts[0];
+        $minutes = (int)$time1Parts[1] + (int)$time2Parts[1];
+        $seconds = (int)$time1Parts[2] + (int)$time2Parts[2];
+
+        // Handle carryovers
+        $minutes += floor($seconds / 60);
+        $seconds %= 60;
+        $hours += floor($minutes / 60);
+        $minutes %= 60;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
+
 }

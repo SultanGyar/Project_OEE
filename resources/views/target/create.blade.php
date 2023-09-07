@@ -46,15 +46,6 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
                     <button type="submit" class="btn btn-primary">Simpan</button>
                     <a href="{{route('target.index')}}" class="btn btn-danger">
                         Batal
@@ -66,11 +57,4 @@
 </form>
 @stop
 @push('js')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        // In your Javascript (external .js resource or <script> tag)
-        $(document).ready(function() {
-            $('.form-control form-control-select2').select2();
-        });
-    </script>
 @endpush
