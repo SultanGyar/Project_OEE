@@ -42,9 +42,7 @@
                                 <tr>
                                     <td>{{ $data->daftarketerangan }}</td>
                                     <td>
-                                        <a href="#}" class="btn btn-info btn-xs" 
-                                            onclick="openEditModal('{{ route('tbketerangan.edit', $data) }}', '{{ $data->daftarketerangan }}')"
-                                            data-toggle="modal" data-target="#modalEdit_{{ $data->id }}">
+                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
                                         <a href="{{ route('tbketerangan.destroy', $data) }}"
@@ -89,15 +87,16 @@
         </div>
     </div>
 </div>
+@foreach($tbketerangan as $data)
 <!-- Modal Edit -->
-<div class="modal fade" id="modalEdit_{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+<div class="modal fade" id="modalEdit{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel{{ $data->id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('tbketerangan.update', $data) }}" method="POST">
+            <form action="{{ route('tbketerangan.update', $data->id) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditLabel">Edit Keterangan</h5>
+                    <h5 class="modal-title" id="modalEditLabel{{ $data->id }}">Edit Keterangan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -105,18 +104,18 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="daftarketerangan">Edit Daftar Keterangan</label>
-                        <input type="text" class="form-control" id="daftarketerangan_{{ $data->id }}" name="daftarketerangan" required
-                        value="{{ old('daftarketerangan', $data->daftarketerangan) }}" required>
+                        <input type="text" class="form-control" id="daftarketerangan" name="daftarketerangan" value="{{ $data->daftarketerangan }}" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-info">Simpan Perubahan</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-info">Simpan</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+@endforeach
 @stop
 @push('js')
 <script>
@@ -129,13 +128,20 @@
         $('#modalTambah').on('show.bs.modal', function (event) {
             $(this).find('form')[0].reset();
         });
-    });
 
-    function openEditModal(url, daftarketerangan) {
-        $('#daftarketerangan_{{ $data->id }}').val(daftarketerangan);
-        $('#editForm').attr('action', url);
-        $('#modalEdit_{{ $data->id }}').modal('show');
-    }
+        // Fungsi untuk membuka modal edit
+        function openEditModal(id) {
+            var modalId = '#modalEdit' + id;
+            $(modalId).modal('show');
+        }
+
+        // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
+        $('.btn-edit').click(function () {
+            var id = $(this).data('id');
+            openEditModal(id);
+        });
+        
+    });
 
     function notificationBeforeDelete(event, el) {
         event.preventDefault();

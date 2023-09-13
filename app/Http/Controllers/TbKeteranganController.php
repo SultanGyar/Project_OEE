@@ -59,7 +59,7 @@ class TbKeteranganController extends Controller
         $tbketerangan = TbKeterangan::find($id);
 
         if (!$tbketerangan) {
-            return redirect()->route('tbketerangan.index')->with('error_message', 'Keterangan dengan id '.$id.' tidak ditemukan');
+            return redirect()->route('tbketerangan.index')->with('error_message', 'Proses tidak ditemukan');
         }
         return view('tbketerangan.edit', [
             'tbketerangan' => $tbketerangan
@@ -68,10 +68,7 @@ class TbKeteranganController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */ 
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -79,15 +76,15 @@ class TbKeteranganController extends Controller
         ]);
 
         $tbketerangan = TbKeterangan::find($id);
-        $tbketerangan->daftarketerangan = $request->daftarketerangan;
-        $tbketerangan->save();
-
         if (!$tbketerangan) {
-            return redirect()->route('tbketerangan.index')
-                ->with('error_message', 'Keterangan dengan id = ' .$id. ' tidak ditemukan');
+            return redirect()->route('tbketerangan.index')->with('error_message', 'Proses tidak ditemukan');
         }
 
-        return redirect()->route('tbketerangan.index')->with('success_message', 'Berhasil Mengupdate Keterangan');
+        $tbketerangan->daftarketerangan = $request->input('daftarketerangan');
+        $tbketerangan->save();
+
+
+        return redirect()->route('tbketerangan.index')->with('success_message', 'Keteranagan Berhasil diperbarui.');
 
     }
 
