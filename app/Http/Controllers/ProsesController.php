@@ -49,30 +49,31 @@ class ProsesController extends Controller
     public function edit($id)
     {
         $proses = Proses::find($id);
-        if (!$proses) return redirect()->route('proses.index')->with('error_message', 'Proses dengan id' .$id. ' tidak ditemukan');
-        return view('proses.index', [
-            'proses' => $proses
-        ]);
-    }
+        if (!$proses) {
+            return redirect()->route('proses.index')->with('error_message', 'Proses tidak ditemukan.');
+        }
 
+        return view('proses.edit', ['proses' => $proses]);
+    }
 
     /**
      * Update the specified resource in storage.
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */ 
-    public function update(Request $request, string $id) 
+     */
+    public function update(Request $request, $id)
     {
         $request->validate([
             'daftarproses' => 'required'
         ]);
 
         $proses = Proses::find($id);
-        $proses->daftarproses = $request->daftarproses;
+        if (!$proses) {
+            return redirect()->route('proses.index')->with('error_message', 'Proses tidak ditemukan.');
+        }
+
+        $proses->daftarproses = $request->input('daftarproses');
         $proses->save();
 
-        return redirect()->route('proses.index')->with('success_message', 'Berhasil Mengupdate Proses');
+        return redirect()->route('proses.index')->with('success_message', 'Proses berhasil diperbarui.');
     }
 
     /**
