@@ -40,17 +40,16 @@
 
                     <div class="form-group">
                         <label for="proses">Nama Proses</label>
-                        <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses"
-                            style="width: 100%">
+                        <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses" style="width: 100%">
                             <option value="" selected disabled>Pilih Proses</option>
                             @foreach ($dataproses as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
+                                <option value="{{ $value }}" @if (old('proses') == $value) selected @endif>{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('proses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>
+                    </div>                    
                     
                     <div class="form-group">
                         <label for="quantity">Actual Quantity</label>
@@ -395,7 +394,7 @@
                         @enderror
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-info">Simpan</button>
                         <a href="{{ route('produksi.index') }}" class="btn btn-danger">Batal</a>
                     </div>
                 </div>

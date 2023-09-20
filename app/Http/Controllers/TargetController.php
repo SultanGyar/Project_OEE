@@ -13,8 +13,10 @@ class TargetController extends Controller
      */
     public function index()
     {
+        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
         $target = Target::all();
-        return view('target.index', [
+        return view('target.index', compact('dataproses'),
+        [
             'target' => $target
         ]);
     }
@@ -24,8 +26,7 @@ class TargetController extends Controller
      */
     public function create()
     {
-        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
-        return view('target.create', compact('dataproses'));
+        // return view('target.create');
     }
 
     /**
@@ -50,7 +51,7 @@ class TargetController extends Controller
         if ($existingTarget) {
             // If the combination already exists, show a warning notification
             return redirect()->route('target.index')
-                ->with('warning_message', 'Tidak dapat menyimpan data tersebut, karena "Proses" dan "Tanggal" yang anda input memiliki kesamaan dengan data yang sudah ada');
+                ->with('warning_message', 'Maaf, data tidak dapat disimpan karena data dengan proses yang sama telah ada dalam sistem untuk hari ini.');
         }
         $array = $request->only([
             'target_proses',

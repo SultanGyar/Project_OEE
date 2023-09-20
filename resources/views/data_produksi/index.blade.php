@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'Recap Produksi')
+@section('title', 'Monthly Production')
 @section('content_header')
 <div class="container-fluid">
     <div class="row mb-2">
@@ -24,7 +24,7 @@
                     <h3 class="card-title" style="color: white">Data Produksi Bulanan</h3>
                 </div>
                 <div class="card-body">
-                    <div class="btn-group mb-2">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
                         <form id="filterForm" method="get" class="form-inline">
                             @php
                             $currentYear = date('Y');
@@ -37,6 +37,19 @@
                                 value="{{ $selectedMonth }}" max="{{ $currentDate }}">
                             <button type="submit" class="btn btn-info ml-2">Submit</button>
                         </form>
+                        <button id="exportOptions" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Export Options
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" data-value="excel">
+                                <i class="fas fa-file-excel"></i> Excel
+                            </a>
+                            <a class="dropdown-item" data-value="print">
+                                <i class="fas fa-print"></i> Print
+                            </a>
+                        </div>
+                        
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered table-striped" style="width:100%" id="example2">
@@ -55,6 +68,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                $no = 1; // Inisialisasi nomor urut
+                                @endphp
                                 @foreach($data_produksi as $key => $data_produksi)
                                 @php
                                 $dataBulan = strtolower(date('F', strtotime($data_produksi->tanggal)));
@@ -63,7 +79,7 @@
 
                                 @if($dataBulan === $filterBulan)
                                 <tr class="data-row" data-bulan="{{ $dataBulan }}">
-                                    <td>{{$key+1}}</td>
+                                    <td>{{$no}}</td>
                                     <td>{{$data_produksi->proses}}</td>
                                     <td>{{$data_produksi->target_quantity}}</td>
                                     <td>{{$data_produksi->quantity}}</td>
@@ -74,6 +90,9 @@
                                     <td>{{ formatDate($data_produksi->down_time) }}</td>
                                     <td>{{ \Carbon\Carbon::parse($data_produksi->tanggal)->format('F, Y') }}</td>
                                 </tr>
+                                @php
+                                $no++;
+                                @endphp
                                 @endif
                                 @endforeach
                             </tbody>
@@ -117,20 +136,33 @@
 
 <script>
     $(document).ready(function () {
-            var table = $('#example2').DataTable({
-                "responsive": true,
-                "scrollX": true,
-            })
+        var table = $('#example2').DataTable({
+            buttons: ["excel", "print"],
+        });
 
-            function notificationBeforeDelete(event, el) {
-                event.preventDefault();
-                if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-                    $("#delete-form").attr('action', $(el).attr('href'));
-                    $("#delete-form").submit();
-                }
+        // Mendengarkan acara saat elemen dropdown dipilih
+        $('.dropdown-item').click(function() {
+            // Mendapatkan nilai data dari elemen yang dipilih
+            var selectedValue = $(this).data('value');
+            
+            // Aktifkan tombol DataTables berdasarkan nilai yang dipilih
+            if (selectedValue === 'excel') {
+                table.button('0').trigger(); // Mengaktifkan tombol Excel
+            } else if (selectedValue === 'print') {
+                table.button('1').trigger(); // Mengaktifkan tombol Print
             }
         });
+
+        function notificationBeforeDelete(event, el) {
+            event.preventDefault();
+            if (confirm('Apakah anda yakin akan menghapus data ? ')) {
+                $("#delete-form").attr('action', $(el).attr('href'));
+                $("#delete-form").submit();
+            }
+        }
+    });
 </script>
+
 
 <form action="" id="delete-form" method="post">
     @method('delete')

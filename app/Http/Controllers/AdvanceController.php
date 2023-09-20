@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataProduksi;
 use Illuminate\Http\Request;
 
 class AdvanceController extends Controller
@@ -11,54 +12,49 @@ class AdvanceController extends Controller
      */
     public function index()
     {
-        return view('advance');
+        $getData = $this->getProsesData();
+        return view('advance', [
+            'getData' => $getData
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function getProsesData($format = 'array')
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+    
+        $data = DataProduksi::whereYear('tanggal', $currentYear)
+            ->whereMonth('tanggal', $currentMonth)
+            ->get();
+    
+        if ($data->isEmpty()) {
+            if ($format === 'json') {
+                return response()->json(['error' => 'No data available']);
+            } else {
+                return []; // Return an empty array when no data is available
+            }
+        }
+    
+        $responseData = [];
+        
+        foreach ($data as $entry) {
+            $responseData[] = [
+                'id' => $entry->id,
+                'proses' => $entry->proses,
+                'target_quantity' => $entry->target_quantity,
+                'operating_time' => $entry->operating_time,
+                'actual_time' => $entry->actual_time,
+                'down_time' => $entry->down_time,
+                'quantity' => $entry->quantity,
+                'finish_good' => $entry->finish_good,
+                'reject' => $entry->reject,
+            ];
+        }
+    
+        if ($format === 'json') {
+            return response()->json($responseData);
+        } else {
+            return $responseData;
+        }
     }
 }

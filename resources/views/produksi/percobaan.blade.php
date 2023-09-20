@@ -1,189 +1,96 @@
-@extends('adminlte::page')
+<?php
 
-@section('title', 'Daftar Produksi')
+namespace App\Http\Controllers;
 
-@section('content_header')
-<h1 class="m-0 text-dark">Daftar Produksi</h1>
-@stop
+use App\Models\DataProduksi;
+use Illuminate\Http\Request;
 
-@section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header">
-                    <h4 class="card-title-center text-center text-dark">Data Produksi Harian</h4>
-                </div>
-                <p></p>
-                <div class="filter">
-                    <div class="btn-group">
-                        <div class="btn-group">
-                            <a href="{{ route('produksi.create') }}" class="btn btn-primary mb-2 mr-2">Tambah</a>
-                            <button id="filterBulan" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Filter Bulan
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" data-value="">Semua Bulan</a>
-                                <a class="dropdown-item" data-value="january">January</a>
-                                <a class="dropdown-item" data-value="february">February</a>
-                                <a class="dropdown-item" data-value="March">March</a>
-                                <a class="dropdown-item" data-value="april">April</a>
-                                <a class="dropdown-item" data-value="may">May</a>
-                                <a class="dropdown-item" data-value="June">June</a>
-                                <a class="dropdown-item" data-value="july">July</a>
-                                <a class="dropdown-item" data-value="august">August</a>
-                                <a class="dropdown-item" data-value="september">September</a>
-                                <a class="dropdown-item" data-value="october">October</a>
-                                <a class="dropdown-item" data-value="november">November</a>
-                                <a class="dropdown-item" data-value="december">December</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-striped" id="example2">
-                            <thead>
-                                <tr style="text-align: center; background-color: #7895CB;">
-                                    <th>No.</th>
-                                    <th>Nama Operator</th>
-                                    <th>Proses</th>
-                                    <th>Target Quantity</th>
-                                    <th>Quantity</th>
-                                    <th>Good Quality</th>
-                                    <th>Rejected</th>
-                                    <th>Tanggal</th>
-                                    <th>Operating Time</th>
-                                    <th>Actual Time</th>
-                                    <th>Down Time</th>
-                                    <th>A</th>
-                                    <th>B</th>
-                                    <th>C</th>
-                                    <th>D</th>
-                                    <th>E</th>
-                                    <th>F</th>
-                                    <th>Opsi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($produksi as $key => $item)
-                                <tr class="data-row"
-                                    data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $item->fuser->name }}</td>
-                                    <td>{{ $item->proses }}</td>
-                                    <td>{{ $item->target_quantity }}</td>
-                                    <td>{{ $item->quantity }}</td>
-                                    <td>{{ $item->finish_good }}</td>
-                                    <td>{{ $item->reject }}</td>
-                                    <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
-                                    <td>{{ formatDate($item->operating_time) }}</td>
-                                    <td>{{ formatDate($item->actual_time) }}</td>
-                                    <td>{{ formatDate($item->down_time) }}</td>
-                                    <td>{{ formatDate($item->a_time) }}</td>
-                                    <td>{{ formatDate($item->b_time) }}</td>
-                                    <td>{{ formatDate($item->c_time) }}</td>
-                                    <td>{{ formatDate($item->d_time) }}</td>
-                                    <td>{{ formatDate($item->e_time) }}</td>
-                                    <td>{{ formatDate($item->f_time) }}</td>
-                                    <td>
-                                        <a href="{{ route('produksi.destroy', $item) }}"
-                                            onclick="notificationBeforeDelete(event, this)"
-                                            class="btn btn-danger btn-xs">
-                                            Delete
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+class HomeController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-<script>
-    // Mendapatkan elemen filter
-    var filterBulanButton = document.getElementById("filterBulan");
-    var filterBulanSelect = document.querySelectorAll(".dropdown-item");
+    public function index()
+    {
+        $chartData = $this->getDataForChart(new Request());
+        return view('home', compact('chartData')); // Pass 'chartData' to the view
+    }
 
-    // Menambahkan event listener pada tombol filter bulan
-    filterBulanButton.addEventListener("click", function () {
-        this.classList.toggle("active");
-        var dropdownMenu = this.nextElementSibling;
-        dropdownMenu.classList.toggle("show");
-    });
+    public function getDataForChart(Request $request)
+    {
+        $selectedMonth = $request->input('filterMonth', date('Y-m'));
+        $dataProduksi = DataProduksi::whereMonth('tanggal', '=', date('m', strtotime($selectedMonth)))
+            ->whereYear('tanggal', '=', date('Y', strtotime($selectedMonth)))
+            ->get();
 
-    // Menambahkan event listener untuk setiap pilihan bulan
-    filterBulanSelect.forEach(function (item) {
-        item.addEventListener("click", function () {
-            var selectedMonth = this.getAttribute("data-value");
-            var rows = document.querySelectorAll("#example2 tbody tr");
+        $groupedData = [];
 
-            // Menggunakan loop untuk mengatur tampilan baris berdasarkan bulan yang dipilih
-            for (var i = 0; i < rows.length; i++) {
-                var rowBulan = rows[i].getAttribute("data-bulan");
-                if (selectedMonth === "" || rowBulan.includes(selectedMonth.toLowerCase())) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
+        foreach ($dataProduksi as $item) {
+            $proses = $item->proses;
+            $kataKunci = preg_split('/\s+/', $proses);
+            $kunci = $kataKunci[0];
+
+            if (!isset($groupedData[$kunci])) {
+                $groupedData[$kunci] = [
+                    'performance' => [
+                        'target_quantity' => 0,
+                        'quantity' => 0,
+                    ],
+                    'availability' => [
+                        'operating_time' => '00:00:00',
+                        'actual_time' => '00:00:00',
+                        'down_time' => '00:00:00',
+                    ],
+                    'quality' => [
+                        'quantity' => 0,
+                        'finish_good' => 0,
+                        'reject' => 0,
+                    ],
+                ];
             }
 
-            // Ubah teks pada tombol filter bulan menjadi bulan yang dipilih
-            filterBulanButton.innerHTML = this.innerHTML;
-            filterBulanButton.classList.remove("active");
-            var dropdownMenu = this.parentNode;
-            dropdownMenu.classList.remove("show");
-        });
-    });
-</script>
-@stop
+            $groupedData[$kunci]['performance']['target_quantity'] += $item->target_quantity;
+            $groupedData[$kunci]['performance']['quantity'] += $item->quantity;
+            $groupedData[$kunci]['availability']['operating_time'] = $this->addTime(
+                $groupedData[$kunci]['availability']['operating_time'],
+                $item->operating_time
+            );
+            $groupedData[$kunci]['availability']['actual_time'] = $this->addTime(
+                $groupedData[$kunci]['availability']['actual_time'],
+                $item->actual_time
+            );
 
-@php
-function formatDate($time) {
-$formattedTime = '';
-if ($time) {
-$timeComponents = explode(':', $time);
-$hours = intval($timeComponents[0]);
-$minutes = intval($timeComponents[1]);
-$seconds = intval($timeComponents[2]);
+            if ($item->down_time) {
+                $groupedData[$kunci]['availability']['down_time'] = $this->addTime(
+                    $groupedData[$kunci]['availability']['down_time'],
+                    $item->down_time
+                );
+            }
 
-$formattedTime = '';
-
-if ($hours > 0) {
-$formattedTime .= $hours . ' Hours ';
-}
-
-if ($minutes > 0) {
-$formattedTime .= $minutes . ' minutes ';
-}
-
-if ($seconds > 0) {
-$formattedTime .= $seconds . ' seconds';
-}
-}
-return $formattedTime;
-}
-@endphp
-
-@push('js')
-<form action="" id="delete-form" method="post">
-    @method('delete')
-    @csrf
-</form>
-<script>
-    $('#example2').DataTable({
-        "responsive": true,
-    });
-
-    function notificationBeforeDelete(event, el) {
-        event.preventDefault();
-        if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-            $("#delete-form").attr('action', $(el).attr('href'));
-            $("#delete-form").submit();
+            $groupedData[$kunci]['quality']['quantity'] += $item->quantity;
+            $groupedData[$kunci]['quality']['finish_good'] += $item->finish_good;
+            $groupedData[$kunci]['quality']['reject'] += $item->reject;
         }
+
+        return response()->json($groupedData);
     }
-</script>
-@endpush
+
+    private function addTime($time1, $time2)
+    {
+        $time1Parts = explode(':', $time1);
+        $time2Parts = explode(':', $time2);
+
+        $hours = (int) $time1Parts[0] + (int) $time2Parts[0];
+        $minutes = (int) $time1Parts[1] + (int) $time2Parts[1];
+        $seconds = (int) $time1Parts[2] + (int) $time2Parts[2];
+
+        $minutes += floor($seconds / 60);
+        $seconds %= 60;
+        $hours += floor($minutes / 60);
+        $minutes %= 60;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
+}

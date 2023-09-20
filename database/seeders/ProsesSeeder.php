@@ -67,10 +67,8 @@ class ProsesSeeder extends Seeder
             'ASSEMBLING',
         ];
         
-        usort($data, function ($a, $b) {
-            return strnatcmp($a, $b);       
-        });
-        
+        natsort($data);
+
         foreach ($data as $item) {
             DB::table('proses')->insert([
                 'daftarproses' => $item,

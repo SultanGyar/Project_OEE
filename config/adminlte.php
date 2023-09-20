@@ -294,11 +294,6 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'type'         => 'navbar-message',
-            'text'         => 'search',
-            'topnav_right' => true,
-        ],
-        [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
@@ -313,35 +308,45 @@ return [
             'text' => 'Dashboard',
             'url' => '/home',
             'icon' => 'fa fa-chart-area',
+            // 'classes'  => 'text-danger text-uppercase',
         ],
 
         [
             'header' => 'Pengaturan Pengguna',
-             'can' => 'admin-only',
+            'can' => 'admin-only',
         ],
         [
-            'text' => 'User',
+            'text' => 'Pengguna',
             'url' => '/users',
             'icon' => 'fa fa-users',
-             'can' => 'admin-only',
+            'can' => 'admin-only',
         ],
 
         [
-            'header' => 'Target Quantity',
-             'can' => 'admin-only',
+            'header' => 'Informasi Produksi',
+            'can' => 'admin-only',
         ],
-
+        
         [
-            'text' => 'Add Target Quantity',
+            'text' => 'Daftar Proses',
+            'url' => '/proses',
+            'icon' => 'fa fa-list',
+            'can' => 'admin-only',
+        ],
+        [
+            'text' => 'Daftar Keterangan',
+            'url' => '/tbketerangan',
+            'icon' => 'fa fa-clipboard',
+            'can' => 'admin-only',
+        ],
+        [
+            'header' => 'Laporan Produksi',
+        ],
+        [
+            'text' => 'Target Quantity',
             'url' => '/target',
             'icon' => 'fa fa-table',
-             'can' => 'admin-only',
-             'class' => 'text-lg',
-        ],
-
-
-        [
-            'header' => 'Production Records',
+            'can' => 'admin-only',
         ],
         [
             'text' => 'Produksi Harian',

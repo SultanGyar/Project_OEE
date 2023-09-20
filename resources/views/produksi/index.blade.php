@@ -22,7 +22,9 @@
             <div class="card">
                 <div class="card-header bg-gradient-gray-dark d-flex justify-content-between align-items-center">
                     <p class="card-title mb-0" style="color: white">Data Produksi Harian</p>
+                    @can('admin-only')
                     <button class="btn btn-link text-white text-md mb-0 ml-auto btn-lanjutan">Lanjutan</button>
+                    @endcan
                 </div>
 
                 <div class="card-body">
@@ -66,6 +68,7 @@
                                     <th>F (Checking)</th>
                                     <th>G (Reject)</th>
                                     <th>H (Rework)</th>
+                                    <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,6 +102,13 @@
                                     <td>{{ formatDate($item->f_time) }}</td>
                                     <td>{{ formatDate($item->g_time) }}</td>
                                     <td>{{ formatDate($item->h_time) }}</td>
+                                    <td>
+                                    <a href="{{route('produksi.destroy', $item)}}"
+                                            onclick="notificationBeforeDelete(event, this)"
+                                            class="btn btn-danger btn-xs">
+                                            Delete
+                                        </a>
+                                    </td>
                                 </tr>
                                 @php
                                 $no++;
@@ -110,67 +120,31 @@
                     </div>
                 </div>
             </div>
+            @can('admin-only')
             <div id="lanjutan" style="display: none;">
+                @foreach (['Performance' => 'green', 'Availability' => 'warning', 'Quality' => 'danger'] as $header => $color)
                 <div class="card">
-                    <div class="card-header bg-gradient-green">
-                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">Performance</h3>
+                    <div class="card-header bg-gradient-{{ $color }}">
+                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">
+                            {{ $header }}
+                        </h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
-                                id="example1">
+                            @php
+                            $tableId = 'example' . strtolower($header); // Menggunakan jenis header untuk menentukan ID tabel
+                            @endphp
+                            <table class="table table-hover table-bordered table-striped" style="width: 100%" id="{{ $tableId }}">
                                 <thead>
-                                    <tr style="text-align: center; background-color: #28a745;">
+                                    <tr style="text-align: center; background-color: #{{ $color == 'green' ? '28a745' : ($color == 'warning' ? 'ffc107' : 'dc3545') }}">
                                         <th>No.</th>
                                         <th>Operator</th>
                                         <th>Proses</th>
                                         <th>Tanggal</th>
+                                        @if ($header == 'Performance')
                                         <th>Target Quantity</th>
                                         <th>Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                    $no = 1; // Inisialisasi nomor urut
-                                    @endphp
-                                    @foreach($produksi as $key => $item)
-                                    @php
-                                    $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
-                                    @endphp
-                                    @if($dataTanggal === $selectedDate)
-                                    <tr class="data-row"
-                                        data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
-                                        <td>{{ $no }}</td>
-                                        <td>{{ $item->fuser->name }}</td>
-                                        <td>{{ $item->proses }}</td>
-                                        <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
-                                        <td>{{ $item->target_quantity }}</td>
-                                        <td>{{ $item->quantity }}</td>
-                                    </tr>
-                                    @php
-                                    $no++;
-                                    @endphp
-                                    @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header bg-gradient-warning">
-                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">Availability</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
-                                id="example2">
-                                <thead>
-                                    <tr style="text-align: center; background-color: #ffc107;">
-                                        <th>No.</th>
-                                        <th>Operator</th>
-                                        <th>Proses</th>
-                                        <th>Tanggal</th>
+                                        @elseif ($header == 'Availability')
                                         <th>Operating Time</th>
                                         <th>Actual Time</th>
                                         <th>Down Time</th>
@@ -182,12 +156,16 @@
                                         <th>F (Checking)</th>
                                         <th>G (Reject)</th>
                                         <th>H (Rework)</th>
+                                        @else
+                                        <th>Quantity</th>
+                                        <th>Good Quality</th>
+                                        <th>Not Good</th>
+                                        <th>Keterangan</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                    $no = 1; // Inisialisasi nomor urut
-                                    @endphp
+                                    @php $no = 1; @endphp
                                     @foreach($produksi as $key => $item)
                                     @php
                                     $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
@@ -199,6 +177,10 @@
                                         <td>{{ $item->fuser->name }}</td>
                                         <td>{{ $item->proses }}</td>
                                         <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
+                                        @if ($header == 'Performance')
+                                        <td>{{ $item->target_quantity }}</td>
+                                        <td>{{ $item->quantity }}</td>
+                                        @elseif ($header == 'Availability')
                                         <td>{{ formatDate($item->operating_time) }}</td>
                                         <td>{{ formatDate($item->actual_time) }}</td>
                                         <td>{{ formatDate($item->down_time) }}</td>
@@ -210,60 +192,14 @@
                                         <td>{{ formatDate($item->f_time) }}</td>
                                         <td>{{ formatDate($item->g_time) }}</td>
                                         <td>{{ formatDate($item->h_time) }}</td>
-                                    </tr>
-                                    @php
-                                    $no++;
-                                    @endphp
-                                    @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header bg-gradient-danger">
-                        <h3 class="card-title" style="color: white; width: 100%; text-align: center;">Quality</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
-                                id="example3">
-                                <thead>
-                                    <tr style="text-align: center; background-color: #dc3545;">
-                                        <th>No.</th>
-                                        <th>Operator</th>
-                                        <th>Proses</th>
-                                        <th>Tanggal</th>
-                                        <th>Quantity</th>
-                                        <th>Good Quality</th>
-                                        <th>Not Good</th>
-                                        <th>Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                    $no = 1; // Inisialisasi nomor urut
-                                    @endphp
-                                    @foreach($produksi as $key => $item)
-                                    @php
-                                    $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
-                                    @endphp
-                                    @if($dataTanggal === $selectedDate)
-                                    <tr class="data-row"
-                                        data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
-                                        <td>{{ $no }}</td>
-                                        <td>{{ $item->fuser->name }}</td>
-                                        <td>{{ $item->proses }}</td>
-                                        <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
+                                        @else
                                         <td>{{ $item->quantity }}</td>
                                         <td>{{ $item->finish_good }}</td>
                                         <td>{{ $item->reject }}</td>
                                         <td>{{ $item->keterangan }}</td>
+                                        @endif
                                     </tr>
-                                    @php
-                                    $no++;
-                                    @endphp
+                                    @php $no++; @endphp
                                     @endif
                                     @endforeach
                                 </tbody>
@@ -271,7 +207,10 @@
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
+            @endcan
+            
         </div>
     </div>
 </div>
@@ -316,7 +255,6 @@ return $formattedTime;
             }
         });
     });
-
     $(document).ready(function () {
         var table = 
         $('#example').DataTable({
@@ -324,14 +262,27 @@ return $formattedTime;
             "scrollX": true,
         });
 
-
-        function notificationBeforeDelete(event, el) {
-            event.preventDefault();
-            if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-                $("#delete-form").attr('action', $(el).attr('href'));
-                $("#delete-form").submit();
-            }
+        $('table[id^="example"]').each(function () {
+        if (!$(this).hasClass('dataTable')) {
+            var table = $(this).DataTable({
+                "responsive": true,
+                "scrollX": false,
+            });
         }
     });
+
+    });
+
+    function notificationBeforeDelete(event, el) {
+        event.preventDefault();
+        if (confirm('Apakah anda yakin akan menghapus data ? ')) {
+            $("#delete-form").attr('action', $(el).attr('href'));
+            $("#delete-form").submit();
+        }
+    }
 </script>
+<form action="" id="delete-form" method="post">
+    @method('delete')
+    @csrf
+</form>
 @endpush
