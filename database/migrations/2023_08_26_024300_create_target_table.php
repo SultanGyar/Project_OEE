@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('target', function (Blueprint $table) {
             $table->id();
             $table->string('target_proses', 30);
-            $table->foreign('target_proses')->references('daftarproses')->on('proses')->onDelete('cascade');
+            $table->foreign('target_proses')->references('daftarproses')->on('proses')->onDelete('cascade')->onUpdate('cascade');
             $table->date('tanggal_target');
             $table->integer('target_quantity_byadmin');
             $table->timestamps();

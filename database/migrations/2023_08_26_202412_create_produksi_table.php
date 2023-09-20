@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('finish_good');
             $table->integer('reject');
             $table->string('keterangan', 50)->nullable();
-            $table->foreign('keterangan')->references('daftarketerangan')->on('tbketerangan')->onDelete('cascade');
+            $table->foreign('keterangan')->references('daftarketerangan')->on('tbketerangan')->onDelete('cascade')->onUpdate('cascade');
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->time('operating_start_time');
             $table->time('operating_end_time');
