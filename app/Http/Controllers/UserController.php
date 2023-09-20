@@ -33,13 +33,13 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'name' => 'required|unique:users,name',
             'password' => 'required|confirmed',
-            'role' => 'required'
+            'role' => 'required',
+            'status' => 'required'
         ]);
         $array = $request->only([
-            'name', 'email', 'password', 'role'
+            'name', 'password', 'role', 'status'
         ]);
         $array['password'] = bcrypt($array['password']);
         $user = User::create($array);
@@ -57,17 +57,44 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('users.index')->with('error_message', 'User dengan ID ' . $id . ' tidak ditemukan');
+        }
+
+        return view('users.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:users,name,' . $id,
+            'password' => 'sometimes|nullable|confirmed',
+            'role' => 'required',
+            'status' => 'required'
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('users.index')->with('error_message', 'User dengan ID ' . $id . ' tidak ditemukan');
+        }
+
+        $userData = $request->only(['name', 'role', 'status']);
+
+        if ($request->filled('password')) {
+            $userData['password'] = bcrypt($request->input('password'));
+        }
+
+        $user->update($userData);
+
+        return redirect()->route('users.index')->with('success_message', 'Berhasil memperbarui user');
     }
 
     /**

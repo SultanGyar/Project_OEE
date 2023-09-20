@@ -11,7 +11,7 @@
 @php( $register_url = $register_url ? url($register_url) : '' )
 @endif
 
-@section('auth_header', __('adminlte::adminlte.register_message'))
+@section('auth_header', __('Registrasi Admin'))
 
 @section('auth_body')
 <form action="{{ $register_url }}" method="post">
@@ -19,34 +19,15 @@
 
     <div class="input-group mb-3">
         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-            value="{{ old('name') }}" placeholder="{{ __('Nama') }}" autofocus>
-    
+            value="{{ old('name') }}" placeholder="{{ __('Username') }}" autofocus>
+
         <div class="input-group-append">
             <div class="input-group-text">
                 <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
         </div>
-    
+
         @error('name')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
-    </div>
-    
-
-    {{-- Email field --}}
-    <div class="input-group mb-3">
-        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-            value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}">
-
-        <div class="input-group-append">
-            <div class="input-group-text">
-                <span class="fas fa-envelope {{ config('adminlte.classes_auth_icon', '') }}"></span>
-            </div>
-        </div>
-
-        @error('email')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
         </span>
@@ -89,11 +70,12 @@
         </span>
         @enderror
     </div>
+
     {{-- Role field --}}
-    <div class="input-group mb-3">
+    <div class="input-group mb-3" hidden>
         <select name="role" class="form-control @error('role') is-invalid @enderror">
-            <option value="Admin" @if(old('role')=='Admin' ) selected @endif>Admin</option>
-            <option value="Operator" @if(old('role')=='Operator' ) selected @endif>Operator</option>
+            <option value="Admin" {{ old('role')==='Admin' ? 'selected' : '' }}>Admin</option>
+            <option value="Operator" {{ old('role')==='Operator' ? 'selected' : '' }}>Operator</option>
         </select>
 
         <div class="input-group-append">
@@ -109,6 +91,29 @@
         @enderror
     </div>
 
+    {{-- Status field --}}
+    <div class="input-group mb-3" hidden>
+        <select name="status" class="form-control @error('status') is-invalid @enderror">
+            <option value="Aktif" @if(old('status')=='Aktif' ) selected @endif>{{ __('Aktif') }}</option>
+            <option value="Tidak Aktif" @if(old('status')=='Tidak Aktif' ) selected @endif>{{ __('Tidak Aktif') }}
+            </option>
+        </select>
+
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-user-check {{ config('adminlte.classes_auth_icon', '') }}"></span>
+            </div>
+        </div>
+
+        @error('status')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+        @enderror
+    </div>
+
+
+
     {{-- Register button --}}
     <button type="submit" class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-info') }}">
         <span class="fas fa-user-plus"></span>
@@ -116,12 +121,4 @@
     </button>
 
 </form>
-@stop
-
-@section('auth_footer')
-<p class="my-0">
-    <a href="{{ $login_url }}">
-        {{ __('adminlte::adminlte.i_already_have_a_membership') }}
-    </a>
-</p>
 @stop

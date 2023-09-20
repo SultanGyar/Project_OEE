@@ -52,22 +52,22 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:1', 'confirmed'],
+            'name' => ['required', 'string', 'max:100', 'unique:users'],
+            'password' => ['required', 'string', 'min:5', 'confirmed'],
             'role' => [
-                'required',
-                Rule::in(['Admin', 'Operator']),
-                function ($attribute, $value, $fail) {
-                    $maxAdminCount = 1; // Jumlah maksimal admin yang diizinkan
-    
-                    $adminCount = User::where('role', 'Admin')->count();
-    
-                    if ($value === 'Admin' && $adminCount >= $maxAdminCount) {
-                        $fail('Batas jumlah admin telah tercapai.');
-                    }
-                },
-            ],
+                    'required',
+                    Rule::in(['Admin', 'Operator']),
+                    function ($attribute, $value, $fail) {
+                        $maxAdminCount = 1; // Jumlah maksimal admin yang diizinkan
+        
+                        $adminCount = User::where('role', 'Admin')->count();
+        
+                        if ($value === 'Admin' && $adminCount >= $maxAdminCount) {
+                            $fail('Batas jumlah admin telah tercapai.');
+                        }
+                    },
+                ],
+            'status' => ['required', Rule::in(['Aktif', 'Tidak Aktif'])],
         ]);
     }
 
@@ -81,9 +81,9 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
+            'status' => $data['status'],
         ]);
     }
 }

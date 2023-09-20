@@ -19,24 +19,24 @@
 @php( $password_reset_url = $password_reset_url ? url($password_reset_url) : '' )
 @endif
 
-@section('auth_header', __('adminlte::adminlte.login_message'))
+@section('auth_header', __('Login ke Akun Anda'))
 
 @section('auth_body')
 <form action="{{ $login_url }}" method="post">
     @csrf
 
-    {{-- Email field --}}
+    {{-- Name field --}}
     <div class="input-group mb-3">
-        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-            value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
+        <input type="string" name="name" class="form-control @error('name') is-invalid @enderror"
+            value="{{ old('name') }}" placeholder="{{ __('Username') }}" autofocus>
 
         <div class="input-group-append">
             <div class="input-group-text">
-                <span class="fas fa-envelope {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
         </div>
 
-        @error('email')
+        @error('name')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
         </span>
@@ -46,38 +46,29 @@
     {{-- Password field --}}
     <div class="input-group mb-3">
         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-            placeholder="{{ __('adminlte::adminlte.password') }}">
-
+            placeholder="{{ __('adminlte::adminlte.password') }}" id="password-field">
+    
         <div class="input-group-append">
+            <div class="input-group-text" id="toggle-password-button" style="cursor: pointer; display: none;">
+                <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span>
+            </div>
             <div class="input-group-text">
                 <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
         </div>
-
+    
         @error('password')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
         </span>
         @enderror
     </div>
-
-    {{-- Role Field --}}
-    <div class="form-group">
-        <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
-            <option value="Admin" @if(old('role')=='Admin' ) selected @endif>Admin</option>
-            <option value="Operator" @if(old('role')=='Operator' ) selected @endif>Operator</option>
-        </select>
-        @error('role')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
-    </div>
+    
 
     {{-- Login field --}}
     <div class="row">
         <div class="col-7">
-            <div class="icheck-primary" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
+            <div class="icheck-info">
                 <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
                 <label for="remember">
@@ -97,22 +88,27 @@
 </form>
 @stop
 
-@section('auth_footer')
-{{-- Password reset link --}}
-@if($password_reset_url)
-<p class="my-0">
-    <a href="{{ $password_reset_url }}">
-        {{ __('adminlte::adminlte.i_forgot_my_password') }}
-    </a>
-</p>
-@endif
 
-{{-- Register link --}}
-@if($register_url)
-<p class="my-0">
-    <a href="{{ $register_url }}">
-        {{ __('adminlte::adminlte.register_a_new_membership') }}
-    </a>
-</p>
-@endif
-@stop
+@push('js')
+<script>
+    const passwordField = document.getElementById("password-field");
+    const togglePasswordButton = document.getElementById("toggle-password-button");
+    const eyeIcon = togglePasswordButton.querySelector("span");
+
+    passwordField.addEventListener("input", function () {
+        togglePasswordButton.style.display = passwordField.value.length > 0 ? "block" : "none";
+    });
+
+    togglePasswordButton.addEventListener("click", function () {
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            eyeIcon.classList.toggle("fa-eye");
+            eyeIcon.classList.toggle("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            eyeIcon.classList.toggle("fa-eye-slash");
+            eyeIcon.classList.toggle("fa-eye");
+        }
+    });
+</script>
+@endpush

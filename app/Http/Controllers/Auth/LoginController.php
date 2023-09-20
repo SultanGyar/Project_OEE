@@ -42,12 +42,11 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         $credentials = $request->only($this->username(), 'password');
-        $credentials['role'] = $request->input('role');
         return $credentials;
     }
 
     public function username()
     {
-        return 'email';
+        return 'name';
     }
 }
