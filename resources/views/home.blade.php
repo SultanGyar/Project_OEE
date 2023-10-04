@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'Dashboard')
 
 @section('content_header')
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+<div class="d-flex flex-wrap justify-content-between align-items-center">
     <h2>Overall Equipment Effectiveness</h2>
     <form id="filterForm" method="get" class="form-inline">
         @php
@@ -11,7 +11,7 @@
         $selectedMonth = request('filterMonth', $currentMonth); // Ambil bulan terpilih
         @endphp
         <div class="d-flex align-items-center">
-            <label for="filterMonth" class="mr-2 mb-2 mb-md-0" style="flex: 0 0 auto;">Bulan:</label>
+            <label for="filterMonth" class="mr-2 mb-2 mb-md-0" style="flex: 0 0 auto;">Month:</label>
             <input type="month" class="form-control" id="filterMonth" name="filterMonth" value="{{ $selectedMonth }}"
                 max="{{ $currentMonth }}">
             <button type="submit" class="btn btn-info ml-2">Submit</button>
@@ -21,22 +21,33 @@
 @stop
 
 @section('content')
+<div class="col-md-8 offset-md-2">
+    <div class="input-group input-group-md mb-3">
+        <input type="search" class="form-control form-control-md" placeholder="Search OEE..." id="searchInput">
+        <div class="input-group-append">
+            <button type="button" class="btn btn-md btn-default" id="searchButton">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{{-- {{ json_encode($getData) }} --}}
+
 <div class="row">
-    @foreach ($getData as $data)
-    <div class="col-lg-3 col-md-6 col-xs-6">
-        <div class="card border card-info shadow-lg">
-            <div class="card-header d-flex justify-content-between align-items-center"
+    @foreach($getData as $kelompok => $data)
+    <div class="col-lg-3 col-md-4 col-sm-6" id="oeeCard{{ $loop->index }}">
+        <div class="card card-info border shadow-lg">
+            <div class="card-header d-flex justify-content-between align-items-center bg-gradient-gray-dark"
                 style="padding-top: 3px; padding-bottom: 3px;">
-                <div class="card-title" style="font-size: 15px">{{ $data['proses'] }}</div>
-                <a class="btn btn-link ml-auto" data-toggle="modal"
-                    data-target="#chartModal{{ $data['id'] }}">detail</a>
+                <div class="card-title" style="font-size: 15px">{{ $kelompok }}</div>
+                <a class="btn btn-link ml-auto" data-toggle="modal" data-target="#chartModal{{ $loop->index }}">View</a>
             </div>
             <div class="card-body position-relative">
-                <canvas id="oeeChart{{ $data['id'] }}" width="200" height="200"></canvas>
+                <canvas id="oeeChart{{ $loop->index }}" width="200" height="250"></canvas>
                 <div class="oee-text">
                     <span class="oee-title">OEE</span>
                     <div class="oee-line"></div>
-                    <span class="oee-value" id="oee-value{{ $data['id'] }}"></span>
+                    <span class="oee-value" id="oee-value{{ $loop->index }}"></span>
                 </div>
             </div>
         </div>
@@ -44,13 +55,13 @@
     @endforeach
 </div>
 
-@foreach ($getData as $data)
-<div class="modal fade" id="chartModal{{ $data['id'] }}" tabindex="-1" role="dialog"
-    aria-labelledby="chartModalLabel{{ $data['id'] }}" aria-hidden="true">
+@foreach($getData as $kelompok => $data)
+<div class="modal fade" id="chartModal{{ $loop->index }}" tabindex="-1" role="dialog"
+    aria-labelledby="chartModalLabel{{ $loop->index }}" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="chartModaLlLabel">{{ $data['proses'] }}</h5>
+                <h5 class="modal-title" id="chartModaLlLabel">{{ $kelompok }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -65,27 +76,27 @@
                             <div class="card-body">
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Target Quantity</h5>
-                                    <span class="description-text text-bold" id="textTargetQuantity{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textTargetQuantity{{ $loop->index }}">
                                     </span>
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Actual Quantity</h5>
-                                    <span class="description-text text-bold" id="textActualQuantity{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textActualQuantity{{ $loop->index }}">
                                     </span>
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Percentage</h5>
                                     <span class="description-text text-bold"
-                                        id="textPerformancePercentage{{ $data['id'] }}">
+                                        id="textPerformancePercentage{{ $loop->index }}">
                                     </span>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <canvas id="performanceChart{{ $data['id'] }}" width="200" height="200"></canvas>
+                                <canvas id="performanceChart{{ $loop->index }}" width="200" height="200"></canvas>
                                 <div class="chart-text">
                                     <span class="chart-title">Performance</span>
                                     <span class="chart-percentage text-bold"
-                                        id="performancePercentage{{ $data['id'] }}"></span>
+                                        id="performancePercentage{{ $loop->index }}"></span>
                                 </div>
                             </div>
                         </div>
@@ -98,26 +109,26 @@
                             <div class="card-body">
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Total Operation Time</h5>
-                                    <span class="description-text text-bold" id="textTotalTime{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textTotalTime{{ $loop->index }}">
                                     </span>
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Actual Runtime</h5>
-                                    <span class="description-text text-bold" id="textActualRuntime{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textActualRuntime{{ $loop->index }}">
                                     </span>
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Down Time</h5>
-                                    <span class="description-text text-bold" id="textDownTime{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textDownTime{{ $loop->index }}">
                                     </span>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <canvas id="availabilityChart{{ $data['id'] }}" width="200" height="200"></canvas>
+                                <canvas id="availabilityChart{{ $loop->index }}" width="200" height="200"></canvas>
                                 <div class="chart-text">
                                     <span class="chart-title">Availability</span>
                                     <span class="chart-percentage text-bold"
-                                        id="availabilityPercentage{{ $data['id'] }}"></span>
+                                        id="availabilityPercentage{{ $loop->index }}"></span>
                                 </div>
                             </div>
                         </div>
@@ -130,26 +141,26 @@
                             <div class="card-body">
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Total Quantity</h5>
-                                    <span class="description-text text-bold" id="textTotalQuantity{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textTotalQuantity{{ $loop->index }}">
                                     </span>
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Good Quantity</h5>
-                                    <span class="description-text text-bold" id="textGoodQuantity{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textGoodQuantity{{ $loop->index }}">
                                     </span>
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Not Good</h5>
-                                    <span class="description-text text-bold" id="textRejectedQuantity{{ $data['id'] }}">
+                                    <span class="description-text text-bold" id="textRejectedQuantity{{ $loop->index }}">
                                     </span>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <canvas id="qualityChart{{ $data['id'] }}" width="200" height="200"></canvas>
+                                <canvas id="qualityChart{{ $loop->index }}" width="200" height="200"></canvas>
                                 <div class="chart-text">
                                     <span class="chart-title">Quality</span>
                                     <span class="chart-percentage text-bold"
-                                        id="qualityPercentage{{ $data['id'] }}"></span>
+                                        id="qualityPercentage{{ $loop->index }}"></span>
                                 </div>
                             </div>
                         </div>
@@ -163,6 +174,7 @@
     </div>
 </div>
 @endforeach
+
 <style>
     .card-footer {
         position: relative;
@@ -179,7 +191,7 @@
         text-align: center;
         z-index: 1;
     }
-    
+
     .oee-text {
         position: absolute;
         top: 50%;
@@ -202,6 +214,7 @@
 
     .oee-value {
         font-size: 20px;
+        font-weight: bold;
     }
 
     .card-body {
@@ -212,34 +225,52 @@
 
 @section('adminlte_js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.full.min.js">
-</script>
 <script>
+    var getData = @json($getData);
+    console.log(getData);
     var performanceCharts = [];
     var availabilityCharts = [];
     var qualityCharts = [];
     var oeeCharts = []
 
     $(document).ready(function() {
-        @foreach ($getData as $data)
-        var data{{ $data['id'] }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
+
+        $("#searchButton").click(function() {
+            var searchText = $("#searchInput").val().toLowerCase();
+
+            // Loop melalui setiap kartu
+            $(".col-lg-3").each(function() {
+                var cardTitle = $(this).find(".card-title").text().toLowerCase();
+                var card = $(this);
+
+                // Periksa apakah judul kartu cocok dengan teks pencarian
+                if (cardTitle.includes(searchText)) {
+                    card.show(); // Tampilkan kartu jika cocok
+                } else {
+                    card.hide(); // Sembunyikan kartu jika tidak cocok
+                }
+            });
+        });
+
+        @foreach($getData as $kelompok => $data)
+        var data{{ $loop->index }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
+        console.log('data{{ $loop->index }}', data{{ $loop->index }});
 
             // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
-            createPerformanceChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-            createAvailabilityChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-            createQualityChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-            createOeeChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
+            createPerformanceChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            createAvailabilityChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            createQualityChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            createOeeChart(data{{ $loop->index }}, "{{ $loop->index }}");
 
             // Mengisi teks pada elemen-elemen dengan ID yang unik
-            $('#textTargetQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.target_quantity);
-            $('#textActualQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.quantity);
-            $('#textTotalTime{{ $data['id'] }}').text(formatTimeToMinutes(data{{ $data['id'] }}.operating_time));
-            $('#textActualRuntime{{ $data['id'] }}').text(formatTimeToMinutes(data{{ $data['id'] }}.actual_time));
-            $('#textDownTime{{ $data['id'] }}').text(formatTimeToMinutes(data{{ $data['id'] }}.down_time));
-            $('#textTotalQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.quantity);
-            $('#textGoodQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.finish_good);
-            $('#textRejectedQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.reject);
+            $('#textTargetQuantity{{ $loop->index }}').text(data{{ $loop->index }}.target_quantity);
+            $('#textActualQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
+            $('#textTotalTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.operating_time));
+            $('#textActualRuntime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.actual_time));
+            $('#textDownTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.down_time));
+            $('#textTotalQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
+            $('#textGoodQuantity{{ $loop->index }}').text(data{{ $loop->index }}.finish_good);
+            $('#textRejectedQuantity{{ $loop->index }}').text(data{{ $loop->index }}.reject);
         @endforeach
     });
 
@@ -254,8 +285,62 @@
         return totalMinutes + ' Minutes';
     }
 
-    function createPerformanceChart(data, id) {
-        var performanceChartCanvas = document.getElementById('performanceChart' + id).getContext('2d');
+    function createOeeChart(data, loopIndex) {
+        var oeeChartCanvas = document.getElementById('oeeChart' + loopIndex).getContext('2d');
+        var totalTarget = data.target_quantity;
+        var actualQuantity = data.quantity;
+        var actualPercentage = (actualQuantity / totalTarget) * 100;
+
+        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
+        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
+        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
+        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
+
+        var totalGood = data.finish_good;
+        var totalRejected = data.reject;
+        var total = totalGood + totalRejected;
+        var goodPercentage = (totalGood / total) * 100;
+
+        var oeePercentage = (actualPercentage + actualTimePercentage + goodPercentage) / 3;
+        oeePercentage = oeePercentage.toFixed(2);
+
+        var oeeChartData = {
+            datasets: [{
+                data: [oeePercentage, 100 - oeePercentage],
+                backgroundColor: ['#1D5D9B', '#E21818']
+            }],
+            // labels: [oeePercentage + '%', (100 - oeePercentage) + '%']   
+        };
+
+        var oeeChart = new Chart(oeeChartCanvas, {
+            type: 'doughnut',
+            data: oeeChartData,
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    datalabels: false,
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        var oeeValueText = document.getElementById('oee-value' + loopIndex);
+        oeeValueText.textContent = oeePercentage + '%';
+
+        // if (parseFloat(oeePercentage) > 85.00) {
+        //     oeeValueText.style.color = '#1ce34a'; // Mengubah warna teks menjadi hijau
+        // } else {
+        //     oeeValueText.style.color = ''; // Menghapus pengaturan warna teks jika tidak memenuhi kondisi
+        // }
+
+        oeeCharts.push(oeeChart);
+    }
+
+    function createPerformanceChart(data, loopIndex) {
+        var performanceChartCanvas = document.getElementById('performanceChart' + loopIndex).getContext('2d');
         var totalTarget = data.target_quantity;
         var actualQuantity = data.quantity;
         var targetPercentage = (actualQuantity / totalTarget) * 100;
@@ -289,16 +374,16 @@
         });
         
         var performancePercentage = parseFloat(actualPercentage);
-        $('#performancePercentage' + id).text(performancePercentage.toFixed(2) + '%');
+        $('#performancePercentage' + loopIndex).text(performancePercentage.toFixed(2) + '%');
         var textPerformance = parseFloat(actualPercentage);
-        $('#textPerformancePercentage' + id).text(textPerformance.toFixed(2) + '%');
+        $('#textPerformancePercentage' + loopIndex).text(textPerformance.toFixed(2) + '%');
 
         // Simpan instance grafik performa dalam array
         performanceCharts.push(performanceChart);
     }
 
-    function createAvailabilityChart(data, id) {
-        var availabilityChartCanvas = document.getElementById('availabilityChart' + id).getContext('2d');
+    function createAvailabilityChart(data, loopIndex) {
+        var availabilityChartCanvas = document.getElementById('availabilityChart' + loopIndex).getContext('2d');
         if (window.availabilityChart) {
             window.availabilityChart.destroy();
         }
@@ -328,7 +413,7 @@
         });
 
         var availabilityPercentage = parseFloat(actualTimePercentage);
-        $('#availabilityPercentage' + id).text(availabilityPercentage.toFixed(2) + '%');
+        $('#availabilityPercentage' + loopIndex).text(availabilityPercentage.toFixed(2) + '%');
 
         // Simpan instance grafik dalam array
         availabilityCharts.push(availabilityChart);
@@ -342,8 +427,8 @@
         return totalSeconds;
     }
 
-    function createQualityChart(data, id) {
-        var qualityChartCanvas = document.getElementById('qualityChart' + id).getContext('2d');
+    function createQualityChart(data, loopIndex) {
+        var qualityChartCanvas = document.getElementById('qualityChart' + loopIndex).getContext('2d');
         var totalGood = data.finish_good;
         var totalRejected = data.reject;
         var total = totalGood + totalRejected;
@@ -371,57 +456,10 @@
         });
 
         var qualityPercentage = parseFloat(goodPercentage);
-        $('#qualityPercentage' + id).text(qualityPercentage.toFixed(2) + '%');
+        $('#qualityPercentage' + loopIndex).text(qualityPercentage.toFixed(2) + '%');
 
         // Simpan instance grafik dalam array
         qualityCharts.push(qualityChart);
-    }
-
-    function createOeeChart(data, id) {
-        var oeeChartCanvas = document.getElementById('oeeChart' + id).getContext('2d');
-        var totalTarget = data.target_quantity;
-        var actualQuantity = data.quantity;
-        var actualPercentage = (actualQuantity / totalTarget) * 100;
-
-        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
-        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
-        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
-        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
-
-        var totalGood = data.finish_good;
-        var totalRejected = data.reject;
-        var total = totalGood + totalRejected;
-        var goodPercentage = (totalGood / total) * 100;
-
-        var oeePercentage = (actualPercentage + actualTimePercentage + goodPercentage) / 3;
-        oeePercentage = oeePercentage.toFixed(2);
-
-        var oeeChartData = {
-            datasets: [{
-                data: [oeePercentage, 100 - oeePercentage],
-                backgroundColor: ['#1A508B', '#E21818']
-            }]
-        };
-
-        var oeeChart = new Chart(oeeChartCanvas, {
-            type: 'doughnut',
-            data: oeeChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                plugins: {
-                    datalabels: false,
-                },
-                legend: {
-                    display: false
-                }
-            }
-        });
-
-        var oeeValueText = document.getElementById('oee-value' + id);
-        oeeValueText.textContent = oeePercentage + '%';
-
-        oeeCharts.push(oeeChart);
     }
 
 </script>

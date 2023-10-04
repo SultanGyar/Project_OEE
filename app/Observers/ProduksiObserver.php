@@ -15,6 +15,7 @@ class ProduksiObserver
     {
         // Ambil nilai proses, quantity, finish_good, reject, dan tanggal dari entri Produksi yang baru dibuat
         $proses = $produksi->proses;
+        $kelompokan = $produksi->kelompokan;
         $target_quantity = $produksi->target_quantity;
         $quantity = $produksi->quantity;
         $finish_good = $produksi->finish_good;
@@ -49,6 +50,7 @@ class ProduksiObserver
             // Buat entri baru di tabel Data_produksi
             DataProduksi::create([
                 'proses' => $proses,
+                'kelompokan' => $kelompokan,
                 'target_quantity' => $target_quantity,
                 'quantity' => $quantity,
                 'finish_good' => $finish_good,

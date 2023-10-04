@@ -109,7 +109,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
             'alt' => 'AdminLTE Preloader Image',
@@ -154,7 +154,7 @@ return [
     'layout_boxed' => null,
     'layout_fixed_sidebar' => true,
     'layout_fixed_navbar' => true,
-    'layout_fixed_footer' => null,
+    'layout_fixed_footer' => true,
     'layout_dark_mode' => null,
 
     /*
@@ -323,40 +323,54 @@ return [
         ],
 
         [
-            'header' => 'Informasi Produksi',
+            'text' => 'Informasi Produksi',
             'can' => 'admin-only',
+            'icon' => 'fa angle-left right',
+            'submenu' => [
+
+                [
+                    'text' => 'Daftar Proses',
+                    'url' => '/proses',
+                    'icon' => 'fa fa-arrow-alt-circle-right',
+                    'can' => 'admin-only',
+                ],
+                [
+                    'text' => 'Daftar Keterangan',
+                    'url' => '/tbketerangan',
+                    'icon' => 'fa fa-arrow-alt-circle-right',
+                    'can' => 'admin-only',
+                ],
+                [
+                    'text' => 'Daftar Kelompok',
+                    'url' => '/kelompok',
+                    'icon' => 'fa fa-arrow-alt-circle-right',
+                    'can' => 'admin-only',
+                ],
+            ],
         ],
         
         [
-            'text' => 'Daftar Proses',
-            'url' => '/proses',
-            'icon' => 'fa fa-list',
-            'can' => 'admin-only',
-        ],
-        [
-            'text' => 'Daftar Keterangan',
-            'url' => '/tbketerangan',
-            'icon' => 'fa fa-clipboard',
-            'can' => 'admin-only',
-        ],
-        [
-            'header' => 'Laporan Produksi',
-        ],
-        [
-            'text' => 'Target Quantity',
-            'url' => '/target',
-            'icon' => 'fa fa-table',
-            'can' => 'admin-only',
-        ],
-        [
-            'text' => 'Produksi Harian',
-            'url' => '/produksi',
-            'icon' => 'fa fa-warehouse',
-        ],
-        [
-            'text' => 'Produksi Bulanan',
-            'url' => '/data_produksi',
-            'icon' => 'fa fa-folder-open',
+            'text' => 'Laporan Produksi',
+            'icon' => 'fa angle-left right',
+            'submenu' => [
+
+                [
+                    'text' => 'Target Quantity',
+                    'url' => '/target',
+                    'icon' => 'fa fa-tachometer-alt',
+                    'can' => 'admin-only',
+                ],
+                [
+                    'text' => 'Produksi Harian',
+                    'url' => '/produksi',
+                    'icon' => 'fa fa-warehouse',
+                ],
+                [
+                    'text' => 'Produksi Bulanan',
+                    'url' => '/data_produksi',
+                    'icon' => 'fa fa-folder-open',
+                ],
+            ],
         ],
 
     ],

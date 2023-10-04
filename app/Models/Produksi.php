@@ -14,6 +14,7 @@ class Produksi extends Model
     protected $fillable = [
         'nama_operator',
         'proses',
+        'kelompokan',
         'target_quantity',
         'target_id',
         'quantity',
@@ -57,8 +58,8 @@ class Produksi extends Model
         return $this->belongsTo(User::class, 'nama_operator', 'id');
     }
 
-    public function fproses(){
-        return $this->belongsTo(Proses::class, 'proses', 'daftarproses');
+    public function fkelompok(){
+        return $this->belongsTo(Kelompok::class, 'proses', 'proses_kelompok');
     }
 
     public function ftbketerangan(){

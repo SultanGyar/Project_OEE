@@ -51,6 +51,7 @@
                                     <th>No.</th>
                                     <th>Operator</th>
                                     <th>Proses</th>
+                                    <th>Kelompok</th>
                                     <th>Tanggal</th>
                                     <th>Target Quantity</th>
                                     <th>Actual Quantity</th>
@@ -85,23 +86,24 @@
                                     <td>{{ $no }}</td>
                                     <td>{{ $item->fuser->name }}</td>
                                     <td>{{ $item->proses }}</td>
+                                    <td>{{ $item->kelompokan }}</td>
                                     <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{ $item->target_quantity }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->finish_good }}</td>
                                     <td>{{ $item->reject }}</td>
                                     <td>{{ $item->keterangan }}</td>
-                                    <td>{{ formatDate($item->operating_time) }}</td>
-                                    <td>{{ formatDate($item->actual_time) }}</td>
-                                    <td>{{ formatDate($item->down_time) }}</td>
-                                    <td>{{ formatDate($item->a_time) }}</td>
-                                    <td>{{ formatDate($item->b_time) }}</td>
-                                    <td>{{ formatDate($item->c_time) }}</td>
-                                    <td>{{ formatDate($item->d_time) }}</td>
-                                    <td>{{ formatDate($item->e_time) }}</td>
-                                    <td>{{ formatDate($item->f_time) }}</td>
-                                    <td>{{ formatDate($item->g_time) }}</td>
-                                    <td>{{ formatDate($item->h_time) }}</td>
+                                    <td>{{ formatTime($item->operating_time) }}</td>
+                                    <td>{{ formatTime($item->actual_time) }}</td>
+                                    <td>{{ formatTime($item->down_time) }}</td>
+                                    <td>{{ formatTime($item->a_time) }}</td>
+                                    <td>{{ formatTime($item->b_time) }}</td>
+                                    <td>{{ formatTime($item->c_time) }}</td>
+                                    <td>{{ formatTime($item->d_time) }}</td>
+                                    <td>{{ formatTime($item->e_time) }}</td>
+                                    <td>{{ formatTime($item->f_time) }}</td>
+                                    <td>{{ formatTime($item->g_time) }}</td>
+                                    <td>{{ formatTime($item->h_time) }}</td>
                                     <td>
                                     <a href="{{route('produksi.destroy', $item)}}"
                                             onclick="notificationBeforeDelete(event, this)"
@@ -165,7 +167,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php $no = 1; @endphp
+                                    @php
+                                    $no = 1; // Inisialisasi nomor urut
+                                    @endphp
                                     @foreach($produksi as $key => $item)
                                     @php
                                     $dataTanggal = date('Y-m-d', strtotime($item->tanggal)); // Ambil tanggal dari data
@@ -181,17 +185,17 @@
                                         <td>{{ $item->target_quantity }}</td>
                                         <td>{{ $item->quantity }}</td>
                                         @elseif ($header == 'Availability')
-                                        <td>{{ formatDate($item->operating_time) }}</td>
-                                        <td>{{ formatDate($item->actual_time) }}</td>
-                                        <td>{{ formatDate($item->down_time) }}</td>
-                                        <td>{{ formatDate($item->a_time) }}</td>
-                                        <td>{{ formatDate($item->b_time) }}</td>
-                                        <td>{{ formatDate($item->c_time) }}</td>
-                                        <td>{{ formatDate($item->d_time) }}</td>
-                                        <td>{{ formatDate($item->e_time) }}</td>
-                                        <td>{{ formatDate($item->f_time) }}</td>
-                                        <td>{{ formatDate($item->g_time) }}</td>
-                                        <td>{{ formatDate($item->h_time) }}</td>
+                                        <td>{{ formatTime($item->operating_time) }}</td>
+                                        <td>{{ formatTime($item->actual_time) }}</td>
+                                        <td>{{ formatTime($item->down_time) }}</td>
+                                        <td>{{ formatTime($item->a_time) }}</td>
+                                        <td>{{ formatTime($item->b_time) }}</td>
+                                        <td>{{ formatTime($item->c_time) }}</td>
+                                        <td>{{ formatTime($item->d_time) }}</td>
+                                        <td>{{ formatTime($item->e_time) }}</td>
+                                        <td>{{ formatTime($item->f_time) }}</td>
+                                        <td>{{ formatTime($item->g_time) }}</td>
+                                        <td>{{ formatTime($item->h_time) }}</td>
                                         @else
                                         <td>{{ $item->quantity }}</td>
                                         <td>{{ $item->finish_good }}</td>
@@ -218,7 +222,7 @@
 @stop
 
 @php
-function formatDate($time) {
+function formatTime($time) {
 $formattedTime = '';
 
 if ($time) {
@@ -232,7 +236,7 @@ $totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
 
 // Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
 if ($totalMinutes !== 0) {
-$formattedTime = "{$totalMinutes} Menit";
+$formattedTime = "{$totalMinutes} Minutes";
 }
 }
 

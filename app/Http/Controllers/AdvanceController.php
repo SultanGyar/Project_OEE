@@ -8,25 +8,43 @@ use Illuminate\Http\Request;
 class AdvanceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Create a new controller instance.
+     *
+     * @return void
      */
-    public function index()
+    public function __construct()
     {
-        $getData = $this->getProsesData();
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function index(Request $request)
+    {
+        $selectedMonth = $request->input('filterMonth'); // Ambil bulan yang dipilih dari form
+
+        $getData = $this->getProsesData('array', $selectedMonth);
+        
         return view('advance', [
-            'getData' => $getData
+            'getData' => $getData,
+            'selectedMonth' => $selectedMonth, // Kirim bulan yang dipilih ke tampilan
         ]);
     }
 
-    public function getProsesData($format = 'array')
+    public function getProsesData($format = 'array', $selectedMonth = null)
     {
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-    
-        $data = DataProduksi::whereYear('tanggal', $currentYear)
-            ->whereMonth('tanggal', $currentMonth)
+        // Menggunakan bulan yang dipilih jika disediakan, jika tidak, menggunakan bulan dan tahun saat ini
+        if (!$selectedMonth) {
+            $selectedMonth = date('Y-m');
+        }
+
+        $data = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))
+            ->whereMonth('tanggal', substr($selectedMonth, 5, 2))
             ->get();
-    
+
         if ($data->isEmpty()) {
             if ($format === 'json') {
                 return response()->json(['error' => 'No data available']);
@@ -34,9 +52,9 @@ class AdvanceController extends Controller
                 return []; // Return an empty array when no data is available
             }
         }
-    
+
         $responseData = [];
-        
+
         foreach ($data as $entry) {
             $responseData[] = [
                 'id' => $entry->id,
@@ -50,11 +68,12 @@ class AdvanceController extends Controller
                 'reject' => $entry->reject,
             ];
         }
-    
+
         if ($format === 'json') {
             return response()->json($responseData);
         } else {
             return $responseData;
         }
     }
+    
 }

@@ -13,6 +13,7 @@ class DataProduksi extends Model
 
     protected $fillable = [
         'proses',
+        'kelompokan',
         'target_quantity',
         'quantity',
         'finish_good',

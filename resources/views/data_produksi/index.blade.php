@@ -33,8 +33,8 @@
                             $selectedMonth = request('filterMonth', $currentDate);
                             @endphp
                             <label for="filterMonth" class="mr-1">Pilih :</label>
-                            <input type="month" class="form-control" id="filterMonth" style="width: 55%" name="filterMonth"
-                                value="{{ $selectedMonth }}" max="{{ $currentDate }}">
+                            <input type="month" class="form-control" id="filterMonth" style="width: 55%"
+                                name="filterMonth" value="{{ $selectedMonth }}" max="{{ $currentDate }}">
                             <button type="submit" class="btn btn-info ml-2">Submit</button>
                         </form>
                         <button id="exportOptions" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
@@ -49,7 +49,7 @@
                                 <i class="fas fa-print"></i> Print
                             </a>
                         </div>
-                        
+
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered table-striped" style="width:100%" id="example2">
@@ -57,6 +57,7 @@
                                 <tr style="text-align: center; background-color: #069eb5;">
                                     <th>No.</th>
                                     <th>Proses</th>
+                                    <th>Kelompok</th>
                                     <th>Target Quantity</th>
                                     <th>Actual Quantity</th>
                                     <th>Good Quality</th>
@@ -71,24 +72,25 @@
                                 @php
                                 $no = 1; // Inisialisasi nomor urut
                                 @endphp
-                                @foreach($data_produksi as $key => $data_produksi)
+                                @foreach($data_produksi as $key => $data)
                                 @php
-                                $dataBulan = strtolower(date('F', strtotime($data_produksi->tanggal)));
+                                $dataBulan = strtolower(date('F', strtotime($data->tanggal)));
                                 $filterBulan = strtolower(date('F', strtotime($selectedMonth)));
                                 @endphp
 
                                 @if($dataBulan === $filterBulan)
                                 <tr class="data-row" data-bulan="{{ $dataBulan }}">
                                     <td>{{$no}}</td>
-                                    <td>{{$data_produksi->proses}}</td>
-                                    <td>{{$data_produksi->target_quantity}}</td>
-                                    <td>{{$data_produksi->quantity}}</td>
-                                    <td>{{$data_produksi->finish_good}}</td>
-                                    <td>{{$data_produksi->reject}}</td>
-                                    <td>{{ formatDate($data_produksi->operating_time) }}</td>
-                                    <td>{{ formatDate($data_produksi->actual_time) }}</td>
-                                    <td>{{ formatDate($data_produksi->down_time) }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($data_produksi->tanggal)->format('F, Y') }}</td>
+                                    <td>{{$data->proses}}</td>
+                                    <td>{{$data->kelompokan}}</td>
+                                    <td>{{$data->target_quantity}}</td>
+                                    <td>{{$data->quantity}}</td>
+                                    <td>{{$data->finish_good}}</td>
+                                    <td>{{$data->reject}}</td>
+                                    <td>{{ formatTime($data->operating_time) }}</td>
+                                    <td>{{ formatTime($data->actual_time) }}</td>
+                                    <td>{{ formatTime($data->down_time) }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($data->tanggal)->format('F, Y') }}</td>
                                 </tr>
                                 @php
                                 $no++;
@@ -104,23 +106,23 @@
     </div>
 </div>
 @php
-    function formatDate($time) {
-        $formattedTime = '';
-        if ($time) {
-        $timeComponents = explode(':', $time);
-        $hours = intval($timeComponents[0]);
-        $minutes = intval($timeComponents[1]);
-        $seconds = intval($timeComponents[2]);
+function formatTime($time) {
+$formattedTime = '';
+if ($time) {
+$timeComponents = explode(':', $time);
+$hours = intval($timeComponents[0]);
+$minutes = intval($timeComponents[1]);
+$seconds = intval($timeComponents[2]);
 
-        $totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
+$totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
 
-        // Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
-        if ($totalMinutes !== 0) {
-        $formattedTime = "{$totalMinutes} Menit";
-        }
-    }
+// Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
+if ($totalMinutes !== 0) {
+$formattedTime = "{$totalMinutes} Minutes";
+}
+}
 
-    return $formattedTime;
+return $formattedTime;
 }
 @endphp
 @stop
@@ -137,6 +139,8 @@
 <script>
     $(document).ready(function () {
         var table = $('#example2').DataTable({
+            "responsive": true,
+            "scrollX": true,
             buttons: ["excel", "print"],
         });
 

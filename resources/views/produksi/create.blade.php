@@ -27,9 +27,8 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
                     <div class="form-group">
-                        <label for="target_quantity">Target Quantity</label>
+                        <label for="target_quantity">Target Quantity <span class="font-weight-normal">(Otomatis)</span></label>
                         <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
                             id="target_quantity" placeholder="Target Quantity" name="target_quantity"
                             value="{{ old('target_quantity') }}" readonly>
@@ -37,29 +36,38 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="kelompokan">Kelompok <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('kelompokan') is-invalid @enderror"
+                            id="kelompokan" placeholder="kelompok" name="kelompokan"
+                            value="{{ old('kelompokan') }}" readonly>
+                        @error('kelompokan')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
 
                     <div class="form-group">
                         <label for="proses">Nama Proses</label>
                         <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses" style="width: 100%">
-                            <option value="" selected disabled>Pilih Proses</option>
+                            <option value="" selected disabled>Pilih Proses..</option>
                             @foreach ($dataproses as $value => $label)
-                                <option value="{{ $value }}" @if (old('proses') == $value) selected @endif>{{ $label }}</option>
+                            <option value="{{ $value }}" @if (old('proses') == $value) selected @endif>{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('proses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>                    
-                    
+                    </div>                 
+
                     <div class="form-group">
                         <label for="quantity">Actual Quantity</label>
                         <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity"
-                            placeholder="Quantity" name="quantity" value="{{ old('quantity') }}">
+                            placeholder="Actual Quantity" name="quantity" value="{{ old('quantity') }}">
                         @error('quantity')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
+    
                     <div class="form-group">
                         <label for="finish_good">Good Quality</label>
                         <input type="number" class="form-control @error('finish_good') is-invalid @enderror"
@@ -79,9 +87,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="keterangan">Keterangan</label>
+                        <label for="keterangan">Keterangan Not Good</label>
                         <select class="form-control mb-10 @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" style="width: 100%">
-                            <option value="" selected disabled>Pilih Keterangan</option>
+                            <option value="" selected disabled>Pilih Keterangan..</option>
                             @foreach ($dataketerangan as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
@@ -384,6 +392,7 @@
                         <input type="time" class="form-control @error('down_time') is-invalid @enderror" id="down_time"
                             placeholder="Down Time" name="down_time" value="{{ old('down_time') }}" readonly>
                     </div>
+
                     <div class="form-group">
                         <label for="actual_time">Actual Time</label>
                         <input type="time" class="form-control @error('actual_time') is-invalid @enderror"
@@ -393,6 +402,7 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <div class="card-footer">
                         <button type="submit" class="btn btn-info">Simpan</button>
                         <a href="{{ route('produksi.index') }}" class="btn btn-danger">Batal</a>
@@ -440,29 +450,37 @@
     // Panggil fungsi saat halaman pertama kali dimuat
     autoFillTargetQuantity();
 
+    function autoFillKelompokan() {
+        var selectedProses = $('#proses').val();
 
-    $(document).ready(function () {
-    // Variabel untuk perhitungan Total
-    const inputQuantity = $('#quantity');
-    const inputFinishGood = $('#finish_good');
-    const inputReject = $('#reject');
-    const inputTotal = $('#total');
-
-    // Event listener saat input Quantity, Finish Good, dan Reject berubah
-    inputQuantity.on('input', hitungTotal);
-    inputFinishGood.on('input', hitungTotal);
-    inputReject.on('input', hitungTotal);
-
-    // Fungsi untuk menghitung Total
-    function hitungTotal() {
-        const quantity = parseInt(inputQuantity.val()) || 0;
-        const finish_good = parseInt(inputFinishGood.val()) || 0;
-        const reject = parseInt(inputReject.val()) || 0;
-
-        const total = finish_good + reject;
-        inputTotal.val(total);
+        // Kirim permintaan AJAX ke server untuk mendapatkan data kelompok
+        $.ajax({
+            url: '/get-kelompok-data', // Ubah menjadi route yang sesuai
+            method: 'GET',
+            data: {
+                proses: selectedProses,
+            },
+            success: function (response) {
+                if (response.success) {
+                    var kelompokan = response.kelompokan;
+                    $('#kelompokan').val(kelompokan);
+                } else {
+                    $('#kelompokan').val('');
+                }
+            },
+            error: function () {
+                $('#kelompokan').val(''); // Handle error dengan mengosongkan nilai kelompokan
+            },
+        });
     }
+
+    // Panggil fungsi autoFillKelompokan setiap kali nilai 'proses' berubah
+    $('#proses').on('change', function () {
+        autoFillKelompokan();
     });
+
+    // Panggil fungsi saat halaman pertama kali dimuat
+    autoFillKelompokan();
 
 
     // Button Show and Hide
@@ -511,6 +529,7 @@
 
     
     document.addEventListener('DOMContentLoaded', function () {
+
         // Fungsi untuk menghitung durasi waktu
         function calculateTimeDuration(startInputId, endInputId, durationInputId) {
             const startTimeInput = document.getElementById(startInputId);

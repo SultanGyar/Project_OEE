@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'Dashboard')
 
 @section('content_header')
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+<div class="d-flex flex-wrap justify-content-between align-items-center">
     <h2>Overall Equipment Effectiveness</h2>
     <form id="filterForm" method="get" class="form-inline">
         @php
@@ -11,7 +11,7 @@
         $selectedMonth = request('filterMonth', $currentMonth); // Ambil bulan terpilih
         @endphp
         <div class="d-flex align-items-center">
-            <label for="filterMonth" class="mr-2 mb-2 mb-md-0" style="flex: 0 0 auto;">Bulan:</label>
+            <label for="filterMonth" class="mr-2 mb-2 mb-md-0" style="flex: 0 0 auto;">Month:</label>
             <input type="month" class="form-control" id="filterMonth" name="filterMonth" value="{{ $selectedMonth }}"
                 max="{{ $currentMonth }}">
             <button type="submit" class="btn btn-info ml-2">Submit</button>
@@ -21,15 +21,24 @@
 @stop
 
 @section('content')
+<div class="col-md-8 offset-md-2">
+    <div class="input-group input-group-md mb-3">
+        <input type="search" class="form-control form-control-md" placeholder="Search OEE..." id="searchInput">
+        <div class="input-group-append">
+            <button type="button" class="btn btn-md btn-default" id="searchButton">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+</div> 
 <div class="row">
     @foreach ($getData as $data)
-    <div class="col-lg-3 col-md-6 col-xs-6">
-        <div class="card border card-info shadow-lg">
-            <div class="card-header d-flex justify-content-between align-items-center"
+    <div class="col-lg-3 col-md-4 col-sm-6" id="oeeCard{{ $data['id'] }}" >
+        <div class="card card-info border shadow-lg">
+            <div class="card-header d-flex justify-content-between align-items-center bg-gradient-gray-dark"
                 style="padding-top: 3px; padding-bottom: 3px;">
                 <div class="card-title" style="font-size: 15px">{{ $data['proses'] }}</div>
-                <a class="btn btn-link ml-auto" data-toggle="modal"
-                    data-target="#chartModal{{ $data['id'] }}">detail</a>
+                <a class="btn btn-link ml-auto" data-toggle="modal" data-target="#chartModal{{ $data['id'] }}">View</a>
             </div>
             <div class="card-body position-relative">
                 <canvas id="oeeChart{{ $data['id'] }}" width="200" height="200"></canvas>
@@ -46,7 +55,7 @@
 
 @foreach ($getData as $data)
 <div class="modal fade" id="chartModal{{ $data['id'] }}" tabindex="-1" role="dialog"
-    aria-labelledby="chartModalLabel{{ $data['id'] }}" aria-hidden="true">
+    aria-labelledby="chartModalLabel{{ $data['id'] }}" aria-hidden="true" >
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -163,6 +172,7 @@
     </div>
 </div>
 @endforeach
+
 <style>
     .card-footer {
         position: relative;
@@ -178,38 +188,6 @@
         transform: translate(-50%, -50%);
         text-align: center;
         z-index: 1;
-    }
-
-    .chart-title {
-        font-size: 15px;
-        font-weight: bold;
-    }
-
-
-    .oee-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        z-index: 1;
-        /* Add z-index to ensure the text is displayed above the canvas */
-    }
-
-    .oee-title {
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    .oee-line {
-        width: 50px;
-        height: 2px;
-        background-color: #000;
-        margin: 10px auto;
-    }
-
-    .oee-value {
-        font-size: 18px;
     }
 
     .oee-text {
@@ -229,32 +207,22 @@
         width: 70px;
         height: 3px;
         background-color: #000;
-        margin: 10px auto;
+        margin: 5px auto;
     }
 
     .oee-value {
-        font-size: 25px;
+        font-size: 20px;
+        font-weight: bold;
     }
 
     .card-body {
         padding: 10px;
-    }
-
-    .description-header {
-        margin-bottom: 0;
-    }
-
-    .description-text {
-        margin-top: 0;
     }
 </style>
 @stop
 
 @section('adminlte_js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.full.min.js">
-</script>
 <script>
     var performanceCharts = [];
     var availabilityCharts = [];
@@ -262,8 +230,27 @@
     var oeeCharts = []
 
     $(document).ready(function() {
+
+        $("#searchButton").click(function() {
+            var searchText = $("#searchInput").val().toLowerCase();
+
+            // Loop melalui setiap kartu
+            $(".col-lg-3").each(function() {
+                var cardTitle = $(this).find(".card-title").text().toLowerCase();
+                var card = $(this);
+
+                // Periksa apakah judul kartu cocok dengan teks pencarian
+                if (cardTitle.includes(searchText)) {
+                    card.show(); // Tampilkan kartu jika cocok
+                } else {
+                    card.hide(); // Sembunyikan kartu jika tidak cocok
+                }
+            });
+        });
+
         @foreach ($getData as $data)
         var data{{ $data['id'] }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
+        console.log('data{{ $data['id'] }}', data{{ $data['id'] }});
 
             // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
             createPerformanceChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
@@ -294,8 +281,60 @@
         return totalMinutes + ' Minutes';
     }
 
+    function createOeeChart(data, id) {
+        var oeeChartCanvas = document.getElementById('oeeChart' + id).getContext('2d');
+        var totalTarget = data.target_quantity;
+        var actualQuantity = data.quantity;
+        var actualPercentage = (actualQuantity / totalTarget) * 100;
+
+        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
+        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
+        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
+        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
+
+        var totalGood = data.finish_good;
+        var totalRejected = data.reject;
+        var total = totalGood + totalRejected;
+        var goodPercentage = (totalGood / total) * 100;
+
+        var oeePercentage = (actualPercentage + actualTimePercentage + goodPercentage) / 3;
+        oeePercentage = oeePercentage.toFixed(2);
+
+        var oeeChartData = {
+            datasets: [{
+                data: [oeePercentage, 100 - oeePercentage],
+                backgroundColor: ['#1D5D9B', '#E21818']
+            }]
+        };
+
+        var oeeChart = new Chart(oeeChartCanvas, {
+            type: 'doughnut',
+            data: oeeChartData,
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    datalabels: false,
+                },
+                legend: {
+                    display: false
+                }
+            }
+        });
+
+        var oeeValueText = document.getElementById('oee-value' + id);
+        oeeValueText.textContent = oeePercentage + '%';
+
+        // if (parseFloat(oeePercentage) > 85.00) {
+        //     oeeValueText.style.color = '#1ce34a'; // Mengubah warna teks menjadi hijau
+        // } else {
+        //     oeeValueText.style.color = ''; // Menghapus pengaturan warna teks jika tidak memenuhi kondisi
+        // }
+
+        oeeCharts.push(oeeChart);
+    }
+
     function createPerformanceChart(data, id) {
-        console.log('performancechart', data);
         var performanceChartCanvas = document.getElementById('performanceChart' + id).getContext('2d');
         var totalTarget = data.target_quantity;
         var actualQuantity = data.quantity;
@@ -416,54 +455,6 @@
 
         // Simpan instance grafik dalam array
         qualityCharts.push(qualityChart);
-    }
-
-    function createOeeChart(data, id) {
-        console.log('pd', data);
-        var oeeChartCanvas = document.getElementById('oeeChart' + id).getContext('2d');
-        var totalTarget = data.target_quantity;
-        var actualQuantity = data.quantity;
-        var actualPercentage = (actualQuantity / totalTarget) * 100;
-
-        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
-        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
-        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
-        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
-
-        var totalGood = data.finish_good;
-        var totalRejected = data.reject;
-        var total = totalGood + totalRejected;
-        var goodPercentage = (totalGood / total) * 100;
-
-        var oeePercentage = (actualPercentage + actualTimePercentage + goodPercentage) / 3;
-        oeePercentage = oeePercentage.toFixed(2);
-
-        var oeeChartData = {
-            datasets: [{
-                data: [oeePercentage, 100 - oeePercentage],
-                backgroundColor: ['#1A508B', '#E21818']
-            }]
-        };
-
-        var oeeChart = new Chart(oeeChartCanvas, {
-            type: 'doughnut',
-            data: oeeChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                plugins: {
-                    datalabels: false,
-                },
-                legend: {
-                    display: false
-                }
-            }
-        });
-
-        var oeeValueText = document.getElementById('oee-value' + id);
-        oeeValueText.textContent = oeePercentage + '%';
-
-        oeeCharts.push(oeeChart);
     }
 
 </script>

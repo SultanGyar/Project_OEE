@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelompok;
 use App\models\User;
 use App\Models\Produksi;
-use App\Models\Proses;
 use App\Models\TbKeterangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,8 +16,17 @@ class ProduksiController extends Controller
      */
     public function index()
     {
-        $produksi = Produksi::all();
-        return view('produksi.index', [
+        $user = auth()->user();
+    
+        if ($user->role === 'Operator') {
+            // Jika pengguna adalah operator, hanya tampilkan data produksi mereka sendiri
+            $produksi = Produksi::where('nama_operator', $user->id)->get();
+        } else {
+            // Jika pengguna bukan operator, tampilkan semua data produksi
+            $produksi = Produksi::all();
+        }
+    
+        return view('produksi.index',[
             'produksi' => $produksi
         ]);
     }
@@ -27,12 +36,12 @@ class ProduksiController extends Controller
      */
     public function create()
     {
-        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
+        $dataproses = Kelompok::pluck('proses_kelompok', 'proses_kelompok');
         $dataketerangan = TbKeterangan::pluck('daftarketerangan', 'daftarketerangan');
-        return view(
-            'produksi.create', compact('dataproses', 'dataketerangan'),
-            [  
-            'user' => User::all()
+        return view('produksi.create', [
+                'dataproses' => $dataproses,
+                'dataketerangan' => $dataketerangan,
+                'user' => User::all()
         ]);
     }
 
@@ -51,6 +60,21 @@ class ProduksiController extends Controller
             'target_quantity' => $targetQuantity
         ]);
     }
+
+    public function getKelompokData(Request $request)
+    {
+        $proses = $request->input('proses');
+
+        $getKelompok = DB::table('kelompok')
+        ->where('proses_kelompok', $proses)
+        ->value('nama_kelompok');
+
+        return response()->json([
+            'success' => true,
+            'kelompokan' => $getKelompok
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -60,10 +84,11 @@ class ProduksiController extends Controller
         $user = auth()->user();
         $request->validate([
             'proses' => 'required',
+            'kelompokan' => 'required',
             'target_quantity' => 'required',
             'quantity' => 'required',
             'finish_good' => 'required',
-            'reject' => 'required',
+            'reject' => 'nullable',
             'keterangan' => 'nullable',
             'tanggal' => 'required',
             'operating_start_time' => 'required',
@@ -96,8 +121,25 @@ class ProduksiController extends Controller
             'h_end_time' => 'nullable',
             'h_time' => 'nullable'
         ]);
+
+        $quantity = $request->input('quantity');
+        $finishGood = $request->input('finish_good');
+        $reject = $request->input('reject') ?? 0; // Jika reject tidak ada, maka dianggap 0.
+    
+        // Periksa apakah jumlah finish_good dan reject sama dengan quantity
+        if ($quantity != ($finishGood + $reject)) {
+            return redirect()
+                ->route('produksi.create') // Ubah ini sesuai dengan route untuk halaman create
+                ->withInput() // Mengembalikan input yang sudah diisi sebelumnya
+                ->withErrors([
+                    'finish_good' => 'Peringatan: Ketidaksesuaian dengan Actual Quantity',
+                    'reject' => 'Peringatan: Ketidaksesuaian dengan Actual Quantity',
+                ]);
+        }
+        
         $array = $request->only([
             'proses',
+            'kelompokan',
             'target_quantity',
             'quantity',
             'finish_good',
@@ -136,7 +178,7 @@ class ProduksiController extends Controller
         ]);
         $array['nama_operator'] = $user->id;
         $produksi = Produksi::create($array);
-        return redirect()->route('produksi.index')->with('success_message', 'Berhasil menambah produksi baru');
+        return redirect()->route('produksi.index')->with('success_message', 'Berhasil menambah data baru');
     }
 
     /**
