@@ -65,7 +65,7 @@
 <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('tbketerangan.store') }}" method="post">
+            <form action="{{ route('tbketerangan.store') }}" method="post" id="keteranganForm">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTambahLabel">Tambah Keterangan</h5>
@@ -75,8 +75,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarketerangan">Tambahkan Daftar Keterangan</label>
-                        <input type="text" class="form-control" id="daftarketerangan" name="daftarketerangan" required>
+                        <label for="daftarketerangan">Tambahkan Keterangan</label>
+                        <input type="text" class="form-control @error('daftarketerangan') is-invalid @enderror" id="daftarketerangan" 
+                        placeholder="Masukan keterangan" name="daftarketerangan" autofocus>
+                        @error('daftarketerangan') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -105,6 +107,7 @@
                     <div class="form-group">
                         <label for="daftarketerangan">Edit Daftar Keterangan</label>
                         <input type="text" class="form-control" id="daftarketerangan" name="daftarketerangan" value="{{ $data->daftarketerangan }}" required>
+                        @error('daftarketerangan') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -125,12 +128,18 @@
             "responsive": true,
         });
 
-        $('#modalTambah').on('show.bs.modal', function (event) {
-            $(this).find('form')[0].reset();
+        $('#modalTambah').on('hidden.bs.modal', function () {
+            $('#keteranganForm')[0].reset();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.text-danger').remove();
         });
 
-        // Fungsi untuk membuka modal edit
-        function openEditModal(id) {
+        if ($('.is-invalid').length > 0) {
+            $('#modalTambah').modal('show');
+        }
+
+         // Fungsi untuk membuka modal edit
+         function openEditModal(id) {   
             var modalId = '#modalEdit' + id;
             $(modalId).modal('show');
         }

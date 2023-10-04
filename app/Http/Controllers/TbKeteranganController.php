@@ -31,9 +31,14 @@ class TbKeteranganController extends Controller
      */
     public function store(Request $request)
     {
+        $message = [
+            'daftarketerangan.required' => 'Input tidak boleh kosong',
+            'daftarketerangan.unique' => 'Keterangan sudah terdaftar dalam sistem',
+        ];
+
         $request->validate([
-            'daftarketerangan' => 'required'
-        ]);
+            'daftarketerangan' => 'required|unique:tbketerangan,daftarketerangan'
+        ], $message);
     
         $daftarketerangan = $request->input('daftarketerangan');
 
