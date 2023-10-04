@@ -31,9 +31,14 @@ class ProsesController extends Controller
      */
     public function store(Request $request)
     {
+        $message = [
+            'daftarproses.required' => 'Nama Proses harus diisi',
+            'daftarproses.unique' => 'Proses sudah terdaftar dalam sistem',
+        ];
+
        $request->validate([
-        'daftarproses' => 'required'
-       ]);
+        'daftarproses' => 'required|unique:proses,daftarproses'
+       ], $message);
 
        $array = $request->only([
         'daftarproses',
@@ -61,9 +66,14 @@ class ProsesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'daftarproses.required' => 'Nama Proses harus diisi',
+            'daftarproses.unique' => 'Proses sudah terdaftar dalam sistem',
+        ];
+
         $request->validate([
-            'daftarproses' => 'required'
-        ]);
+            'daftarproses' => 'required|unique:proses,daftarproses'
+        ], $message);
 
         $proses = Proses::find($id);
         if (!$proses) {

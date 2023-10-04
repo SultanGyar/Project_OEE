@@ -69,7 +69,7 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('proses.store') }}" method="post">
+            <form action="{{ route('proses.store') }}" method="post" id="prosesForm">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTambahLabel">Tambah Proses</h5>
@@ -79,8 +79,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarproses">Tambahkan Daftar Proses</label>
-                        <input type="text" class="form-control" id="daftarproses" name="daftarproses" required>
+                        <label for="daftarproses">Tambahkan Proses</label>
+                        <input type="text" class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses" 
+                        placeholder="Masukan nama proses" name="daftarproses" autofocus>
+                        @error('daftarproses') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -91,6 +93,7 @@
         </div>
     </div>
 </div>
+
 @foreach($proses as $data)
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEdit{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel{{ $data->id }}" aria-hidden="true">
@@ -107,8 +110,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarproses">Edit Daftar Proses</label>
-                        <input type="text" class="form-control" id="daftarproses" name="daftarproses" value="{{ $data->daftarproses }}" required>
+                        <label for="daftarproses">Edit Proses</label>
+                        <input type="text" class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses" 
+                        placeholder="Masukan nama proses" name="daftarproses" value="{{ $data->daftarproses }}" autofocus>
+                        @error('daftarproses') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -129,12 +134,18 @@
             "responsive": true,
         });
         
-        $('#modalTambah').on('show.bs.modal', function (event) {
-            $(this).find('form')[0].reset();
+        $('#modalTambah').on('hidden.bs.modal', function () {
+            $('#prosesForm')[0].reset();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.text-danger').remove();
         });
 
+        if ($('.is-invalid').length > 0) {
+            $('#modalTambah').modal('show');
+        }
+
          // Fungsi untuk membuka modal edit
-         function openEditModal(id) {
+         function openEditModal(id) {   
             var modalId = '#modalEdit' + id;
             $(modalId).modal('show');
         }
