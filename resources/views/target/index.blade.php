@@ -42,7 +42,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="table">
+                    <div class="table-responsive"> 
                         <table class="table table-hover table-bordered table-striped" id="example2">
                             <thead>
                                 <tr style="text-align: center; background-color: #069eb5;">
@@ -60,16 +60,25 @@
                                 @if($dataTanggal === $selectedDate)
                                 <tr>
                                     <td>{{ $data->target_proses }}</td>
-                                    <td>{{ $data->tanggal_target }}</td>
+                                    <td>{{ date('d-F-Y', strtotime($data->tanggal_target)) }}</td>
                                     <td>{{ $data->target_quantity_byadmin }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
-                                            Edit
-                                        </a>
-                                        <a href="{{ route('target.destroy', $data) }}"
-                                            onclick="notificationBeforeDelete(event, this)" class="btn btn-danger btn-xs">
-                                            Delete
-                                        </a>
+                                        @php
+                                        $produksiData = App\Models\Produksi::where('proses', $data->target_proses)
+                                            ->where('tanggal', $dataTanggal)
+                                            ->first();
+                                        @endphp
+                                        @if (!$produksiData)
+                                            <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
+                                                Edit
+                                            </a>
+                                            <a href="{{ route('target.destroy', $data) }}" onclick="notificationBeforeDelete(event, this)"
+                                                class="btn btn-danger btn-xs">
+                                                Delete
+                                            </a>
+                                        @else
+                                            <span class="badge bg-success">Target sudah digunakan</span>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endif
@@ -82,6 +91,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Modal Tambah -->
 <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambahLabel"
@@ -113,7 +123,7 @@
                         <label for="tanggal_target">Tanggal</label>
                         <input type="date" class="form-control @error('tanggal_target') is-invalid @enderror"
                             id="tanggal_target" placeholder="tanggal_target" name="tanggal_target"
-                            value="{{ old('tanggal_target') ?? date('Y-m-d') }}" readonly>
+                            value="{{ old('tanggal_target') ?? date('Y-m-d') }}" >
                         @error('tanggal_target')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -207,13 +217,35 @@
 @endforeach
 
 @stop
+
+@php
+function formatDate($time) {
+$formattedTime = '';
+
+if ($time) {
+$timeComponents = explode(':', $time);
+$hours = intval($timeComponents[0]);
+$minutes = intval($timeComponents[1]);
+$seconds = intval($timeComponents[2]);
+
+// Menghitung total waktu dalam hitungan menit
+$totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
+
+// Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
+if ($totalMinutes !== 0) {
+$formattedTime = "{$totalMinutes} Menit";
+}
+}
+
+return $formattedTime;
+}
+@endphp
 @push('js')
 <script>
 
     $(document).ready(function () {
         $('#example2').DataTable({
             "responsive": true,
-            "scrollY" : true,
         });
 
         $('#modalTambah').on('show.bs.modal', function (event) {

@@ -38,7 +38,7 @@
 
         @error('name')
         <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
+            {{'Username atau kata sandi salah'}}
         </span>
         @enderror
     </div>
@@ -49,9 +49,6 @@
             placeholder="{{ __('adminlte::adminlte.password') }}" id="password-field">
     
         <div class="input-group-append">
-            <div class="input-group-text" id="toggle-password-button" style="cursor: pointer; display: none;">
-                <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span>
-            </div>
             <div class="input-group-text">
                 <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
@@ -87,28 +84,3 @@
 
 </form>
 @stop
-
-
-@push('js')
-<script>
-    const passwordField = document.getElementById("password-field");
-    const togglePasswordButton = document.getElementById("toggle-password-button");
-    const eyeIcon = togglePasswordButton.querySelector("span");
-
-    passwordField.addEventListener("input", function () {
-        togglePasswordButton.style.display = passwordField.value.length > 0 ? "block" : "none";
-    });
-
-    togglePasswordButton.addEventListener("click", function () {
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            eyeIcon.classList.toggle("fa-eye");
-            eyeIcon.classList.toggle("fa-eye-slash");
-        } else {
-            passwordField.type = "password";
-            eyeIcon.classList.toggle("fa-eye-slash");
-            eyeIcon.classList.toggle("fa-eye");
-        }
-    });
-</script>
-@endpush

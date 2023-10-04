@@ -86,23 +86,24 @@
                     <div class="form-group">
                         <label for="name">Nama</label>
                         <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name"
-                            placeholder="Masukan Nama" name="name" value="{{old('name')}}">
-                        @error('name') <span class="text-danger">{{'Nama pengguna sudah terdaftar dalam sistem'}}</span> @enderror
+                            placeholder="Masukan Nama" name="name" >
+                        @error('name') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                     <div class="form-group">
                         <label for="password">Kata Sandi</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
-                            placeholder="Masukan Kata Sandi" name="password">
-                        @error('password') <span class="text-danger">{{'Kata Sandi tidak cocok atau salah'}}</span> @enderror
+                            placeholder="Masukan Kata Sandi (min: 5)" name="password" minlength="5" autocomplete="off">
+                        @error('password') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-group">
                         <label for="password_confirmation">Konfirmasi Kata Sandi</label>
                         <input type="password" class="form-control" id="password_confirmation"
-                            placeholder="Konfirmasi Kata Sandi" name="password_confirmation">
+                            placeholder="Konfirmasi Kata Sandi (min: 5)" name="password_confirmation" minlength="5" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="role">Role</label>
                         <select class="form-control @error('role') is-invalid @enderror" id="role" name="role">
+                            <option disabled selected >Pilih Role</option>
                             <option value="Admin" @if(old('role')=='Admin' )selected @endif>Admin</option>
                             <option value="Operator" @if(old('role')=='Operator' )selected @endif>Operator</option>
                         </select>
@@ -120,13 +121,13 @@
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="checkbox" onclick="showingPassword()">
                         <label class="form-check-label" for="checkbox">
-                            <span id="checkboxText">Tampilkan Kata Sandi</span>
+                            <span id="checkboxText">Tampilkan</span>
                         </label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-info">Simpan</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" >Batal</button>
                 </div>
             </form>
         </div>
@@ -159,7 +160,7 @@
                     <div class="form-group">
                         <label for="edit_password_{{ $data->id }}">Password</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror" id="edit_password_{{ $data->id }}"
-                            placeholder="Password" name="password">
+                            placeholder="Password" name="password" minlength="5" autocomplete="off">
                         @error('password')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -167,7 +168,7 @@
                     <div class="form-group">
                         <label for="edit_password_confirmation_{{ $data->id }}">Konfirmasi Password</label>
                         <input type="password" class="form-control" id="edit_password_confirmation_{{ $data->id }}"
-                            placeholder="Konfirmasi Password" name="password_confirmation">
+                            placeholder="Konfirmasi Password" name="password_confirmation" minlength="5" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="edit_role_{{ $data->id }}">Role</label>
@@ -192,7 +193,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-info">Simpan</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Reset</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" >Batal</button>
                 </div>
             </form>
         </div>
@@ -209,20 +210,30 @@
             "scrollX": true,
         });
 
-        // // Fungsi untuk membuka modal edit
-        // function openEditModal(id) {
-        //     var modalId = '#modalEdit' + id;
-        //     $(modalId).modal('show');
-        // }
+        $('#modalTambah').on('hidden.bs.modal', function () {
+            $('#userForm')[0].reset();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.text-danger').remove();
+        });
 
-        // // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
-        // $('.btn-edit').click(function () {
-        //     var id = $(this).data('id');
-        //     openEditModal(id);
-        // });
+        if ($('.is-invalid').length > 0) {
+            $('#modalTambah').modal('show');
+        }
+
+        // Fungsi untuk membuka modal edit
+        function openEditModal(id) {
+            var modalId = '#modalEdit' + id;
+            $(modalId).modal('show');
+        }
+
+        // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
+        $('.btn-edit').click(function () {
+            var id = $(this).data('id');
+            openEditModal(id);
+        });
     });
+    
 
-   
 
     function showingPassword() {
         var passwordField = document.getElementById("password");
@@ -232,11 +243,11 @@
         if (checkbox.checked) {
             passwordField.type = "text";
             passwordConfirmationField.type = "text";
-            document.getElementById("checkboxText").innerText = "Sembunyikan Kata Sandi";
+            document.getElementById("checkboxText").innerText = "Sembunyikan";
         } else {
             passwordField.type = "password";
             passwordConfirmationField.type = "password";
-            document.getElementById("checkboxText").innerText = "Tampilkan Kata Sandi";
+            document.getElementById("checkboxText").innerText = "Tampilkan";
         }
     }
 

@@ -32,15 +32,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $message = [
+            'name.required' => 'Nama harus diisi',
+            'name.unique' => 'Nama sudah terdaftar dalam sistem',
+            'password.required' => 'Kata sandi harus diisi',
+            'password.confirmed' => 'Kata sandi tidak cocok'
+        ];
+
         $request->validate([
             'name' => 'required|unique:users,name',
             'password' => 'required|confirmed',
             'role' => 'required',
             'status' => 'required'
-        ]);
+        ], $message);
+
         $array = $request->only([
             'name', 'password', 'role', 'status'
         ]);
+
         $array['password'] = bcrypt($array['password']);
         $user = User::create($array);
         return redirect()->route('users.index')->with('success_message', 'Berhasil menambah user baru');
@@ -73,17 +82,23 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'name.required' => 'Nama harus diisi',
+            'name.unique' => 'Nama sudah terdaftar dalam sistem',
+            'password.required' => 'Kata sandi harus diisi',
+            'password.confirmed' => 'Kata sandi tidak cocok'
+        ];
         $request->validate([
             'name' => 'required|unique:users,name,' . $id,
             'password' => 'sometimes|nullable|confirmed',
             'role' => 'required',
             'status' => 'required'
-        ]);
+        ], $message);
 
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('users.index')->with('error_message', 'User dengan ID ' . $id . ' tidak ditemukan');
+            return redirect()->route('users.index')->with('error_message', 'Pengguna dengan ID ' . $id . ' tidak ditemukan');
         }
 
         $userData = $request->only(['name', 'role', 'status']);
@@ -94,7 +109,7 @@ class UserController extends Controller
 
         $user->update($userData);
 
-        return redirect()->route('users.index')->with('success_message', 'Berhasil memperbarui user');
+        return redirect()->route('users.index')->with('success_message', 'Berhasil memperbarui pengguna');
     }
 
     /**
@@ -110,6 +125,6 @@ class UserController extends Controller
 
         if ($id == $request->user()->id) return redirect()->route('users.index')->with('error_message', 'Anda tidak dapat menghapus diri sendiri.');
         if ($user) $user->delete();
-        return redirect()->route('users.index')->with('success_message', 'Berhasil menghapus user');
+        return redirect()->route('users.index')->with('success_message', 'Berhasil menghapus pengguna');
     }
 }

@@ -30,14 +30,12 @@ Route::resource('produksi', \App\Http\Controllers\ProduksiController::class)->mi
 Route::resource('data_produksi', \App\Http\Controllers\DataProduksiController::class)->middleware('auth');
 Route::resource('target', \App\Http\Controllers\TargetController::class)->middleware('auth');
 Route::resource('proses', \App\Http\Controllers\ProsesController::class)->middleware('auth');
+Route::resource('kelompok', \App\Http\Controllers\KelompokController::class)->middleware('auth');
 Route::resource('tbketerangan', \App\Http\Controllers\TbKeteranganController::class)->middleware('auth');
 
 
+Route::get('/get-kelompok-data', [ProduksiController::class, 'getKelompokData'])->name('get-kelompok-data'); 
 Route::get('/get-target-quantity', [ProduksiController::class, 'getTargetQuantity'])->name('get-target-quantity'); 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
 Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);
 Auth::routes();
-
-// Route::get('/home', function () {
-//     return view('home', ['chartData' => '']);
-// })->name('home')->middleware('auth');
