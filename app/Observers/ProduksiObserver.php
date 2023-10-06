@@ -14,8 +14,8 @@ class ProduksiObserver
     public function created(Produksi $produksi): void
     {
         // Ambil nilai proses, quantity, finish_good, reject, dan tanggal dari entri Produksi yang baru dibuat
-        $proses = $produksi->proses;
-        $kelompokan = $produksi->kelompokan;
+        $dataproses = $produksi->daftarproses;
+        $datakelompok = $produksi->daftarkelompok;
         $target_quantity = $produksi->target_quantity;
         $quantity = $produksi->quantity;
         $finish_good = $produksi->finish_good;
@@ -30,7 +30,7 @@ class ProduksiObserver
         $tahun = Carbon::parse($tanggal)->format('Y');
 
         // Cek apakah entri dengan proses yang sama, bulan yang sama, dan tahun yang sama sudah ada di tabel DataProduksi
-        $data_produksi = DataProduksi::where('proses', $proses)
+        $data_produksi = DataProduksi::where('proses', $dataproses)
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->first();
@@ -49,8 +49,8 @@ class ProduksiObserver
             // Jika entri dengan proses yang sama, bulan yang sama, dan tahun yang sama belum ada
             // Buat entri baru di tabel Data_produksi
             DataProduksi::create([
-                'proses' => $proses,
-                'kelompokan' => $kelompokan,
+                'proses' => $dataproses,
+                'kelompokan' => $datakelompok,
                 'target_quantity' => $target_quantity,
                 'quantity' => $quantity,
                 'finish_good' => $finish_good,
@@ -100,7 +100,7 @@ class ProduksiObserver
     public function deleted(Produksi $produksi): void
     {
         // Kurangi nilai quantity di tabel DataProduksi berdasarkan proses yang sama
-        $data_produksi = DataProduksi::where('proses', $produksi->proses)->first();
+        $data_produksi = DataProduksi::where('proses', $produksi->daftarproses)->first();
 
         if ($data_produksi) {
             $data_produksi->decrement('target_quantity', $produksi->target_quantity);
@@ -156,6 +156,51 @@ class ProduksiObserver
      */
     public function updated(Produksi $produksi): void
     {
-        //
+        // Cek apakah kolom-kolom tertentu dalam model Produksi telah diubah
+        if ($produksi->isDirty([
+            'daftarproses',
+            'daftarkelompok',
+            'target_quantity', 
+            'quantity',
+            'finish_good', 
+            'reject', 
+            'operating_time', 
+            'actual_time', 
+            'down_time',
+            'tanggal'
+            ])) {
+            // Ambil nilai kolom-kolom yang diubah
+            $updatedProses = $produksi->daftarproses;
+            $updatedKelompok = $produksi->daftarkelompok;
+            $updatedTargetQuantity = $produksi->target_quantity;
+            $updatedQuantity = $produksi->quantity;
+            $updatedFinishGood = $produksi->finish_good;
+            $updatedReject = $produksi->reject;
+            $updatedOperatingTime = $produksi->operating_time;
+            $updatedActualTime = $produksi->actual_time;
+            $updatedDownTime = $produksi->down_time;
+            $updatedTanggal = $produksi->tanggal;
+
+            // Cari entri DataProduksi yang sesuai
+            $dataProduksi = DataProduksi::where('proses', $produksi->daftarproses)
+                ->whereMonth('tanggal', $produksi->tanggal->format('m'))
+                ->whereYear('tanggal', $produksi->tanggal->format('Y'))
+                ->first();
+
+            if ($dataProduksi) {
+                // Perbarui nilai-nilai sesuai dengan perubahan pada Produksi
+                $dataProduksi->proses = $updatedProses;
+                $dataProduksi->kelompokan = $updatedKelompok;
+                $dataProduksi->target_quantity = $updatedTargetQuantity;
+                $dataProduksi->quantity = $updatedQuantity;
+                $dataProduksi->finish_good = $updatedFinishGood;
+                $dataProduksi->reject = $updatedReject;
+                $dataProduksi->operating_time = $updatedOperatingTime;
+                $dataProduksi->actual_time = $updatedActualTime;
+                $dataProduksi->down_time = $updatedDownTime;
+                $dataProduksi->tanggal = $updatedTanggal;
+                $dataProduksi->save();
+            }
+        }
     }
 }

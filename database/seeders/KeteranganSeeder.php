@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class TbKeteranganSeeder extends Seeder
+class KeteranganSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,7 +24,7 @@ class TbKeteranganSeeder extends Seeder
         
         asort($data);
         foreach ($data as $item) {
-            DB::table('tbketerangan')->insert([
+            DB::table('keterangan')->insert([
                 'daftarketerangan' => $item,
             ]);
         }

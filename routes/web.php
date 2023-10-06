@@ -31,7 +31,8 @@ Route::resource('data_produksi', \App\Http\Controllers\DataProduksiController::c
 Route::resource('target', \App\Http\Controllers\TargetController::class)->middleware('auth');
 Route::resource('proses', \App\Http\Controllers\ProsesController::class)->middleware('auth');
 Route::resource('kelompok', \App\Http\Controllers\KelompokController::class)->middleware('auth');
-Route::resource('tbketerangan', \App\Http\Controllers\TbKeteranganController::class)->middleware('auth');
+Route::resource('anggota_kelompok', \App\Http\Controllers\AnggotaKelompokController::class)->middleware('auth');
+Route::resource('keterangan', \App\Http\Controllers\KeteranganController::class)->middleware('auth');
 
 
 Route::get('/get-kelompok-data', [ProduksiController::class, 'getKelompokData'])->name('get-kelompok-data'); 

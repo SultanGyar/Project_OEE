@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TbKeterangan extends Model
+class Keterangan extends Model
 {
     use HasFactory;
-    protected $table = 'tbketerangan';
+    protected $table = 'keterangan';
     protected $fillable = [
         'daftarketerangan'
     ];

@@ -14,17 +14,18 @@ return new class extends Migration
     {
         Schema::create('produksi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('nama_operator');
-            $table->foreign('nama_operator')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('proses', 30);
-            $table->foreign('proses')->references('proses_kelompok')->on('kelompok')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('kelompokan', 50);
+            $table->unsignedBigInteger('nama_user');
+            $table->foreign('nama_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('daftarproses', 30);
+            $table->foreign('daftarproses')->references('daftarproses')->on('anggota_kelompok')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('daftarkelompok', 50);
+            $table->foreign('daftarkelompok')->references('daftarkelompok')->on('anggota_kelompok')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('target_quantity');
             $table->integer('quantity');
             $table->integer('finish_good');
             $table->integer('reject')->nullable();
-            $table->string('keterangan', 50)->nullable();
-            $table->foreign('keterangan')->references('daftarketerangan')->on('tbketerangan')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('daftarketerangan', 50)->nullable();
+            $table->foreign('daftarketerangan')->references('daftarketerangan')->on('keterangan')->onDelete('cascade')->onUpdate('cascade');
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->time('operating_start_time');
             $table->time('operating_end_time');

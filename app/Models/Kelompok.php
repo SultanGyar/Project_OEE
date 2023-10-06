@@ -10,11 +10,6 @@ class Kelompok extends Model
     use HasFactory;
     protected $table = 'kelompok';
     protected $fillable = [
-        'nama_kelompok',
-        'proses_kelompok'
+        'daftarkelompok'
     ];
-
-    public function fproses(){
-        return $this->belongsTo(Proses::class, 'proses_kelompok', 'daftarproses');
-    }
 }

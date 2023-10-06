@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelompok;
+use App\Models\AnggotaKelompok;
 use App\models\User;
 use App\Models\Produksi;
-use App\Models\TbKeterangan;
+use App\Models\Target;
+use App\Models\Keterangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,7 @@ class ProduksiController extends Controller
     
         if ($user->role === 'Operator') {
             // Jika pengguna adalah operator, hanya tampilkan data produksi mereka sendiri
-            $produksi = Produksi::where('nama_operator', $user->id)->get();
+            $produksi = Produksi::where('nama_user', $user->id)->get();
         } else {
             // Jika pengguna bukan operator, tampilkan semua data produksi
             $produksi = Produksi::all();
@@ -36,24 +37,26 @@ class ProduksiController extends Controller
      */
     public function create()
     {
-        $dataproses = Kelompok::pluck('proses_kelompok', 'proses_kelompok');
-        $dataketerangan = TbKeterangan::pluck('daftarketerangan', 'daftarketerangan');
+        $allTargetProses = Target::pluck('daftarproses')->toArray();
+        $produksiWithSameProses = Produksi::whereIn('daftarproses', $allTargetProses)->pluck('daftarproses')->toArray();
+        $dataproses = Target::whereNotIn('daftarproses', $produksiWithSameProses)->pluck('daftarproses', 'daftarproses');
+
         return view('produksi.create', [
-                'dataproses' => $dataproses,
-                'dataketerangan' => $dataketerangan,
-                'user' => User::all()
+            'dataproses' => $dataproses,
+            'dataketerangan' => Keterangan::pluck('daftarketerangan', 'daftarketerangan'),
+            'user' => User::all()
         ]);
     }
 
     public function getTargetQuantity(Request $request)
     {
-        $proses = $request->input('proses');
+        $proses = $request->input('daftarproses');
         $tanggal = $request->input('tanggal');
             
         $targetQuantity = DB::table('target')
-            ->where('target_proses', $proses)
+            ->where('daftarproses', $proses)
             ->where('tanggal_target', $tanggal)
-            ->value('target_quantity_byadmin');
+            ->value('target_quantity');
             
         return response()->json([
             'success' => true,
@@ -63,15 +66,23 @@ class ProduksiController extends Controller
 
     public function getKelompokData(Request $request)
     {
-        $proses = $request->input('proses');
+        $proses = $request->input('daftarproses');
 
-        $getKelompok = DB::table('kelompok')
-        ->where('proses_kelompok', $proses)
-        ->value('nama_kelompok');
+        // Menggunakan model Eloquent AnggotaKelompok
+        $anggotaKelompok = AnggotaKelompok::where('daftarproses', $proses)->first();
+
+        if ($anggotaKelompok) {
+            $datakelompok = $anggotaKelompok->daftarkelompok;
+
+            return response()->json([
+                'success' => true,
+                'daftarkelompok' => $datakelompok
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'kelompokan' => $getKelompok
+            'success' => false,
+            'daftarkelompok' => null
         ]);
     }
 
@@ -83,13 +94,13 @@ class ProduksiController extends Controller
         //menyimpan  produksi
         $user = auth()->user();
         $request->validate([
-            'proses' => 'required',
-            'kelompokan' => 'required',
+            'daftarproses' => 'required',
+            'daftarkelompok' => 'required',
             'target_quantity' => 'required',
             'quantity' => 'required',
             'finish_good' => 'required',
             'reject' => 'nullable',
-            'keterangan' => 'nullable',
+            'daftarketerangan' => 'nullable',
             'tanggal' => 'required',
             'operating_start_time' => 'required',
             'operating_end_time' => 'required',
@@ -138,13 +149,13 @@ class ProduksiController extends Controller
         }
         
         $array = $request->only([
-            'proses',
-            'kelompokan',
+            'daftarproses',
+            'daftarkelompok',
             'target_quantity',
             'quantity',
             'finish_good',
             'reject',
-            'keterangan',
+            'daftarketerangan',
             'tanggal',
             'operating_start_time',
             'operating_end_time',
@@ -176,7 +187,7 @@ class ProduksiController extends Controller
             'h_end_time',
             'h_time'
         ]);
-        $array['nama_operator'] = $user->id;
+        $array['nama_user'] = $user->id;
         $produksi = Produksi::create($array);
         return redirect()->route('produksi.index')->with('success_message', 'Berhasil menambah data baru');
     }

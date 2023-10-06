@@ -21,7 +21,7 @@
 @stop
 
 @section('content')
-<div class="col-md-8 offset-md-2">
+{{-- <div class="col-md-8 offset-md-2">
     <div class="input-group input-group-md mb-3">
         <input type="search" class="form-control form-control-md" placeholder="Search OEE..." id="searchInput">
         <div class="input-group-append">
@@ -30,7 +30,7 @@
             </button>
         </div>
     </div>
-</div>
+</div> --}}
 {{-- {{ json_encode($getData) }} --}}
 
 <div class="row">
@@ -227,7 +227,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     var getData = @json($getData);
-    console.log(getData);
+    console.log('data yg didapat',getData);
     var performanceCharts = [];
     var availabilityCharts = [];
     var qualityCharts = [];
@@ -254,7 +254,7 @@
 
         @foreach($getData as $kelompok => $data)
         var data{{ $loop->index }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
-        console.log('data{{ $loop->index }}', data{{ $loop->index }});
+        // console.log('data{{ $loop->index }}', data{{ $loop->index }});
 
             // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
             createPerformanceChart(data{{ $loop->index }}, "{{ $loop->index }}");

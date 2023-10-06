@@ -13,7 +13,7 @@
                     <div class="form-group">
                         <label for="name">Nama Operator</label>
                         <div class="input-group">
-                            <input type="hidden" name="nama_operator" id="nama_operator" value="{{ old('nama_operator') }}">
+                            <input type="hidden" name="nama_user" id="nama_user" value="{{ old('nama_user') }}">
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                 placeholder="Nama Operator" id="name" name="name" value="{{ auth()->user()->name }}"
                                 aria-describedby="cari" readonly>
@@ -37,24 +37,24 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="kelompokan">Kelompok <span class="font-weight-normal">(Otomatis)</span></label>
-                        <input type="string" class="form-control @error('kelompokan') is-invalid @enderror"
-                            id="kelompokan" placeholder="kelompok" name="kelompokan"
-                            value="{{ old('kelompokan') }}" readonly>
-                        @error('kelompokan')
+                        <label for="daftarkelompok">Kelompok <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('daftarkelompok') is-invalid @enderror"
+                            id="daftarkelompok" placeholder="kelompok" name="daftarkelompok"
+                            value="{{ old('daftarkelompok') }}" readonly>
+                        @error('daftarkelompok')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="form-group">
-                        <label for="proses">Nama Proses</label>
-                        <select class="form-control mb-10 @error('proses') is-invalid @enderror" id="proses" name="proses" style="width: 100%">
+                        <label for="daftarproses">Nama Proses</label>
+                        <select class="form-control mb-10 @error('daftarproses') is-invalid @enderror" id="daftarproses" name="daftarproses" style="width: 100%">
                             <option value="" selected disabled>Pilih Proses..</option>
                             @foreach ($dataproses as $value => $label)
-                            <option value="{{ $value }}" @if (old('proses') == $value) selected @endif>{{ $label }}</option>
+                            <option value="{{ $value }}" @if (old('daftarproses') == $value) selected @endif>{{ $label }}</option>
                             @endforeach
                         </select>
-                        @error('proses')
+                        @error('daftarproses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>                 
@@ -68,11 +68,11 @@
                         @enderror
                     </div>
     
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="finish_good">Good Quality</label>
                         <input type="number" class="form-control @error('finish_good') is-invalid @enderror"
                             id="finish_good" placeholder="Good Quality" name="finish_good"
-                            value="{{ old('finish_good') }}">
+                            value="{{ old('finish_good') }}" >
                         @error('finish_good')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -87,14 +87,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="keterangan">Keterangan Not Good</label>
-                        <select class="form-control mb-10 @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" style="width: 100%">
+                        <label for="daftarketerangan">Keterangan Not Good</label>
+                        <select class="form-control mb-10 @error('daftarketerangan') is-invalid @enderror" id="daftarketerangan" name="daftarketerangan" style="width: 100%">
                             <option value="" selected disabled>Pilih Keterangan..</option>
                             @foreach ($dataketerangan as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
                         </select>
-                        @error('keterangan')
+                        @error('daftarketerangan')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -420,7 +420,7 @@
 <script>
 
     function autoFillTargetQuantity() {
-        var selectedProses = $('#proses').val();
+        var selectedProses = $('#daftarproses').val();
         var selectedTanggal = $('#tanggal').val();
 
         // Kirim permintaan AJAX ke server untuk mendapatkan nilai target_quantity_byadmin
@@ -428,7 +428,7 @@
             url: '/get-target-quantity', // Ubah menjadi route yang sesuai
             method: 'GET',
             data: {
-                proses: selectedProses,
+                daftarproses: selectedProses,
                 tanggal: selectedTanggal
             },
             success: function(response) {
@@ -443,7 +443,7 @@
     }
 
     // Panggil fungsi autoFillTargetQuantity setiap kali nilai 'proses' atau 'tanggal' berubah
-    $('#proses, #tanggal').on('change', function() {
+    $('#daftarproses, #tanggal').on('change', function() {
         autoFillTargetQuantity();
     });
 
@@ -451,36 +451,51 @@
     autoFillTargetQuantity();
 
     function autoFillKelompokan() {
-        var selectedProses = $('#proses').val();
+        var selectedProses = $('#daftarproses').val();
 
         // Kirim permintaan AJAX ke server untuk mendapatkan data kelompok
         $.ajax({
             url: '/get-kelompok-data', // Ubah menjadi route yang sesuai
             method: 'GET',
             data: {
-                proses: selectedProses,
+                daftarproses: selectedProses,
             },
             success: function (response) {
                 if (response.success) {
-                    var kelompokan = response.kelompokan;
-                    $('#kelompokan').val(kelompokan);
+                    var daftarkelompok = response.daftarkelompok;
+                    $('#daftarkelompok').val(daftarkelompok);
                 } else {
-                    $('#kelompokan').val('');
+                    $('#daftarkelompok').val('');
                 }
             },
             error: function () {
-                $('#kelompokan').val(''); // Handle error dengan mengosongkan nilai kelompokan
+                $('#daftarkelompok').val(''); // Handle error dengan mengosongkan nilai kelompokan
             },
         });
     }
 
     // Panggil fungsi autoFillKelompokan setiap kali nilai 'proses' berubah
-    $('#proses').on('change', function () {
+    $('#daftarproses').on('change', function () {
         autoFillKelompokan();
     });
 
     // Panggil fungsi saat halaman pertama kali dimuat
     autoFillKelompokan();
+
+
+    document.getElementById('quantity').addEventListener('input', function () {
+        calculateGoodQuality();
+    });
+    document.getElementById('reject').addEventListener('input', function () {
+        calculateGoodQuality();
+    });
+    function calculateGoodQuality() {
+        var quantity = parseFloat(document.getElementById('quantity').value) || 0;
+        var reject = parseFloat(document.getElementById('reject').value) || 0;
+        var goodQuality = quantity - reject;
+        goodQuality = goodQuality < 0 ? 0 : goodQuality;
+        document.getElementById('finish_good').value = goodQuality;
+    }
 
 
     // Button Show and Hide

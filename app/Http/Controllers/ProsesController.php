@@ -41,7 +41,7 @@ class ProsesController extends Controller
        ], $message);
 
        $array = $request->only([
-        'daftarproses',
+        'daftarproses'
        ]);
 
        $proses = Proses::create($array);
@@ -77,13 +77,13 @@ class ProsesController extends Controller
 
         $proses = Proses::find($id);
         if (!$proses) {
-            return redirect()->route('proses.index')->with('error_message', 'Proses tidak ditemukan.');
+            return redirect()->route('proses.index')->with('error_message', 'Proses tidak ditemukan');
         }
 
         $proses->daftarproses = $request->input('daftarproses');
         $proses->save();
 
-        return redirect()->route('proses.index')->with('success_message', 'Proses berhasil diperbarui.');
+        return redirect()->route('proses.index')->with('success_message', 'Proses berhasil diperbarui');
     }
 
     /**

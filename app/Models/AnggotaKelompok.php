@@ -5,16 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Target extends Model
+class AnggotaKelompok extends Model
 {
     use HasFactory;
-    protected $table = 'target';
+    protected $table = 'anggota_kelompok';
     protected $fillable = [
-        'daftarproses',
-        'tanggal_target',
-        'target_quantity'
+        'daftarkelompok',
+        'daftarproses'
     ];
-    
+
+    public function fkelompok(){
+        return $this->belongsTo(Kelompok::class, 'daftarkelompok', 'daftarkelompok');
+    }
+
     public function fproses(){
         return $this->belongsTo(Proses::class, 'daftarproses', 'daftarproses');
     }

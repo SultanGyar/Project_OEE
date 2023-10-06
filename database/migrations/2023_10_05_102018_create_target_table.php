@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('target', function (Blueprint $table) {
             $table->id();
-            $table->string('target_proses', 30);
-            $table->foreign('target_proses')->references('daftarproses')->on('proses')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('daftarproses', 30);
+            $table->foreign('daftarproses')->references('daftarproses')->on('proses')->onDelete('cascade')->onUpdate('cascade');
             $table->date('tanggal_target');
-            $table->integer('target_quantity_byadmin');
+            $table->integer('target_quantity');
             $table->timestamps();
-            $table->unique(['target_proses', 'tanggal_target']);
+            $table->unique(['daftarproses', 'tanggal_target']);
         });
     }
 

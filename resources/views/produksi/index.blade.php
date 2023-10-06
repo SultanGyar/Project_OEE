@@ -85,14 +85,14 @@
                                     data-bulan="{{ strtolower(date('Y-m-d', strtotime($item->tanggal))) }}">
                                     <td>{{ $no }}</td>
                                     <td>{{ $item->fuser->name }}</td>
-                                    <td>{{ $item->proses }}</td>
-                                    <td>{{ $item->kelompokan }}</td>
+                                    <td>{{ $item->daftarproses }}</td>
+                                    <td>{{ $item->daftarkelompok }}</td>
                                     <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{ $item->target_quantity }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->finish_good }}</td>
                                     <td>{{ $item->reject }}</td>
-                                    <td>{{ $item->keterangan }}</td>
+                                    <td>{{ $item->daftarketerangan }}</td>
                                     <td>{{ formatTime($item->operating_time) }}</td>
                                     <td>{{ formatTime($item->actual_time) }}</td>
                                     <td>{{ formatTime($item->down_time) }}</td>
@@ -179,7 +179,7 @@
                                         data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
                                         <td>{{ $no }}</td>
                                         <td>{{ $item->fuser->name }}</td>
-                                        <td>{{ $item->proses }}</td>
+                                        <td>{{ $item->daftarproses }}</td>
                                         <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                         @if ($header == 'Performance')
                                         <td>{{ $item->target_quantity }}</td>
@@ -200,7 +200,7 @@
                                         <td>{{ $item->quantity }}</td>
                                         <td>{{ $item->finish_good }}</td>
                                         <td>{{ $item->reject }}</td>
-                                        <td>{{ $item->keterangan }}</td>
+                                        <td>{{ $item->daftarketerangan }}</td>
                                         @endif
                                     </tr>
                                     @php $no++; @endphp

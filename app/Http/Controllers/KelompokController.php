@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelompok;
-use App\Models\Proses;
 use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\returnSelf;
@@ -15,10 +14,8 @@ class KelompokController extends Controller
      */
     public function index()
     {
-        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
         $kelompok = Kelompok::all();
-        return view('kelompok.index', compact('dataproses'),
-        [
+        return view('kelompok.index', [
             'kelompok' => $kelompok
         ]);
     }
@@ -28,7 +25,7 @@ class KelompokController extends Controller
      */
     public function create()
     {
-        //
+        return view('kelompok.create');
     }
 
     /**
@@ -36,30 +33,20 @@ class KelompokController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kelompok' => 'required',
-            'proses_kelompok' => 'required'
-        ]);
+        $message = [
+            'daftarkelompok.required' => 'Input harus diisi',
+            'daftarkelompok.unique' => 'Kelompok sudah terdaftar dalam sistem',
+        ];
 
-        $namaKelompok = $request->input('nama_kelompok');
-        $prosesKelompok = $request->input('proses_kelompok');
-        
-        // Check if the combination of kelompok and proses_kelompok already exists
-        $existingKelompok = Kelompok::where('nama_kelompok', $namaKelompok)
-            ->where('proses_kelompok', $prosesKelompok)
-            ->first();
-        
-        if ($existingKelompok) {
-            // If the combination already exists, show a warning notification
-            return redirect()->route('kelompok.index')
-                ->with('warning_message', 'Maaf, data tidak dapat disimpan karena data dengan kelompok yang sama telah ada dalam sistem untuk proses tersebut.');
-        }
+        $request->validate([
+            'daftarkelompok' => 'required|unique:kelompok,daftarkelompok'
+        ], $message);
+
         $array = $request->only([
-            'nama_kelompok',
-            'proses_kelompok'
+            'daftarkelompok'
         ]);
         $kelompok = Kelompok::create($array);
-        return redirect()->route('kelompok.index')->with('success_message', 'Berhasil menambahkan anggota baru');
+        return redirect()->route('kelompok.index')->with('success_message', 'Berhasil menambahkan Kelompok baru');
     }
 
     /**
@@ -73,12 +60,14 @@ class KelompokController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $kelompok = Kelompok::find($id);
-        if (!$kelompok) return redirect()-> route('kelompok.index')->with('error_message', 'Anggota dengan' .$id. 'tidak ditemukan');
-        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
-        return view('kelompok.edit', compact('kelompok', 'dataproses'));
+        if (!$kelompok) {
+            return redirect()->route('kelompok.index')->with('error_message', 'Kelompok tidak ditemukan');
+        }
+
+        return view('kelompok.edit', ['kelompok' => $kelompok]);
     }
 
     /**
@@ -86,32 +75,24 @@ class KelompokController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'daftarkelompok.required' => 'Input harus diisi',
+            'daftarkelompok.unique' => 'Kelompok sudah terdaftar dalam sistem',
+        ];
+
         $request->validate([
-            'nama_kelompok' => 'required',
-            'proses_kelompok' => 'required'
-        ]);
+            'daftarkelompok' => 'required|unique:kelompok,daftarkelompok'
+        ], $message);
 
-        $namaKelompok = $request->input('nama_kelompok');
-        $prosesKelompok = $request->input('proses_kelompok');
-        
-        // Check if the combination of kelompok and proses_kelompok already exists
-        $existingKelompok = Kelompok::where('nama_kelompok', $namaKelompok)
-            ->where('proses_kelompok', $prosesKelompok)
-            ->where('id', '<>', $id)
-            ->first();
-        
-        if ($existingKelompok) {
-            // If the combination already exists, show a warning notification
-            return redirect()->route('kelompok.index')
-                ->with('warning_message', 'Tidak dapat menyimpan data tersebut, karena memiliki kesamaan dengan data yang sudah ada');
+        $kelompok = Kelompok::find($id);
+        if (!$kelompok) {
+            return redirect()->route('kelompok.index')->with('error_message', 'Kelompok tidak ditemukan');
         }
-        $kelompok = Kelompok::findOrFail($id);
-        $kelompok->update([
-            'nama_kelompok' => $namaKelompok,
-            'proses_kelompok' => $prosesKelompok,
-        ]);
 
-        return redirect()->route('kelompok.index')->with('success_message', 'Berhasil menambahkan anggota baru');
+        $kelompok->daftarkelompok = $request->input('daftarkelompok');
+        $kelompok->save();
+
+        return redirect()->route('kelompok.index')->with('success_message', 'Kelompok berhasil diperbarui');
     }
 
     /**
@@ -120,7 +101,11 @@ class KelompokController extends Controller
     public function destroy(string $id)
     {
         $kelompok = Kelompok::find($id);
-        if ($kelompok) $kelompok->delete();
-        return redirect()->route('kelompok.index')->with('success_message', 'Berhasil menghapus Anggota');
+        if ($kelompok) {
+            $kelompok->delete();
+            return redirect()->route('kelompok.index')->with('success_message', 'Berhasil menghapus kelompok');
+        } else {
+            return redirect()->route('kelompok.index')->with('error_message', 'Kelompok dengan id = ' . $id . ' tidak ditemukan');
+        }
     }
 }

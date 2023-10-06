@@ -336,13 +336,19 @@ return [
                 ],
                 [
                     'text' => 'Daftar Keterangan',
-                    'url' => '/tbketerangan',
+                    'url' => '/keterangan',
                     'icon' => 'fa fa-arrow-alt-circle-right',
                     'can' => 'admin-only',
                 ],
                 [
                     'text' => 'Daftar Kelompok',
                     'url' => '/kelompok',
+                    'icon' => 'fa fa-arrow-alt-circle-right',
+                    'can' => 'admin-only',
+                ],
+                [
+                    'text' => 'Anggota Kelompok',
+                    'url' => '/anggota_kelompok',
                     'icon' => 'fa fa-arrow-alt-circle-right',
                     'can' => 'admin-only',
                 ],

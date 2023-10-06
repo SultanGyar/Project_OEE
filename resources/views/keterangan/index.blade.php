@@ -38,14 +38,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($tbketerangan as $data)
+                                @foreach($keterangan as $data)
                                 <tr>
                                     <td>{{ $data->daftarketerangan }}</td>
                                     <td>
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
-                                        <a href="{{ route('tbketerangan.destroy', $data) }}"
+                                        <a href="{{ route('keterangan.destroy', $data) }}"
                                             onclick="notificationBeforeDelete(event, this)" class="btn btn-danger btn-xs">
                                             Delete
                                         </a>
@@ -65,7 +65,7 @@
 <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambahLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('tbketerangan.store') }}" method="post" id="keteranganForm">
+            <form action="{{ route('keterangan.store') }}" method="post" id="keteranganForm">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTambahLabel">Tambah Keterangan</h5>
@@ -89,12 +89,12 @@
         </div>
     </div>
 </div>
-@foreach($tbketerangan as $data)
+@foreach($keterangan as $data)
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEdit{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel{{ $data->id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('tbketerangan.update', $data->id) }}" method="post">
+            <form action="{{ route('keterangan.update', $data->id) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">

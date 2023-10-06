@@ -12,15 +12,14 @@ class Produksi extends Model
     use HasFactory;
     protected $table = 'produksi';
     protected $fillable = [
-        'nama_operator',
-        'proses',
-        'kelompokan',
+        'nama_user',
+        'daftarproses',
+        'daftarkelompok',
         'target_quantity',
-        'target_id',
         'quantity',
         'finish_good',
         'reject',
-        'keterangan',
+        'daftarketerangan',
         'tanggal',
         'operating_start_time',
         'operating_end_time',
@@ -55,15 +54,23 @@ class Produksi extends Model
 
     public function fuser()
     {
-        return $this->belongsTo(User::class, 'nama_operator', 'id');
+        return $this->belongsTo(User::class, 'nama_user', 'id');
     }
 
-    public function fkelompok(){
-        return $this->belongsTo(Kelompok::class, 'proses', 'proses_kelompok');
+    public function ftarget(){
+        return $this->belongsTo(Target::class, 'target_quantity', 'target_quantity');
     }
 
-    public function ftbketerangan(){
-        return $this->belongsTo(TbKeterangan::class, 'keterangan', 'dataketerangan');
+    public function fanggotaproses(){
+        return $this->belongsTo(AnggotaKelompok::class, 'daftarproses', 'daftarproses');
+    }
+
+    public function fanggotakelompok(){
+        return $this->belongsTo(AnggotaKelompok::class, 'daftarkelompok', 'daftarkelompok');
+    }
+
+    public function fketerangan(){
+        return $this->belongsTo(Keterangan::class, 'daftarketerangan', 'daftarketerangan');
     }
     
 }
