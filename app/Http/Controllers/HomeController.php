@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataProduksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -26,6 +27,7 @@ class HomeController extends Controller
     {
         $selectedMonth = $request->input('filterMonth'); // Ambil bulan yang dipilih dari form
     
+        // Dapatkan data produksi
         $getData = $this->getProsesData('array', $selectedMonth);
     
         return view('home', [
@@ -41,35 +43,34 @@ class HomeController extends Controller
             $selectedMonth = date('Y-m');
         }
     
+        // Mengambil data dari tabel DataProduksi berdasarkan bulan yang dipilih
         $data = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))
             ->whereMonth('tanggal', substr($selectedMonth, 5, 2))
             ->get();
     
-        if ($data->isEmpty()) {
-            if ($format === 'json') {
-                return response()->json(['error' => 'No data available']);
-            } else {
-                return []; // Return an empty array when no data is available
-            }
-        }
+        // Inisialisasi data kelompok dari tabel kelompok (gantilah dengan nama tabel yang sesuai)
+        $defaultKelompok = DB::table('kelompok')->get();
     
         $groupedData = [];
     
+        // Inisialisasi semua kelompok dengan data default
+        foreach ($defaultKelompok as $default) {
+            $kelompokan = $default->daftarkelompok;
+    
+            $groupedData[$kelompokan] = [
+                'target_quantity' => 0,
+                'operating_time' => '00:00:00',
+                'actual_time' => '00:00:00',
+                'down_time' => '00:00:00',
+                'quantity' => 0,
+                'finish_good' => 0,
+                'reject' => 0,
+            ];
+        }
+    
+        // Jika ada data produksi, perbarui nilai kelompok yang sesuai
         foreach ($data as $entry) {
             $kelompokan = $entry->kelompokan;
-    
-            // Periksa apakah kelompokan sudah ada dalam $groupedData
-            if (!isset($groupedData[$kelompokan])) {
-                $groupedData[$kelompokan] = [
-                    'target_quantity' => 0,
-                    'operating_time' => '00:00:00',
-                    'actual_time' => '00:00:00',
-                    'down_time' => '00:00:00',
-                    'quantity' => 0,
-                    'finish_good' => 0,
-                    'reject' => 0,
-                ];
-            }
     
             // Jumlahkan data produksi ke dalam kelompok yang sesuai
             $groupedData[$kelompokan]['target_quantity'] += $entry->target_quantity;
@@ -96,6 +97,8 @@ class HomeController extends Controller
             return $groupedData;
         }
     }
+    
+    
     
     private function addTime($time1, $time2)
     {

@@ -21,18 +21,6 @@
 @stop
 
 @section('content')
-{{-- <div class="col-md-8 offset-md-2">
-    <div class="input-group input-group-md mb-3">
-        <input type="search" class="form-control form-control-md" placeholder="Search OEE..." id="searchInput">
-        <div class="input-group-append">
-            <button type="button" class="btn btn-md btn-default" id="searchButton">
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-    </div>
-</div> --}}
-{{-- {{ json_encode($getData) }} --}}
-
 <div class="row">
     @foreach($getData as $kelompok => $data)
     <div class="col-lg-3 col-md-4 col-sm-6" id="oeeCard{{ $loop->index }}">
@@ -151,7 +139,8 @@
                                 </div>
                                 <div class="card-body text-center">
                                     <h5 class="description-header">Not Good</h5>
-                                    <span class="description-text text-bold" id="textRejectedQuantity{{ $loop->index }}">
+                                    <span class="description-text text-bold"
+                                        id="textRejectedQuantity{{ $loop->index }}">
                                     </span>
                                 </div>
                             </div>
@@ -254,15 +243,36 @@
 
         @foreach($getData as $kelompok => $data)
         var data{{ $loop->index }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
-        // console.log('data{{ $loop->index }}', data{{ $loop->index }});
 
-            // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
-            createPerformanceChart(data{{ $loop->index }}, "{{ $loop->index }}");
-            createAvailabilityChart(data{{ $loop->index }}, "{{ $loop->index }}");
-            createQualityChart(data{{ $loop->index }}, "{{ $loop->index }}");
-            createOeeChart(data{{ $loop->index }}, "{{ $loop->index }}");
+        // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
+        createPerformanceChart(data{{ $loop->index }}, "{{ $loop->index }}");
+        createAvailabilityChart(data{{ $loop->index }}, "{{ $loop->index }}");
+        createQualityChart(data{{ $loop->index }}, "{{ $loop->index }}");
+        createOeeChart(data{{ $loop->index }}, "{{ $loop->index }}");
 
-            // Mengisi teks pada elemen-elemen dengan ID yang unik
+        // Memeriksa apakah data memiliki nilai-nilai default
+        if (data{{ $loop->index }}.target_quantity === 0 &&
+            data{{ $loop->index }}.operating_time === '00:00:00' &&
+            data{{ $loop->index }}.actual_time === '00:00:00' &&
+            data{{ $loop->index }}.down_time === '00:00:00' &&
+            data{{ $loop->index }}.quantity === 0 &&
+            data{{ $loop->index }}.finish_good === 0 &&
+            data{{ $loop->index }}.reject === 0) {
+            // Mengganti teks pada elemen-elemen dengan "No Data Available"
+            $('#textTargetQuantity{{ $loop->index }}').text("No Data Available");
+            $('#textActualQuantity{{ $loop->index }}').text("No Data Available");
+            $('#textTotalTime{{ $loop->index }}').text("No Data Available");
+            $('#textActualRuntime{{ $loop->index }}').text("No Data Available");
+            $('#textDownTime{{ $loop->index }}').text("No Data Available");
+            $('#textTotalQuantity{{ $loop->index }}').text("No Data Available");
+            $('#textGoodQuantity{{ $loop->index }}').text("No Data Available");
+            $('#textRejectedQuantity{{ $loop->index }}').text("No Data Available");
+            $('#oee-value{{ $loop->index }}').text('No Data Available');
+            $('#performancePercentage').text('');
+            $('#availabilityPercentage').text('');
+            $('#qualityPercentage').text('');
+        } else {
+            // Mengisi teks pada elemen-elemen dengan data yang sesuai
             $('#textTargetQuantity{{ $loop->index }}').text(data{{ $loop->index }}.target_quantity);
             $('#textActualQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
             $('#textTotalTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.operating_time));
@@ -271,7 +281,9 @@
             $('#textTotalQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
             $('#textGoodQuantity{{ $loop->index }}').text(data{{ $loop->index }}.finish_good);
             $('#textRejectedQuantity{{ $loop->index }}').text(data{{ $loop->index }}.reject);
-        @endforeach
+        }
+    @endforeach
+
     });
 
     function formatTimeToMinutes(time) {
