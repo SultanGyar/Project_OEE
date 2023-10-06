@@ -342,11 +342,11 @@
         var oeeValueText = document.getElementById('oee-value' + loopIndex);
         oeeValueText.textContent = oeePercentage + '%';
 
-        // if (parseFloat(oeePercentage) > 85.00) {
-        //     oeeValueText.style.color = '#1ce34a'; // Mengubah warna teks menjadi hijau
-        // } else {
-        //     oeeValueText.style.color = ''; // Menghapus pengaturan warna teks jika tidak memenuhi kondisi
-        // }
+        if (parseFloat(oeePercentage) > 85.00) {
+            oeeValueText.style.color = '#1ce34a'; // Mengubah warna teks menjadi hijau
+        } else if (parseFloat(oeePercentage) < 85.00) {
+            oeeValueText.style.color = '#ff0000'; // Mengubah warna teks menjadi merah jika tidak memenuhi kondisi pertama
+        }
 
         oeeCharts.push(oeeChart);
     }
