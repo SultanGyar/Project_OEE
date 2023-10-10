@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 @section('title', 'Daftar Kelompok')
-
+<link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
 <div class="container-fluid">
     <div class="row mb-2">

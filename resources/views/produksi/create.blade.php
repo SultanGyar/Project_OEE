@@ -1,5 +1,6 @@
 @extends('adminlte::page')
 @section('title', 'Tambah Data Produksi')
+<link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
 <h1 class="m-0 text-dark">Tambah Data Produksi</h1>
 @stop

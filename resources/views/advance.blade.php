@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('title', 'Dashboard')
-
+<link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
 <div class="d-flex flex-wrap justify-content-between align-items-center">
     <h2>Overall Equipment Effectiveness</h2>
