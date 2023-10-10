@@ -36,6 +36,7 @@
                             <thead>
                                 <tr style="text-align: center; background-color: #069eb5">
                                     <th>Nama Pengguna</th>
+                                    <th>Username</th>
                                     <th>Role</th>
                                     <th>Status</th>
                                     <th>Opsi</th>
@@ -44,6 +45,7 @@
                             <tbody>
                                 @foreach($users as $key => $data)
                                 <tr>
+                                    <td>{{$data->full_name}}</td>
                                     <td>{{$data->name}}</td>
                                     <td>{{$data->role}}</td>
                                     <td>{{$data->status}}</td>
@@ -85,10 +87,16 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Nama</label>
+                        <label for="name">Username</label>
                         <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name"
-                            placeholder="Masukan Nama" name="name" >
+                            placeholder="Masukan Username" name="name" >
                         @error('name') <span class="text-danger">{{ $message}}</span> @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="full_name">Nama Lengkap</label>
+                        <input type="text" class="form-control  @error('full_name') is-invalid @enderror" id="full_name"
+                            placeholder="Masukan Nama Lengkap" name="full_name" >
+                        @error('full_name') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                     <div class="form-group">
                         <label for="password">Kata Sandi</label>
@@ -151,10 +159,18 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="edit_name_{{ $data->id }}">Nama</label>
+                        <label for="edit_name_{{ $data->id }}">Username</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="edit_name_{{ $data->id }}"
-                            placeholder="Masukkan Nama" name="name" value="{{ $data->name }}">
+                            placeholder="Masukkan Username" name="name" value="{{ $data->name }}">
                         @error('name')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_full_name_{{ $data->id }}">Nama Lengkap</label>
+                        <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="edit_full_name_{{ $data->id }}"
+                            placeholder="Masukkan Nama Lengkap" name="full_name" value="{{ $data->full_name }}">
+                        @error('full_name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>

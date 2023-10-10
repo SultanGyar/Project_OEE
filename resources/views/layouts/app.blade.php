@@ -57,7 +57,7 @@
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                {{ Auth::user()->full_name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -84,3 +84,14 @@
 </body>
 
 </html>
+<script>
+    window.addEventListener('beforeunload', function (e) {
+        // Mengirim permintaan logout saat tab ditutup
+        axios.post('/logout').then(function () {
+            // Logout berhasil, tidak ada tindakan tambahan yang diperlukan
+        }).catch(function (error) {
+            // Penanganan kesalahan jika logout gagal
+            console.error('Logout error:', error);
+        });
+    });
+</script>

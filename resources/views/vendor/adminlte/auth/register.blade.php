@@ -18,7 +18,7 @@
 @section('auth_body')
 <form action="{{ $register_url }}" method="post">
     @csrf
-
+    {{-- Username Field --}}
     <div class="input-group mb-3">
         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
             value="{{ old('name') }}" placeholder="{{ __('Username') }}" autofocus>
@@ -30,6 +30,24 @@
         </div>
 
         @error('name')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+        @enderror
+    </div>
+
+    {{-- Full Name Field --}}
+    <div class="input-group mb-3">
+        <input type="text" name="full_name" class="form-control @error('full_name') is-invalid @enderror"
+            value="{{ old('full_name') }}" placeholder="{{ __('Nama Lengkap') }}" autofocus>
+
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-address-card {{ config('adminlte.classes_auth_icon', '') }}"></span>
+            </div>
+        </div>
+
+        @error('full_name')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
         </span>

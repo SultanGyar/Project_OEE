@@ -53,6 +53,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:100', 'unique:users'],
+            'full_name' => ['required', 'string', 'max:120', 'unique:users'],
             'password' => ['required', 'string', 'min:5', 'confirmed'],
             'role' => [
                     'required',
@@ -81,6 +82,7 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
+            'full_name' => $data['full_name'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
             'status' => $data['status'],

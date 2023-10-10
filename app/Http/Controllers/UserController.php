@@ -35,19 +35,22 @@ class UserController extends Controller
         $message = [
             'name.required' => 'Nama harus diisi',
             'name.unique' => 'Nama sudah terdaftar dalam sistem',
+            'full_name.required' => 'Nama Lengkap harus diisi',
+            'full_name.unique' => 'Nama sudah terdaftar dalam sistem',
             'password.required' => 'Kata sandi harus diisi',
             'password.confirmed' => 'Kata sandi tidak cocok'
         ];
 
         $request->validate([
             'name' => 'required|unique:users,name',
+            'full_name' => 'required|unique:users,full_name',
             'password' => 'required|confirmed',
             'role' => 'required',
             'status' => 'required'
         ], $message);
 
         $array = $request->only([
-            'name', 'password', 'role', 'status'
+            'name', 'full_name', 'password', 'role', 'status'
         ]);
 
         $array['password'] = bcrypt($array['password']);
@@ -85,11 +88,14 @@ class UserController extends Controller
         $message = [
             'name.required' => 'Nama harus diisi',
             'name.unique' => 'Nama sudah terdaftar dalam sistem',
+            'full_name.required' => 'Nama Lengkap harus diisi',
+            'full_name.unique' => 'Nama sudah terdaftar dalam sistem',
             'password.required' => 'Kata sandi harus diisi',
             'password.confirmed' => 'Kata sandi tidak cocok'
         ];
         $request->validate([
             'name' => 'required|unique:users,name,' . $id,
+            'full_name' => 'required|unique:users,full_name,' . $id,
             'password' => 'sometimes|nullable|confirmed',
             'role' => 'required',
             'status' => 'required'
@@ -101,7 +107,7 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('error_message', 'Pengguna dengan ID ' . $id . ' tidak ditemukan');
         }
 
-        $userData = $request->only(['name', 'role', 'status']);
+        $userData = $request->only(['name','full_name', 'role', 'status']);
 
         if ($request->filled('password')) {
             $userData['password'] = bcrypt($request->input('password'));

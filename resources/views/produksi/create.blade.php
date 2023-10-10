@@ -16,7 +16,7 @@
                         <div class="input-group">
                             <input type="hidden" name="nama_user" id="nama_user" value="{{ old('nama_user') }}">
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                placeholder="Nama Operator" id="name" name="name" value="{{ auth()->user()->name }}"
+                                placeholder="Nama Operator" id="name" name="name" value="{{ auth()->user()->full_name }}"
                                 aria-describedby="cari" readonly>
                         </div>
                     </div>

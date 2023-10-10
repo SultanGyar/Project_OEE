@@ -85,7 +85,7 @@
                                 <tr class="data-row"
                                     data-bulan="{{ strtolower(date('Y-m-d', strtotime($item->tanggal))) }}">
                                     <td>{{ $no }}</td>
-                                    <td>{{ $item->fuser->name }}</td>
+                                    <td>{{ $item->fuser->full_name }}</td>
                                     <td>{{ $item->daftarproses }}</td>
                                     <td>{{ $item->daftarkelompok }}</td>
                                     <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
