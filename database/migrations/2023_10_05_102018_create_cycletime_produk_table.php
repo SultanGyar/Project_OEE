@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('target', function (Blueprint $table) {
+        Schema::create('cycletime_produk', function (Blueprint $table) {
             $table->id();
             $table->string('daftarproses', 30);
             $table->foreign('daftarproses')->references('daftarproses')->on('proses')->onDelete('cascade')->onUpdate('cascade');
-            $table->date('tanggal_target');
-            $table->integer('target_quantity');
+            $table->string('size', 30);
+            $table->string('class', 30);
+            $table->integer('kapasitas_pcs');
+            $table->string('kode', 30)->unique(); // Tipe data dan panjang karakter yang sama.
             $table->timestamps();
-            $table->unique(['daftarproses', 'tanggal_target']);
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('target');
+        Schema::dropIfExists('cycletime_produk');
     }
 };

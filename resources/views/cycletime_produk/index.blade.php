@@ -1,16 +1,16 @@
 @extends('adminlte::page')
-@section('title', 'Target Quantity')
+@section('title', 'Cycle Time Produk')
 <link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Target Quantity</h1>
+            <h1>Cycle Time Produk</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Target Quantity</li>
+                <li class="breadcrumb-item active">Cycle Time Produk</li>
             </ol>
         </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-gradient-gray-dark">
-                    <h3 class="card-title" style="color: white">Target Quantity</h3>
+                    <h3 class="card-title" style="color: white">Cycle Time Produk</h3>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
@@ -47,41 +47,32 @@
                             <thead>
                                 <tr style="text-align: center; background-color: #069eb5;">
                                     <th>Proses</th>
-                                    <th>Tanggal</th>
-                                    <th>Target Quantity</th>
+                                    <th>Size</th>
+                                    <th>Class</th>
+                                    <th>Kapasitas/Pcs</th>
+                                    <th>Kode</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($target as $data)
-                                @php
-                                $dataTanggal = date('Y-m-d', strtotime($data->tanggal_target));
-                                @endphp
-                                @if($dataTanggal === $selectedDate)
+                                @foreach($produk as $data)
+
                                 <tr>
                                     <td>{{ $data->daftarproses }}</td>
-                                    <td>{{ date('d-F-Y', strtotime($data->tanggal_target)) }}</td>
-                                    <td>{{ $data->target_quantity }}</td>
+                                    <td>{{ $data->size }}</td>
+                                    <td>{{ $data->class }}</td>
+                                    <td>{{ $data->kapasitas_pcs }}</td>
+                                    <td>{{ $data->kode }}</td>
                                     <td>
-                                        @php
-                                        $produksiData = App\Models\Produksi::where('daftarproses', $data->daftarproses)
-                                            ->where('tanggal', $dataTanggal)
-                                            ->first();
-                                        @endphp
-                                        @if (!$produksiData)
-                                            <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
-                                                Edit
-                                            </a>
-                                            <a href="{{ route('target.destroy', $data) }}" onclick="notificationBeforeDelete(event, this)"
-                                                class="btn btn-danger btn-xs">
-                                                Delete
-                                            </a>
-                                        @else
-                                            <span class="badge bg-success">Target sudah digunakan</span>
-                                        @endif
+                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
+                                            Edit
+                                        </a>
+                                        <a href="{{ route('cycletime_produk.destroy', $data) }}"
+                                            onclick="notificationBeforeDelete(event, this)" class="btn btn-danger btn-xs">
+                                            Delete
+                                        </a>
                                     </td>
                                 </tr>
-                                @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -98,10 +89,10 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('target.store') }}" method="post">
+            <form action="{{ route('cycletime_produk.store') }}" method="post" id="produkForm">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahLabel">Tambah Target</h5>
+                    <h5 class="modal-title" id="modalTambahLabel">Tambah Produk</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -120,20 +111,38 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="tanggal_target">Tanggal</label>
-                        <input type="date" class="form-control @error('tanggal_target') is-invalid @enderror"
-                            id="tanggal_target" placeholder="tanggal_target" name="tanggal_target"
-                            value="{{ old('tanggal_target') ?? date('Y-m-d') }}" >
-                        @error('tanggal_target')
+                        <label for="size">Size</label>
+                        <input type="string" class="form-control @error('size') is-invalid @enderror"
+                            id="size" placeholder="Size" name="size"
+                            value="{{ old('size') }}">
+                        @error('size')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="target_quantity">Quantity</label>
-                        <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
-                            id="target_quantity" placeholder="Quantity" name="target_quantity"
-                            value="{{ old('target_quantity') }}">
-                        @error('target_quantity')
+                        <label for="class">Class</label>
+                        <input type="string" class="form-control @error('class') is-invalid @enderror"
+                            id="class" placeholder="Class" name="class"
+                            value="{{ old('class') }}">
+                        @error('class')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="kapasitas_pcs">Kapasitas/Pcs</label>
+                        <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
+                            id="kapasitas_pcs" placeholder="Kapasitas/Pcs" name="kapasitas_pcs"
+                            value="{{ old('kapasitas_pcs') }}">
+                        @error('kapasitas_pcs')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="kode">Kode</label>
+                        <input type="string" class="form-control @error('kode') is-invalid @enderror"
+                            id="kode" placeholder="Kode" name="kode"
+                            value="{{ old('kode') }}">
+                        @error('kode')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -147,16 +156,16 @@
     </div>
 </div>
 
-@foreach($target as $data)
 <!-- Modal Edit -->
+@foreach($produk as $data)
 <div class="modal fade" id="modalEdit{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel{{ $data->id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('target.update', $data->id) }}" method="post">
+            <form action="{{ route('cycletime_produk.update', $data->id) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditLabel{{ $data->id }}">Edit Target</h5>
+                    <h5 class="modal-title" id="modalEditLabel{{ $data->id }}">Edit Produk</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -178,35 +187,45 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="tanggal_target{{ $data->id }}">Tanggal</label>
-                        <input type="date" class="form-control @error('tanggal_target') is-invalid @enderror"
-                            id="tanggal_target{{ $data->id }}" placeholder="tanggal_target" name="tanggal_target"
-                            value="{{$data->tanggal_target ?? old('tanggal_target') ?? date('Y-m-d') }}">
-                        @error('tanggal_target')
+                        <label for="size{{ $data->id }}">Size</label>
+                        <input type="string" class="form-control @error('size') is-invalid @enderror"
+                            id="size{{ $data->id }}" placeholder="Size" name="size"
+                            value="{{$data->size ?? old('size') }}">
+                        @error('size')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>   
+
+                    <div class="form-group">
+                        <label for="class{{ $data->id }}">Class</label>
+                        <input type="string" class="form-control @error('class') is-invalid @enderror"
+                            id="class{{ $data->id }}" placeholder="Class" name="class"
+                            value="{{$data->class ?? old('class') }}">
+                        @error('class')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="target_quantity{{ $data->id }}">Target Quantity</label>
-                        <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
-                            id="target_quantity{{ $data->id }}" placeholder="Quantity" name="target_quantity"
-                            value="{{$data->target_quantity ?? old('target_quantity') }}">
-                        @error('target_quantity')
+                        <label for="kapasitas_pcs{{ $data->id }}">Kapasitas/Pcs</label>
+                        <input type="integer" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
+                            id="kapasitas_pcs{{ $data->id }}" placeholder="Kapasitas/Pcs" name="kapasitas_pcs"
+                            value="{{$data->kapasitas_pcs ?? old('kapasitas_pcs') }}">
+                        @error('kapasitas_pcs')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>   
+                    <div class="form-group">
+                        <label for="kode{{ $data->id }}">Kode</label>
+                        <input type="string" class="form-control @error('kode') is-invalid @enderror"
+                            id="kode{{ $data->id }}" placeholder="Kode" name="kode"
+                            value="{{$data->kode ?? old('kode') }}">
+                        @error('kode')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>   
                 </div>
                 <div class="modal-footer">
-                    @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
                     <button type="submit" class="btn btn-info">Simpan</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                 </div>
@@ -225,12 +244,18 @@
             "responsive": true,
         });
 
-        $('#modalTambah').on('show.bs.modal', function (event) {
-            $(this).find('form')[0].reset();
+        $('#modalTambah').on('hidden.bs.modal', function () {
+            $('#produkForm')[0].reset();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.text-danger').remove();
         });
 
-        // Fungsi untuk membuka modal edit
-        function openEditModal(id) {
+        if ($('.is-invalid').length > 0) {
+            $('#modalTambah').modal('show');
+        }
+
+         // Fungsi untuk membuka modal edit
+         function openEditModal(id) {   
             var modalId = '#modalEdit' + id;
             $(modalId).modal('show');
         }

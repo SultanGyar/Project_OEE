@@ -54,6 +54,8 @@
                                     <th>Proses</th>
                                     <th>Kelompok</th>
                                     <th>Tanggal</th>
+                                    <th>Kapasitas/Pcs</th>
+                                    <th>Kode</th>
                                     <th>Target Quantity</th>
                                     <th>Actual Quantity</th>
                                     <th>Good Quality</th>
@@ -89,6 +91,8 @@
                                     <td>{{ $item->daftarproses }}</td>
                                     <td>{{ $item->daftarkelompok }}</td>
                                     <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
+                                    <td>{{ $item->kapasitas_pcs }}</td>
+                                    <td>{{ $item->kode }}</td>
                                     <td>{{ $item->target_quantity }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->finish_good }}</td>

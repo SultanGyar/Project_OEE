@@ -107,7 +107,12 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('error_message', 'Pengguna dengan ID ' . $id . ' tidak ditemukan');
         }
 
-        $userData = $request->only(['name','full_name', 'role', 'status']);
+        $userData = $request->only([
+            'name',
+            'full_name', 
+            'role', 
+            'status'
+        ]);
 
         if ($request->filled('password')) {
             $userData['password'] = bcrypt($request->input('password'));

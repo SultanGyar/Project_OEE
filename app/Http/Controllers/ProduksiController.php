@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnggotaKelompok;
+use App\Models\CycletimeProduk;
 use App\models\User;
 use App\Models\Produksi;
-use App\Models\Target;
 use App\Models\Keterangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,53 +37,47 @@ class ProduksiController extends Controller
      */
     public function create()
     {
-        $allTargetProses = Target::pluck('daftarproses')->toArray();
-        $produksiWithSameProses = Produksi::whereIn('daftarproses', $allTargetProses)->pluck('daftarproses')->toArray();
-        $dataproses = Target::whereNotIn('daftarproses', $produksiWithSameProses)->pluck('daftarproses', 'daftarproses');
-
+        $datakode = CycletimeProduk::pluck('kode', 'kode');
+        $dataketerangan = Keterangan::pluck('daftarketerangan', 'daftarketerangan');
         return view('produksi.create', [
-            'dataproses' => $dataproses,
-            'dataketerangan' => Keterangan::pluck('daftarketerangan', 'daftarketerangan'),
+            'datakode' => $datakode,
+            'dataketerangan' => $dataketerangan,
             'user' => User::all()
         ]);
     }
 
-    public function getTargetQuantity(Request $request)
+    public function getDataAuto(Request $request)
     {
-        $proses = $request->input('daftarproses');
-        $tanggal = $request->input('tanggal');
-            
-        $targetQuantity = DB::table('target')
-            ->where('daftarproses', $proses)
-            ->where('tanggal_target', $tanggal)
-            ->value('target_quantity');
-            
-        return response()->json([
-            'success' => true,
-            'target_quantity' => $targetQuantity
-        ]);
-    }
-
-    public function getKelompokData(Request $request)
-    {
-        $proses = $request->input('daftarproses');
-
-        // Menggunakan model Eloquent AnggotaKelompok
-        $anggotaKelompok = AnggotaKelompok::where('daftarproses', $proses)->first();
-
-        if ($anggotaKelompok) {
-            $datakelompok = $anggotaKelompok->daftarkelompok;
-
-            return response()->json([
-                'success' => true,
-                'daftarkelompok' => $datakelompok
-            ]);
-        }
-
-        return response()->json([
+        $response = [
             'success' => false,
-            'daftarkelompok' => null
-        ]);
+            'daftarproses' => null,
+            'kapasitas_pcs' => null,
+            'daftarkelompok' => null, // Tambahkan daftarkelompok
+        ];
+    
+        // Cek parameter kode
+        $kode = $request->input('kode');
+    
+        // Mengecek jenis permintaan berdasarkan parameter yang ada
+        if (!empty($kode)) {
+            // Menggunakan model Eloquent CycletimeProduk
+            $produk = CycletimeProduk::where('kode', $kode)->first();
+            if ($produk) {
+                $response['daftarproses'] = $produk->daftarproses;
+                $response['kapasitas_pcs'] = $produk->kapasitas_pcs;
+                $response['success'] = true;
+            }
+            
+            // Identifikasi kesamaan dengan AnggotaKelompok
+            if (!empty($response['daftarproses'])) {
+                $anggotaKelompok = AnggotaKelompok::where('daftarproses', $response['daftarproses'])->first();
+                if ($anggotaKelompok) {
+                    $response['daftarkelompok'] = $anggotaKelompok->daftarkelompok;
+                }
+            }
+        }
+    
+        return response()->json($response);
     }
 
     /**
@@ -94,14 +88,16 @@ class ProduksiController extends Controller
         //menyimpan  produksi
         $user = auth()->user();
         $request->validate([
+            'tanggal' => 'required',
+            'kapasitas_pcs' => 'required',
+            'target_quantity' => 'required',
             'daftarproses' => 'required',
             'daftarkelompok' => 'required',
-            'target_quantity' => 'required',
+            'kode' => 'required',
             'quantity' => 'required',
             'finish_good' => 'required',
             'reject' => 'nullable',
             'daftarketerangan' => 'nullable',
-            'tanggal' => 'required',
             'operating_start_time' => 'required',
             'operating_end_time' => 'required',
             'operating_time' => 'required',
@@ -149,14 +145,16 @@ class ProduksiController extends Controller
         }
         
         $array = $request->only([
+            'tanggal',
+            'kapasitas_pcs',
+            'target_quantity',
             'daftarproses',
             'daftarkelompok',
-            'target_quantity',
+            'kode',
             'quantity',
             'finish_good',
             'reject',
             'daftarketerangan',
-            'tanggal',
             'operating_start_time',
             'operating_end_time',
             'operating_time',

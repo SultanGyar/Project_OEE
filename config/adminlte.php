@@ -361,8 +361,8 @@ return [
             'submenu' => [
 
                 [
-                    'text' => 'Target Quantity',
-                    'url' => '/target',
+                    'text' => 'Cycle Time Produk',
+                    'url' => 'cycletime_produk',
                     'icon' => 'fa fa-tachometer-alt',
                     'can' => 'admin-only',
                 ],

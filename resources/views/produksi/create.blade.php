@@ -29,6 +29,15 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        <label for="kapasitas_pcs">Kapasitas/Pcs <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
+                            id="kapasitas_pcs" placeholder="Kapasitas/Pcs" name="kapasitas_pcs"
+                            value="{{ old('kapasitas_pcs') }}" readonly>
+                        @error('kapasitas_pcs')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         <label for="target_quantity">Target Quantity <span class="font-weight-normal">(Otomatis)</span></label>
                         <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
                             id="target_quantity" placeholder="Target Quantity" name="target_quantity"
@@ -48,17 +57,27 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="daftarproses">Nama Proses</label>
-                        <select class="form-control mb-10 @error('daftarproses') is-invalid @enderror" id="daftarproses" name="daftarproses" style="width: 100%">
-                            <option value="" selected disabled>Pilih Proses..</option>
-                            @foreach ($dataproses as $value => $label)
-                            <option value="{{ $value }}" @if (old('daftarproses') == $value) selected @endif>{{ $label }}</option>
-                            @endforeach
-                        </select>
+                        <label for="daftarproses">Proses <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('daftarproses') is-invalid @enderror"
+                            id="daftarproses" placeholder="Proses" name="daftarproses"
+                            value="{{ old('daftarproses') }}" >
                         @error('daftarproses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>                 
+                    </div>  
+                                
+                    <div class="form-group">
+                        <label for="kode">Kode</label>
+                        <select class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode" style="width: 100%">
+                            <option value="" selected disabled>Pilih Kode..</option>
+                            @foreach ($datakode as $value => $label)
+                            <option value="{{ $value }}" @if (old('kode') == $value) selected @endif>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('kode')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>   
 
                     <div class="form-group">
                         <label for="quantity">Actual Quantity</label>
@@ -420,68 +439,44 @@
 
 <script>
 
-    function autoFillTargetQuantity() {
-        var selectedProses = $('#daftarproses').val();
-        var selectedTanggal = $('#tanggal').val();
-
-        // Kirim permintaan AJAX ke server untuk mendapatkan nilai target_quantity_byadmin
+    function getDataAuto() {
+        var selectedKode = $('#kode').val();
+        
+        // Langkah 1: Isi daftarproses dan kapasitas_pcs
         $.ajax({
-            url: '/get-target-quantity', // Ubah menjadi route yang sesuai
+            url: '/get-data-auto',
             method: 'GET',
             data: {
-                daftarproses: selectedProses,
-                tanggal: selectedTanggal
+                kode: selectedKode,
             },
             success: function(response) {
+                console.log('Step 1:', response);
+
                 if (response.success) {
-                    var targetQuantity = response.target_quantity; // Ubah menjadi 'target_quantity'
-                    $('#target_quantity').val(targetQuantity);
-                } else {
-                    $('#target_quantity').val('');
+                    var daftarproses = response.daftarproses;
+                    var kapasitasPcs = response.kapasitas_pcs;
+
+                    $('#daftarproses').val(daftarproses);
+                    $('#kapasitas_pcs').val(kapasitasPcs);
+
+                    // Langkah 2: Periksa kesamaan dengan AnggotaKelompok
+                    if (response.daftarkelompok) {
+                        $('#daftarkelompok').val(response.daftarkelompok);
+                    } else {
+                        // Jika tidak ada kesamaan, Anda dapat melakukan tindakan lain
+                    }
                 }
+            },
+            error: function() {
+                console.log('Error: Failed to make the request.');
             }
         });
     }
 
-    // Panggil fungsi autoFillTargetQuantity setiap kali nilai 'proses' atau 'tanggal' berubah
-    $('#daftarproses, #tanggal').on('change', function() {
-        autoFillTargetQuantity();
+    // Panggil fungsi getDataAuto saat nilai 'kode' berubah
+    $('#kode').on('change', function() {
+        getDataAuto();
     });
-
-    // Panggil fungsi saat halaman pertama kali dimuat
-    autoFillTargetQuantity();
-
-    function autoFillKelompokan() {
-        var selectedProses = $('#daftarproses').val();
-
-        // Kirim permintaan AJAX ke server untuk mendapatkan data kelompok
-        $.ajax({
-            url: '/get-kelompok-data', // Ubah menjadi route yang sesuai
-            method: 'GET',
-            data: {
-                daftarproses: selectedProses,
-            },
-            success: function (response) {
-                if (response.success) {
-                    var daftarkelompok = response.daftarkelompok;
-                    $('#daftarkelompok').val(daftarkelompok);
-                } else {
-                    $('#daftarkelompok').val('');
-                }
-            },
-            error: function () {
-                $('#daftarkelompok').val(''); // Handle error dengan mengosongkan nilai kelompokan
-            },
-        });
-    }
-
-    // Panggil fungsi autoFillKelompokan setiap kali nilai 'proses' berubah
-    $('#daftarproses').on('change', function () {
-        autoFillKelompokan();
-    });
-
-    // Panggil fungsi saat halaman pertama kali dimuat
-    autoFillKelompokan();
 
 
     document.getElementById('quantity').addEventListener('input', function () {
@@ -619,6 +614,7 @@
             const operating_timeInput = document.getElementById('operating_time');
             const b_timeInput = document.getElementById('b_time');
             const actual_timeInput = document.getElementById('actual_time');
+            const kapasitasPcsInput = document.getElementById('kapasitas_pcs'); // Tambahkan ini
 
             const operating_time = parseDuration(operating_timeInput.value);
             const b_time = b_timeInput.value ? parseDuration(b_timeInput.value) : 0;
@@ -629,6 +625,16 @@
             // Ubah durasi menjadi format jam dan menit (HH:mm) dan perbarui nilai pada input actual_time
             const formattedDuration = `${Math.floor(actualTimeInMinutes / 60).toString().padStart(2, '0')}:${(actualTimeInMinutes % 60).toString().padStart(2, '0')}`;
             actual_timeInput.value = formattedDuration;
+
+            // Hitung actual_time dalam detik
+            const actualTimeInSeconds = actualTimeInMinutes * 60;
+
+            // Ambil nilai kapasitas_pcs
+            const kapasitasPcs = parseFloat(kapasitasPcsInput.value) || 0;
+
+            // Hitung target_quantity dan isi nilai ke form target_quantity
+            const targetQuantity = actualTimeInSeconds / kapasitasPcs;
+            document.getElementById('target_quantity').value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
         }
 
         // Fungsi bantuan untuk mengonversi durasi dalam format "HH:mm:ss" menjadi menit

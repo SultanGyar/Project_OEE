@@ -28,15 +28,13 @@ Route::resource('/advance', \App\Http\Controllers\AdvanceController::class)->mid
 Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('auth');
 Route::resource('produksi', \App\Http\Controllers\ProduksiController::class)->middleware('auth');
 Route::resource('data_produksi', \App\Http\Controllers\DataProduksiController::class)->middleware('auth');
-Route::resource('target', \App\Http\Controllers\TargetController::class)->middleware('auth');
+Route::resource('cycletime_produk', \App\Http\Controllers\CycletimeProdukController::class)->middleware('auth');
 Route::resource('proses', \App\Http\Controllers\ProsesController::class)->middleware('auth');
 Route::resource('kelompok', \App\Http\Controllers\KelompokController::class)->middleware('auth');
 Route::resource('anggota_kelompok', \App\Http\Controllers\AnggotaKelompokController::class)->middleware('auth');
 Route::resource('keterangan', \App\Http\Controllers\KeteranganController::class)->middleware('auth');
 
-
-Route::get('/get-kelompok-data', [ProduksiController::class, 'getKelompokData'])->name('get-kelompok-data'); 
-Route::get('/get-target-quantity', [ProduksiController::class, 'getTargetQuantity'])->name('get-target-quantity'); 
+Route::get('/get-data-auto', [ProduksiController::class, 'getDataAuto'])->name('get-data-auto'); 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
 Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);
 Auth::routes();

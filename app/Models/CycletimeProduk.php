@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Target extends Model
+class CycletimeProduk extends Model
 {
     use HasFactory;
-    protected $table = 'target';
+    protected $table = 'cycletime_produk';
     protected $fillable = [
         'daftarproses',
-        'tanggal_target',
-        'target_quantity'
+        'size',
+        'class',
+        'kapasitas_pcs',
+        'kode',
     ];
     
-    public function fproses(){
+    public function fproses()
+    {
         return $this->belongsTo(Proses::class, 'daftarproses', 'daftarproses');
     }
 }

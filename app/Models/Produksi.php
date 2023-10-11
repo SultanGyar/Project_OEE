@@ -14,13 +14,15 @@ class Produksi extends Model
     protected $fillable = [
         'nama_user',
         'daftarproses',
-        'daftarkelompok',
+        'tanggal',
+        'kapasitas_pcs',
         'target_quantity',
+        'daftarkelompok',
+        'kode',
         'quantity',
         'finish_good',
         'reject',
         'daftarketerangan',
-        'tanggal',
         'operating_start_time',
         'operating_end_time',
         'operating_time',
@@ -52,22 +54,10 @@ class Produksi extends Model
         'h_time'
     ];
 
-    public function fuser()
-    {
+    public function fuser(){
         return $this->belongsTo(User::class, 'nama_user', 'id');
     }
 
-    public function ftarget(){
-        return $this->belongsTo(Target::class, 'target_quantity', 'target_quantity');
-    }
-
-    public function fanggotaproses(){
-        return $this->belongsTo(AnggotaKelompok::class, 'daftarproses', 'daftarproses');
-    }
-
-    public function fanggotakelompok(){
-        return $this->belongsTo(AnggotaKelompok::class, 'daftarkelompok', 'daftarkelompok');
-    }
 
     public function fketerangan(){
         return $this->belongsTo(Keterangan::class, 'daftarketerangan', 'daftarketerangan');
