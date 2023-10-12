@@ -29,18 +29,6 @@
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                         <a href="#" class="text-btn-center btn btn-md btn-info mb-2 mb-md-0" style="height: 38px;"
                             data-toggle="modal" data-target="#modalTambah">Tambah</a>
-                        <form id="filterForm" method="get" class="form-inline">
-                            @php
-                            $currentDate = date('Y-m-d');
-                            $selectedDate = request('filterDate', $currentDate);
-                            @endphp
-                            <div class="d-flex align-items-center">
-                                <label for="filterDate" class="mr-2">Tanggal:</label>
-                                <input type="date" class="form-control" id="filterDate" name="filterDate"
-                                    value="{{ $selectedDate }}" max="{{ $currentDate }}">
-                                <button type="submit" class="btn btn-info ml-2">Submit</button>
-                            </div>
-                        </form>
                     </div>
                     <div class="table-responsive"> 
                         <table class="table table-hover table-bordered table-striped" id="example2">

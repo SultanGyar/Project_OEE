@@ -38,7 +38,8 @@
                             $selectedDate = request('filterDate', $currentDate); // Ambil tanggal terpilih
                             @endphp
                             <div class="d-flex align-items-center">
-                                <label for="filterDate" class="mr-2 mb-2 mb-md-0" style="flex: 0 0 auto;">Tanggal:</label>
+                                <label for="filterDate" class="mr-2 mb-2 mb-md-0"
+                                    style="flex: 0 0 auto;">Tanggal:</label>
                                 <input type="date" class="form-control" id="filterDate" name="filterDate"
                                     value="{{ $selectedDate }}" max="{{ $currentDate }}">
                                 <button type="submit" class="btn btn-info ml-2">Submit</button>
@@ -54,7 +55,7 @@
                                     <th>Proses</th>
                                     <th>Kelompok</th>
                                     <th>Tanggal</th>
-                                    <th>Kapasitas/Pcs</th>
+                                    <th>Kapasitas /Pcs</th>
                                     <th>Kode</th>
                                     <th>Target Quantity</th>
                                     <th>Actual Quantity</th>
@@ -110,7 +111,11 @@
                                     <td>{{ formatTime($item->g_time) }}</td>
                                     <td>{{ formatTime($item->h_time) }}</td>
                                     <td>
-                                    <a href="{{route('produksi.destroy', $item)}}"
+                                        <a href="{{route('produksi.edit',
+                                            $item)}}" class="btn btn-primary btn-xs">
+                                            Edit
+                                        </a>
+                                        <a href="{{route('produksi.destroy', $item)}}"
                                             onclick="notificationBeforeDelete(event, this)"
                                             class="btn btn-danger btn-xs">
                                             Delete
@@ -129,7 +134,8 @@
             </div>
             @can('admin-only')
             <div id="lanjutan" style="display: none;">
-                @foreach (['Performance' => 'green', 'Availability' => 'warning', 'Quality' => 'danger'] as $header => $color)
+                @foreach (['Performance' => 'green', 'Availability' => 'warning', 'Quality' => 'danger'] as $header =>
+                $color)
                 <div class="card">
                     <div class="card-header bg-gradient-{{ $color }}">
                         <h3 class="card-title" style="color: white; width: 100%; text-align: center;">
@@ -139,11 +145,13 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @php
-                            $tableId = 'example' . strtolower($header); // Menggunakan jenis header untuk menentukan ID tabel
+                            $tableId = 'example' . strtolower($header); // Menggunakan jenis header untuk menentukan ID
                             @endphp
-                            <table class="table table-hover table-bordered table-striped" style="width: 100%" id="{{ $tableId }}">
+                            <table class="table table-hover table-bordered table-striped" style="width: 100%"
+                                id="{{ $tableId }}">
                                 <thead>
-                                    <tr style="text-align: center; background-color: #{{ $color == 'green' ? '28a745' : ($color == 'warning' ? 'ffc107' : 'dc3545') }}">
+                                    <tr
+                                        style="text-align: center; background-color: #{{ $color == 'green' ? '28a745' : ($color == 'warning' ? 'ffc107' : 'dc3545') }}">
                                         <th>No.</th>
                                         <th>Operator</th>
                                         <th>Proses</th>
@@ -219,7 +227,7 @@
                 @endforeach
             </div>
             @endcan
-            
+
         </div>
     </div>
 </div>
@@ -227,31 +235,11 @@
 @stop
 
 @php
-function formatTime($time) {
-$formattedTime = '';
-
-if ($time) {
-$timeComponents = explode(':', $time);
-$hours = intval($timeComponents[0]);
-$minutes = intval($timeComponents[1]);
-$seconds = intval($timeComponents[2]);
-
-// Menghitung total waktu dalam hitungan menit
-$totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
-
-// Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
-if ($totalMinutes !== 0) {
-$formattedTime = "{$totalMinutes} Minutes";
-}
-}
-
-return $formattedTime;
-}
+include_once(app_path('helper/helpers.php'))
 @endphp
 
 @push('js')
 <script>
-
     document.addEventListener("DOMContentLoaded", function () {
         var lanjutanButton = document.querySelector(".btn-lanjutan");
         var lanjutanSection = document.getElementById("lanjutan");

@@ -85,7 +85,7 @@ class CycletimeProdukController extends Controller
             'daftarproses' => 'required',
             'size' => 'required',
             'class' => 'required',
-            'kapasitaas_pcs' => 'required',
+            'kapasitas_pcs' => 'required',
             'kode' => 'required'
         ]);
 
@@ -94,7 +94,7 @@ class CycletimeProdukController extends Controller
             'daftar_proses' => $request->input('daftar_proses'),
             'size' => $request->input('size'),
             'class' => $request->input('class'),
-            'kapasitas_shift' => $request->input('kapasitas_pcs'),
+            'kapasitas_pcs' => $request->input('kapasitas_pcs'),
             'kode' => $request->input('kode')
         ]);
 

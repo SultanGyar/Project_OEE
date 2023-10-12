@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'logo' => '<b> Project OEE </b>',
+    'logo' => '<b> Digitalisasi OEE </b>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,

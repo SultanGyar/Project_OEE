@@ -106,27 +106,12 @@
         </div>
     </div>
 </div>
-@php
-function formatTime($time) {
-$formattedTime = '';
-if ($time) {
-$timeComponents = explode(':', $time);
-$hours = intval($timeComponents[0]);
-$minutes = intval($timeComponents[1]);
-$seconds = intval($timeComponents[2]);
 
-$totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
-
-// Cek jika total menit tidak sama dengan 0, baru format dan tampilkan
-if ($totalMinutes !== 0) {
-$formattedTime = "{$totalMinutes} Minutes";
-}
-}
-
-return $formattedTime;
-}
-@endphp
 @stop
+
+@php
+include_once(app_path('helper/helpers.php'))
+@endphp
 
 @push('js')
 <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>

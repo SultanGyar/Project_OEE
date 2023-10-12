@@ -181,11 +181,14 @@ class ProduksiObserver
             $updatedDownTime = $produksi->down_time;
             $updatedTanggal = $produksi->tanggal;
 
+
+            $bulan = Carbon::parse($updatedTanggal)->format('m');
+            $tahun = Carbon::parse($updatedTanggal)->format('Y');
             // Cari entri DataProduksi yang sesuai
             $dataProduksi = DataProduksi::where('proses', $produksi->daftarproses)
-                ->whereMonth('tanggal', $produksi->tanggal->format('m'))
-                ->whereYear('tanggal', $produksi->tanggal->format('Y'))
-                ->first();
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->first();
 
             if ($dataProduksi) {
                 // Perbarui nilai-nilai sesuai dengan perubahan pada Produksi
