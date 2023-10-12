@@ -17,8 +17,9 @@
 
 @section('body')
 <div class="image-element">
-    <img src="{{ asset('vendor/adminlte/dist/img/MW-88-1.png') }}">
+    <img src="{{ asset('vendor/adminlte/dist/img/MW-88-1.png') }}" style="max-width: 400px; height: auto;">
 </div>
+
     <div class="{{ $auth_type ?? 'login' }}-box">
         {{-- Logo --}}
         <div class="{{ $auth_type ?? 'login' }}-logo">
