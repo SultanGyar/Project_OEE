@@ -17,7 +17,7 @@
 
 @section('body')
 <div class="image-element">
-    <img src="{{ asset('vendor/adminlte/dist/img/MW-88-1.png') }}" style="max-width: 400px; height: auto;">
+    <img src="{{ asset('vendor/adminlte/dist/img/MW-88.png') }}" style="max-width: 400px; height: auto;">
 </div>
 
     <div class="{{ $auth_type ?? 'login' }}-box">
@@ -52,7 +52,7 @@
 @stop
 <style>
     body { 
-        background-image: url('{{ asset('vendor/adminlte/dist/img/19742.jpg') }}');
+        background-image: url('{{ asset('vendor/adminlte/dist/img/bg-auth.jpg') }}');
         background-size: cover; 
         background-repeat: no-repeat;
         background-position: center center;
