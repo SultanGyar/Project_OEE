@@ -14,8 +14,8 @@
 
     {{-- Title --}}
     <title>
-        @yield('title_prefix', config('adminlte.title_prefix', ''))
-        @yield('title', config('adminlte.title', 'Project OEE'))
+        @yield('title_prefix', config('adminlte.title_prefix', 'Login'))
+        @yield('title', config('adminlte.title', 'OEE MW 88'))
         @yield('title_postfix', config('adminlte.title_postfix', ''))
     </title>
 

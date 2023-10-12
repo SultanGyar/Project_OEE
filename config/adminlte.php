@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'title' => 'Project OEE',
+    'title' => 'OEE MW 88',
     'title_prefix' => '',
     'title_postfix' => '',
 

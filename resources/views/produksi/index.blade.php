@@ -73,7 +73,9 @@
                                     <th>F (Checking)</th>
                                     <th>G (Reject)</th>
                                     <th>H (Rework)</th>
+                                    @can('admin-only')
                                     <th>Opsi</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
@@ -110,6 +112,7 @@
                                     <td>{{ formatTime($item->f_time) }}</td>
                                     <td>{{ formatTime($item->g_time) }}</td>
                                     <td>{{ formatTime($item->h_time) }}</td>
+                                    @can('admin-only')
                                     <td>
                                         <a href="{{route('produksi.edit',
                                             $item)}}" class="btn btn-primary btn-xs">
@@ -121,6 +124,7 @@
                                             Delete
                                         </a>
                                     </td>
+                                    @endcan
                                 </tr>
                                 @php
                                 $no++;

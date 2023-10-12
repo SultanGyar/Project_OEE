@@ -1,5 +1,7 @@
 @extends('adminlte::auth.auth-page', ['auth_type' => 'login'])
-
+@section('title') 
+    Login | {{ config('adminlte.title') }}
+@stop
 @section('adminlte_css_pre')
 <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 <link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">

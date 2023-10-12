@@ -1,5 +1,9 @@
 @extends('adminlte::auth.auth-page', ['auth_type' => 'register'])
 
+@section('title') 
+    Register | {{ config('adminlte.title') }}
+@stop
+
 <link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 
 @php( $login_url = View::getSection('login_url') ?? config('adminlte.login_url', 'login') )
