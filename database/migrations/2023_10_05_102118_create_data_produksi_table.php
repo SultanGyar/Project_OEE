@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('target_quantity');
             $table->integer('quantity');
             $table->integer('finish_good');
-            $table->integer('reject');
+            $table->integer('reject')->nullable();
             $table->time('operating_time');
             $table->time('actual_time');
             $table->time('down_time')->nullable();

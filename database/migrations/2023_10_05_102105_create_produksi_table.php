@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('kapasitas_pcs');
             $table->integer('target_quantity');
             $table->string('daftarkelompok', 50);
-            $table->string('kode', 30)->unique();
+            $table->string('kode', 30);
             $table->foreign('kode')->references('kode')->on('cycletime_produk')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('quantity');
             $table->integer('finish_good');

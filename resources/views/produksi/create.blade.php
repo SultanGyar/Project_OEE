@@ -100,7 +100,7 @@
                     <div class="form-group">
                         <label for="reject">Not Good</label>
                         <input type="number" class="form-control @error('reject') is-invalid @enderror" id="reject"
-                            Reject="reject" placeholder="Not Good" name="reject" value="{{ old('reject') }}">
+                            name="reject" placeholder="Not Good" value="{{ old('reject') ?? 0 }}">
                         @error('reject')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror

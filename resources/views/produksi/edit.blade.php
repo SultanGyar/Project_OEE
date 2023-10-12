@@ -113,7 +113,7 @@
                     <div class="form-group">
                         <label for="daftarketerangan">Keterangan Not Good</label>
                         <select class="form-control mb-10 @error('daftarketerangan') is-invalid @enderror" id="daftarketerangan" name="daftarketerangan" style="width: 100%">
-                            <option value="" selected disabled>Pilih Keterangan..</option>
+                            <option value="" >Batal (Pilih ini untuk membatalkan Keterangan)</option>
                             @foreach ($dataketerangan as $value => $label)
                                 <option value="{{ $value }}" @if ($value == $produksi->daftarketerangan || old('daftarketerangan') == $value) selected @endif>{{ $label }}</option>
                             @endforeach

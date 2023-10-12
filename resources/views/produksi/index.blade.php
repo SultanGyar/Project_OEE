@@ -52,11 +52,11 @@
                                 <tr style="text-align: center; background-color: #069eb5;">
                                     <th>No.</th>
                                     <th>Operator</th>
+                                    <th>Tanggal</th>
                                     <th>Proses</th>
                                     <th>Kelompok</th>
-                                    <th>Tanggal</th>
-                                    <th>Kapasitas /Pcs</th>
                                     <th>Kode</th>
+                                    <th>Kapasitas /Pcs</th>
                                     <th>Target Quantity</th>
                                     <th>Actual Quantity</th>
                                     <th>Good Quality</th>
@@ -91,11 +91,11 @@
                                     data-bulan="{{ strtolower(date('Y-m-d', strtotime($item->tanggal))) }}">
                                     <td>{{ $no }}</td>
                                     <td>{{ $item->fuser->full_name }}</td>
+                                    <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{ $item->daftarproses }}</td>
                                     <td>{{ $item->daftarkelompok }}</td>
-                                    <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
-                                    <td>{{ $item->kapasitas_pcs }}</td>
                                     <td>{{ $item->kode }}</td>
+                                    <td>{{ $item->kapasitas_pcs }}</td>
                                     <td>{{ $item->target_quantity }}</td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->finish_good }}</td>

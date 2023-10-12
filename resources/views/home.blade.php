@@ -23,7 +23,7 @@
 @section('content')
 <div class="row">
     @foreach($getData as $kelompok => $data)
-    <div class="col-lg-3 col-md-4 col-sm-6" id="oeeCard{{ $loop->index }}">
+    <div class="col-lg-3 col-md-4" id="oeeCard{{ $loop->index }}">
         <div class="card card-info border shadow-lg">
             <div class="card-header d-flex justify-content-between align-items-center bg-gradient-gray-dark"
                 style="padding-top: 3px; padding-bottom: 3px;">
@@ -342,9 +342,9 @@
         var oeeValueText = document.getElementById('oee-value' + loopIndex);
         oeeValueText.textContent = oeePercentage + '%';
 
-        if (parseFloat(oeePercentage) > 85.00) {
+        if (parseFloat(oeePercentage) > 90.00) {
             oeeValueText.style.color = '#1ce34a'; // Mengubah warna teks menjadi hijau
-        } else if (parseFloat(oeePercentage) < 85.00) {
+        } else if (parseFloat(oeePercentage) < 90.00) {
             oeeValueText.style.color = '#ff0000'; // Mengubah warna teks menjadi merah jika tidak memenuhi kondisi pertama
         }
 

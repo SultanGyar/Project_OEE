@@ -94,22 +94,35 @@ class ProduksiObserver
         return sprintf('%02d:%02d:%02d', $hours, $minutes, 0); // Set detik ke 0.
     }
 
+    
     /**
      * Handle the Produksi "deleted" event.
      */
     public function deleted(Produksi $produksi): void
     {
-        // Kurangi nilai quantity di tabel DataProduksi berdasarkan proses yang sama
+        // Ambil data produksi yang sesuai
         $data_produksi = DataProduksi::where('proses', $produksi->daftarproses)->first();
 
         if ($data_produksi) {
+            // Simpan data asli sebelum pengurangan
+            $originalData = $data_produksi->replicate();
+
+            // Kurangi nilai quantity di tabel DataProduksi berdasarkan proses yang sama
             $data_produksi->decrement('target_quantity', $produksi->target_quantity);
             $data_produksi->decrement('quantity', $produksi->quantity);
             $data_produksi->decrement('finish_good', $produksi->finish_good);
             $data_produksi->decrement('reject', $produksi->reject);
-            $data_produksi->operating_time = $this->subtractTimes($data_produksi->operating_time, $produksi->operating_time);
-            $data_produksi->actual_time = $this->subtractTimes($data_produksi->actual_time, $produksi->actual_time);
-            $data_produksi->down_time = $this->subtractTimes($data_produksi->down_time, $produksi->down_time);
+
+            // Ubah waktu menjadi objek Carbon
+            $originalOperatingTime = Carbon::createFromFormat('H:i:s', $data_produksi->operating_time);
+            $originalActualTime = Carbon::createFromFormat('H:i:s', $data_produksi->actual_time);
+
+            $produksiOperatingTime = Carbon::createFromFormat('H:i:s', $produksi->operating_time);
+            $produksiActualTime = Carbon::createFromFormat('H:i:s', $produksi->actual_time);
+
+            // Kurangi waktu
+            $data_produksi->operating_time = $originalOperatingTime->subMinutes($produksiOperatingTime->diffInMinutes($originalOperatingTime));
+            $data_produksi->actual_time = $originalActualTime->subMinutes($produksiActualTime->diffInMinutes($originalActualTime));
 
             // Cek apakah nilai quantity setelah dikurangi menjadi 0 atau minus
             if ($data_produksi->quantity <= 0) {
@@ -119,6 +132,7 @@ class ProduksiObserver
             }
         }
     }
+
 
     // Metode untuk melakukan pengurangan waktu pada kolom waktu yang telah disediakan sebelumnya
     private function subtractTimes($time1, $time2)

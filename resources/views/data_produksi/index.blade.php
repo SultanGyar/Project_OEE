@@ -127,6 +127,7 @@ include_once(app_path('helper/helpers.php'))
         var table = $('#example2').DataTable({
             "responsive": true,
             "scrollX": true,
+            "scrollY": true,
             buttons: ["excel", "print"],
         });
 
