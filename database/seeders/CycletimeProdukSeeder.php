@@ -16,6 +16,20 @@ class CycletimeProdukSeeder extends Seeder
         $data = [
             [
                 'daftarproses' => 'Winding 7',
+                'size' => '1/2"',
+                'class' => '150 Basic',
+                'kapasitas_pcs' => 30,
+                'kode' => 'W701150'
+            ],
+            [
+                'daftarproses' => 'Winding 7',
+                'size' => '3/4"',
+                'class' => '150 Basic',
+                'kapasitas_pcs' => 41,
+                'kode' => 'W702150'
+            ],
+            [
+                'daftarproses' => 'Winding 7',
                 'size' => '1"',
                 'class' => '150 Basic',
                 'kapasitas_pcs' => 39,

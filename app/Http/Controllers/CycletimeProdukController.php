@@ -86,7 +86,7 @@ class CycletimeProdukController extends Controller
             'size' => 'required',
             'class' => 'required',
             'kapasitas_pcs' => 'required',
-            'kode' => 'required'
+            'kode' => 'required|unique:cycletime_produk,kode'
         ]);
 
         $produk = CycletimeProduk::findOrFail($id);
