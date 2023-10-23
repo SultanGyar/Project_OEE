@@ -149,7 +149,7 @@
                                 <div class="chart-text">
                                     <span class="chart-title">Quality</span>
                                     <span class="chart-percentage text-bold"
-                                        id="qualityPercentage{{ $loop->index }}"></span>
+                                        id="qualityPercentage{{ $loop->index }}" ></span>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" >Tutup</button>
             </div>
         </div>
     </div>
@@ -216,7 +216,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     var getData = @json($getData);
-    console.log('data yg didapat',getData);
     var performanceCharts = [];
     var availabilityCharts = [];
     var qualityCharts = [];
@@ -316,12 +315,13 @@
         var oeePercentage = (actualPercentage + actualTimePercentage + goodPercentage) / 3;
         oeePercentage = oeePercentage.toFixed(2);
 
+        var changeColor = (100 - oeePercentage) < 0 ? '#11c51d' : '#E21818';
+
         var oeeChartData = {
             datasets: [{
                 data: [oeePercentage, 100 - oeePercentage],
-                backgroundColor: ['#1D5D9B', '#E21818']
+                backgroundColor: ['#1D5D9B', changeColor]
             }],
-            // labels: [oeePercentage + '%', (100 - oeePercentage) + '%']   
         };
 
         var oeeChart = new Chart(oeeChartCanvas, {
