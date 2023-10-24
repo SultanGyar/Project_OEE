@@ -115,29 +115,6 @@
         @enderror
     </div>
 
-    {{-- Status field --}}
-    <div class="input-group mb-3" hidden>
-        <select name="status" class="form-control @error('status') is-invalid @enderror">
-            <option value="Aktif" @if(old('status')=='Aktif' ) selected @endif>{{ __('Aktif') }}</option>
-            <option value="Tidak Aktif" @if(old('status')=='Tidak Aktif' ) selected @endif>{{ __('Tidak Aktif') }}
-            </option>
-        </select>
-
-        <div class="input-group-append">
-            <div class="input-group-text">
-                <span class="fas fa-user-check {{ config('adminlte.classes_auth_icon', '') }}"></span>
-            </div>
-        </div>
-
-        @error('status')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
-    </div>
-
-
-
     {{-- Register button --}}
     <button type="submit" class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-info') }}">
         <span class="fas fa-user-plus"></span>

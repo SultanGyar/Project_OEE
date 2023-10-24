@@ -26,7 +26,7 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-                        <form id="filterForm" method="get" class="form-inline">
+                        <form id="filterForm" method="get" class="form-inline mb-0">
                             @php
                             $currentYear = date('Y');
                             $currentMonth = date('m');
@@ -38,9 +38,10 @@
                                 name="filterMonth" value="{{ $selectedMonth }}" max="{{ $currentDate }}">
                             <button type="submit" class="btn btn-info ml-2">Submit</button>
                         </form>
-                        <button id="exportOptions" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Export Options
+                        @can('admin-only')
+                        <button id="exportOptions" class="btn btn-secondary mt-1 dropdown-toggle" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Export
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" data-value="excel">
@@ -49,8 +50,14 @@
                             <a class="dropdown-item" data-value="print">
                                 <i class="fas fa-print"></i> Print
                             </a>
+                            <a class="dropdown-item" data-value="csv">
+                                <i class="fas fa-file-csv"></i> CSV
+                            </a>
+                            <a class="dropdown-item" data-value="pdf">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
                         </div>
-
+                        @endcan
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered table-striped" style="width:100%" id="example2">
@@ -124,40 +131,65 @@ include_once(app_path('helper/helpers.php'))
 
 <script>
     $(document).ready(function () {
+        var exportColumns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        var currentDate = new Date();
+        var formattedDate = currentDate.toLocaleString('id-ID', {
+            year: 'numeric',
+            month: 'long'
+        });
         var table = $('#example2').DataTable({
             "responsive": true,
             "scrollX": true,
-            "scrollY": true,
-            buttons: ["excel", "print"],
+            buttons: [
+                {
+                    extend: "excel",
+                    text: "Excel",
+                    title: "Data OEE " + formattedDate, 
+                    exportOptions: {
+                        columns: exportColumns
+                    }
+                },
+                {
+                    extend: "csv",
+                    text: "CSV",
+                    title: "Data OEE " + formattedDate,
+                    exportOptions: {
+                        columns: exportColumns
+                    }
+                },
+                {
+                    extend: "pdf",
+                    text: "PDF", 
+                    title: "Data OEE " + formattedDate, 
+                    exportOptions: {
+                        columns: exportColumns
+                    }
+                },
+                {
+                    extend: "print",
+                    text: "Print",
+                    title: "Data OEE " + formattedDate, 
+                    exportOptions: {
+                        columns: exportColumns
+                    }
+                }
+            ]
         });
 
-        // Mendengarkan acara saat elemen dropdown dipilih
         $('.dropdown-item').click(function() {
-            // Mendapatkan nilai data dari elemen yang dipilih
             var selectedValue = $(this).data('value');
-            
-            // Aktifkan tombol DataTables berdasarkan nilai yang dipilih
+
             if (selectedValue === 'excel') {
-                table.button('0').trigger(); // Mengaktifkan tombol Excel
+                table.button(0).trigger(); // Mengaktifkan tombol Excel
+            } else if (selectedValue === 'csv') {
+                table.button(1).trigger(); // Mengaktifkan tombol CSV
+            } else if (selectedValue === 'pdf') {
+                table.button(2).trigger(); // Mengaktifkan tombol PDF
             } else if (selectedValue === 'print') {
-                table.button('1').trigger(); // Mengaktifkan tombol Print
+                table.button(3).trigger(); // Mengaktifkan tombol Print
             }
         });
-
-        function notificationBeforeDelete(event, el) {
-            event.preventDefault();
-            if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-                $("#delete-form").attr('action', $(el).attr('href'));
-                $("#delete-form").submit();
-            }
-        }
     });
 </script>
-
-
-<form action="" id="delete-form" method="post">
-    @method('delete')
-    @csrf
-</form>
 
 @endpush

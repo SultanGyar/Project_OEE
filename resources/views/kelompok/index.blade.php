@@ -31,7 +31,7 @@
                             data-toggle="modal" data-target="#modalTambah">Tambah</a>
                     </div>
                     <div class="table">
-                        <table class="table table-hover table-bordered table-striped" id="example2">
+                        <table class="table table-hover table-bordered table-striped" style="width: 100%" id="example2">
                             <thead>
                                 <tr style="text-align: center; background-color: #069eb5;">
                                     <th>Daftar Kelompok</th>

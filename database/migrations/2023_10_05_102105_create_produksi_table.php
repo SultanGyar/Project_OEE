@@ -28,8 +28,8 @@ return new class extends Migration
             $table->integer('reject')->nullable();
             $table->string('daftarketerangan', 50)->nullable();
             $table->foreign('daftarketerangan')->references('daftarketerangan')->on('keterangan')->onDelete('cascade')->onUpdate('cascade');
-            $table->time('operating_start_time');
-            $table->time('operating_end_time');
+            $table->time('operating_start_time')->nullable();
+            $table->time('operating_end_time')->nullable();
             $table->time('operating_time');
             $table->time('down_time')->nullable();
             $table->time('actual_time');

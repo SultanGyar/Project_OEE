@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UserImport;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Exceptions\LaravelExcelException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -46,11 +48,10 @@ class UserController extends Controller
             'full_name' => 'required|unique:users,full_name',
             'password' => 'required|confirmed',
             'role' => 'required',
-            'status' => 'required'
         ], $message);
 
         $array = $request->only([
-            'name', 'full_name', 'password', 'role', 'status'
+            'name', 'full_name', 'password', 'role'
         ]);
 
         $array['password'] = bcrypt($array['password']);
@@ -97,8 +98,7 @@ class UserController extends Controller
             'name' => 'required|unique:users,name,' . $id,
             'full_name' => 'required|unique:users,full_name,' . $id,
             'password' => 'sometimes|nullable|confirmed',
-            'role' => 'required',
-            'status' => 'required'
+            'role' => 'required'
         ], $message);
 
         $user = User::find($id);
@@ -110,8 +110,7 @@ class UserController extends Controller
         $userData = $request->only([
             'name',
             'full_name', 
-            'role', 
-            'status'
+            'role'
         ]);
 
         if ($request->filled('password')) {
@@ -137,5 +136,24 @@ class UserController extends Controller
         if ($id == $request->user()->id) return redirect()->route('users.index')->with('error_message', 'Anda tidak dapat menghapus diri sendiri.');
         if ($user) $user->delete();
         return redirect()->route('users.index')->with('success_message', 'Berhasil menghapus pengguna');
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            $file = $request->file('file');
+            $namafile = $file->getClientOriginalName();
+            $file->move('fileImportUser', $namafile);
+        
+            Excel::import(new UserImport, public_path('/fileImportUser/' . $namafile));
+
+            return redirect()->route('users.index')->with('success_message', 'Berhasil Meng-Import data');
+        } catch (LaravelExcelException $e) {
+            // Tangkap kesalahan yang disebabkan oleh Excel Import
+            return redirect()->route('users.index')->with('error_message', 'Gagal meng-import data. Pastikan format file Excel sesuai.');
+        } catch (\Exception $e) {
+            // Tangkap kesalahan umum lainnya
+            return redirect()->route('users.index')->with('error_message', 'Terjadi kesalahan saat meng-import data.');
+        }
     }
 }

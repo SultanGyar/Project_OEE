@@ -26,12 +26,14 @@
                     <h3 class="card-title" style="color: white">Cycle Time Produk</h3>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                        <a href="#" class="text-btn-center btn btn-md btn-info mb-2 mb-md-0" style="height: 38px;"
-                            data-toggle="modal" data-target="#modalTambah">Tambah</a>
+                    <div style="display: flex; align-items: center;">
+                        <a href="#" class="text-btn-center btn btn-md btn-info mb-2 " data-toggle="modal"
+                            data-target="#modalTambah">
+                            Tambah</a>
+                        <button type="button" class="btn btn-success ml-2 mb-2" id="importButton">Import Data</button>
                     </div>
-                    <div class="table-responsive"> 
-                        <table class="table table-hover table-bordered table-striped" id="example2">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered table-striped" style="width: 100%" id="example2">
                             <thead>
                                 <tr style="text-align: center; background-color: #069eb5;">
                                     <th>Proses</th>
@@ -52,11 +54,13 @@
                                     <td>{{ $data->kapasitas_pcs }}</td>
                                     <td>{{ $data->kode }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
+                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal"
+                                            data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
                                         <a href="{{ route('cycletime_produk.destroy', $data) }}"
-                                            onclick="notificationBeforeDelete(event, this)" class="btn btn-danger btn-xs">
+                                            onclick="notificationBeforeDelete(event, this)"
+                                            class="btn btn-danger btn-xs">
                                             Delete
                                         </a>
                                     </td>
@@ -71,6 +75,36 @@
     </div>
 </div>
 
+
+<!-- Modal import excel-->
+<div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('cycletime.import') }}" method="post" enctype="multipart/form-data" id="importForm">
+                @csrf
+                <div class="modal-header success">
+                    <h5 class="modal-title" id="modalImportLabel">Import File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="file" name="file">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-success" value="Upload">
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
 
 <!-- Modal Tambah -->
 <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambahLabel"
@@ -88,10 +122,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="daftarproses">Nama Proses</label>
-                        <select class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses" name="daftarproses">
+                        <select class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses"
+                            name="daftarproses">
                             <option value="" selected disabled>Pilih Proses</option>
                             @foreach ($dataproses as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
+                            <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('daftarproses')
@@ -100,18 +135,16 @@
                     </div>
                     <div class="form-group">
                         <label for="size">Size</label>
-                        <input type="string" class="form-control @error('size') is-invalid @enderror"
-                            id="size" placeholder="Size" name="size"
-                            value="{{ old('size') }}">
+                        <input type="string" class="form-control @error('size') is-invalid @enderror" id="size"
+                            placeholder="Size" name="size" value="{{ old('size') }}">
                         @error('size')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
                         <label for="class">Class</label>
-                        <input type="string" class="form-control @error('class') is-invalid @enderror"
-                            id="class" placeholder="Class" name="class"
-                            value="{{ old('class') }}">
+                        <input type="string" class="form-control @error('class') is-invalid @enderror" id="class"
+                            placeholder="Class" name="class" value="{{ old('class') }}">
                         @error('class')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -127,9 +160,8 @@
                     </div>
                     <div class="form-group">
                         <label for="kode">Kode</label>
-                        <input type="string" class="form-control @error('kode') is-invalid @enderror"
-                            id="kode" placeholder="Kode" name="kode"
-                            value="{{ old('kode') }}">
+                        <input type="string" class="form-control @error('kode') is-invalid @enderror" id="kode"
+                            placeholder="Kode" name="kode" value="{{ old('kode') }}">
                         @error('kode')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -146,7 +178,8 @@
 
 <!-- Modal Edit -->
 @foreach($produk as $data)
-<div class="modal fade" id="modalEdit{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel{{ $data->id }}" aria-hidden="true">
+<div class="modal fade" id="modalEdit{{ $data->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="modalEditLabel{{ $data->id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{ route('cycletime_produk.update', $data->id) }}" method="post">
@@ -161,19 +194,20 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="daftarproses{{ $data->id }}">Nama Proses</label>
-                        <select class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses{{ $data->id }}" name="daftarproses">
+                        <select class="form-control @error('daftarproses') is-invalid @enderror"
+                            id="daftarproses{{ $data->id }}" name="daftarproses">
                             <option value="">Pilih Proses</option>
                             @foreach ($dataproses as $value => $label)
-                                <option value="{{ $value }}" {{ $data->daftarproses == $value ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
+                            <option value="{{ $value }}" {{ $data->daftarproses == $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
                             @endforeach
                         </select>
                         @error('daftarproses')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="size{{ $data->id }}">Size</label>
                         <input type="string" class="form-control @error('size') is-invalid @enderror"
@@ -182,7 +216,7 @@
                         @error('size')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>   
+                    </div>
 
                     <div class="form-group">
                         <label for="class{{ $data->id }}">Class</label>
@@ -202,7 +236,7 @@
                         @error('kapasitas_pcs')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>   
+                    </div>
                     <div class="form-group">
                         <label for="kode{{ $data->id }}">Kode</label>
                         <input type="string" class="form-control @error('kode') is-invalid @enderror"
@@ -211,7 +245,7 @@
                         @error('kode')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>   
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-info">Simpan</button>
@@ -226,7 +260,6 @@
 @stop
 @push('js')
 <script>
-
     $(document).ready(function () {
         $('#example2').DataTable({
             "responsive": true,
@@ -253,6 +286,11 @@
         $('.btn-edit').click(function () {
             var id = $(this).data('id');
             openEditModal(id);
+        });
+
+        $('#importButton').click(function() {
+        $('#modalImport').modal('show');
+
         });
     });
 

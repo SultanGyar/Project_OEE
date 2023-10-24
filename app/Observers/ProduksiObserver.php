@@ -77,23 +77,34 @@ class ProduksiObserver
         return $this->formatDuration($totalMinutes);
     }
 
-    // Metode untuk mengonversi waktu dalam format 'HH:mm:ss' menjadi menit
-    private function convertToMinutes($time)
-    {
-        list($hours, $minutes) = explode(':', $time);
-        return $hours * 60 + $minutes;
-    }
-
     // Metode untuk mengonversi total waktu dalam menit menjadi format 'HH:mm:ss'
     private function formatDuration($totalMinutes)
     {
         $hours = floor($totalMinutes / 60);
         $minutes = $totalMinutes % 60;
+        $seconds = 0; // Set detik ke 0.
 
         // Format ke format 'HH:mm:ss'
-        return sprintf('%02d:%02d:%02d', $hours, $minutes, 0); // Set detik ke 0.
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 
+    private function convertToMinutes($time)
+    {
+        // Memeriksa apakah waktu sesuai dengan format 'HH:mm:ss'
+        if (preg_match('/^(\d{2}:\d{2}:\d{2})$/', $time)) {
+            // Pecah waktu menjadi jam, menit, dan detik
+            list($hours, $minutes, $seconds) = explode(':', $time);
+            
+            // Hitung total waktu dalam menit
+            $totalMinutes = $hours * 60 + $minutes + $seconds / 60; // Konversi detik ke menit
+    
+            return $totalMinutes;
+        } else {
+            // Format waktu tidak valid, Anda dapat menangani kesalahan di sini
+            return 0; // Atau nilai yang sesuai dengan kebutuhan Anda
+        }
+    }
+    
     
     /**
      * Handle the Produksi "deleted" event.

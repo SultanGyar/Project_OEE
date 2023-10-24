@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('full_name', 120)->unique();
             $table->string('password');
             $table->enum('role', ['Admin', 'Operator'])->default('Admin');
-            $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
             $table->rememberToken();
             $table->timestamps();
         });

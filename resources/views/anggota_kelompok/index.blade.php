@@ -26,12 +26,12 @@
                     <h3 class="card-title" style="color: white">Daftar Anggota Kelompok</h3>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                        <a href="#" class="text-btn-center btn btn-md btn-info mb-2 mb-md-0" style="height: 38px;"
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                        <a href="#" class="text-btn-center btn btn-md btn-info"
                             data-toggle="modal" data-target="#modalTambah">Tambah</a>
                     </div>
                     <div class="table-responsive"> 
-                        <table class="table table-hover table-bordered table-striped" id="example2">
+                        <table class="table table-hover table-bordered table-striped" style="width: 100%" id="example2">
                             <thead>
                                 <tr style="text-align: center; background-color: #069eb5;">
                                     <th>Nama Proses</th>
@@ -177,6 +177,7 @@
     $(document).ready(function () {
         $('#example2').DataTable({
             "responsive": true,
+            "scrollX": true,
         });
         
         $('#modalTambah').on('hidden.bs.modal', function () {

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CycletimeProdukController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProduksiController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,4 +39,11 @@ Route::resource('keterangan', \App\Http\Controllers\KeteranganController::class)
 Route::get('/get-data-auto', [ProduksiController::class, 'getDataAuto'])->name('get-data-auto'); 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
 Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);
+
+Route::post('produksi-import', [ProduksiController::class, 'import'])->name('produksi.import');
+
+Route::post('cycletime-import', [CycletimeProdukController::class, 'import'])->name('cycletime.import');
+
+Route::post('user-import', [UserController::class, 'import'])->name('user.import');
+
 Auth::routes();

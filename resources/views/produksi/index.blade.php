@@ -30,8 +30,13 @@
 
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                        <div style="display: flex; align-items: center; " >
                         <a href="{{ route('produksi.create') }}"
-                            class="text-btn-center btn btn-md btn-info mb-2 mb-md-0" style="height: 38px;">Tambah</a>
+                            class="text-btn-center btn btn-md btn-info mb-2 " style="height: 38px;">Tambah</a>
+                            @can('admin-only')
+                            <button type="button" class="btn btn-success ml-2 mb-2 " id="importButton">Import Data</button>
+                            @endcan
+                        </div>
                         <form id="filterForm" method="get" class="form-inline">
                             @php
                             $currentDate = date('Y-m-d');
@@ -236,6 +241,35 @@
     </div>
 </div>
 
+<!-- Modal import excel-->
+<div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('produksi.import') }}" method="post" enctype="multipart/form-data" id="importForm">
+                @csrf
+                <div class="modal-header success">
+                    <h5 class="modal-title" id="modalImportLabel">Import File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="file" name="file">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-success" value="Upload">
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
 @stop
 
 @php
@@ -270,6 +304,11 @@ include_once(app_path('helper/helpers.php'))
                 "scrollX": false,
             });
         }
+
+        $('#importButton').click(function() {
+        $('#modalImport').modal('show');
+
+        });
     });
 
     });

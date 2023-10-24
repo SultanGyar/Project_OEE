@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProduksiImport;
 use App\Models\AnggotaKelompok;
 use App\Models\CycletimeProduk;
 use App\models\User;
@@ -9,6 +10,8 @@ use App\Models\Produksi;
 use App\Models\Keterangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Exceptions\LaravelExcelException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProduksiController extends Controller
 {
@@ -335,5 +338,24 @@ class ProduksiController extends Controller
         $produksi = Produksi::find($id);
         if ($produksi) $produksi->delete();
         return redirect()->route('produksi.index')->with('success_message', 'Berhasil menghapus Produksi');
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            $file = $request->file('file');
+            $namafile = $file->getClientOriginalName();
+            $file->move('fileImportProduksi', $namafile);
+        
+            Excel::import(new ProduksiImport, public_path('/fileImportProduksi/' . $namafile));
+
+            return redirect()->route('produksi.index')->with('success_message', 'Berhasil Meng-Import data');
+        } catch (LaravelExcelException $e) {
+            // Tangkap kesalahan yang disebabkan oleh Excel Import
+            return redirect()->route('produksi.index')->with('error_message', 'Gagal meng-import data. Pastikan format file Excel sesuai.');
+        } catch (\Exception $e) {
+            // Tangkap kesalahan umum lainnya
+            return redirect()->route('produksi.index')->with('error_message', 'Terjadi kesalahan saat meng-import data.');
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule; // Impor namespace Rule
+use Illuminate\Validation\Rule; 
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -68,7 +68,6 @@ class RegisterController extends Controller
                         }
                     },
                 ],
-            'status' => ['required', Rule::in(['Aktif', 'Tidak Aktif'])],
         ]);
     }
 
@@ -85,7 +84,6 @@ class RegisterController extends Controller
             'full_name' => $data['full_name'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
-            'status' => $data['status'],
         ]);
     }
 }
