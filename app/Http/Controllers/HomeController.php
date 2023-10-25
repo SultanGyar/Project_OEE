@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataProduksi;
+use App\Models\Produksi;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -25,16 +28,34 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $selectedMonth = $request->input('filterMonth'); // Ambil bulan yang dipilih dari form
-    
-        // Dapatkan data produksi
+        $selectedMonth = $request->input('filterMonth', date('Y-m'));
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $userCount = User::count();
         $getData = $this->getProsesData('array', $selectedMonth);
+        $harianCount = Produksi::whereDate('tanggal', today())->count();
+        $bulananCount = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))
+            ->whereMonth('tanggal', substr($selectedMonth, 5, 2))
+            ->count();
+
+        $operNoData = User::where('role', 'Operator')
+            ->whereNotExists(function ($query) use ($currentDate) {
+                $query->select(DB::raw(1))
+                    ->from('produksi')
+                    ->whereRaw('produksi.nama_user = users.id')
+                    ->whereDate('produksi.tanggal', $currentDate);
+            })
+            ->count();
     
         return view('home', [
             'getData' => $getData,
-            'selectedMonth' => $selectedMonth, // Kirim bulan yang dipilih ke tampilan
+            'selectedMonth' => $selectedMonth,
+            'userCount' => $userCount,
+            'harianCount' => $harianCount,
+            'bulananCount' => $bulananCount,
+            'operNoData' => $operNoData,
         ]);
     }
+    
     
     public function getProsesData($format = 'array', $selectedMonth = null)
     {

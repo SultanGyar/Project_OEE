@@ -1,6 +1,7 @@
 @extends('adminlte::page')
 
 @section('title', 'Dashboard')
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 <link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
 <div class="d-flex flex-wrap justify-content-between align-items-center">
@@ -21,6 +22,60 @@
 @stop
 
 @section('content')
+<div class="row">
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3>{{ $userCount }}</h3>
+
+          <p>Pengguna Sistem</p>
+        </div>
+        <div class="icon">
+            <i class="fa fa-users"></i>
+        </div>
+        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>{{ $harianCount }}</h3>
+
+          <p>Data Produksi Hari Ini</p>
+        </div>
+        <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+        </div>
+        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>{{ $bulananCount }}</h3>
+
+          <p>Data Produksi Bulan Ini</p>
+        </div>
+        <div class="icon">
+            <i class="fa fa-chart-bar"></i>
+        </div>
+        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>{{ $operNoData }}</h3>
+
+          <p>Operator Non-Data Hari Ini</p>
+        </div>
+        <div class="icon">
+            <i class="fa fa-exclamation-circle"></i>
+        </div>
+        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
+      </div>
+    </div>
+</div>
 <div class="row">
     @foreach($getData as $kelompok => $data)
     <div class="col-lg-3 col-md-4" id="oeeCard{{ $loop->index }}">
@@ -214,6 +269,7 @@
 
 @section('adminlte_js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     var getData = @json($getData);
     var performanceCharts = [];

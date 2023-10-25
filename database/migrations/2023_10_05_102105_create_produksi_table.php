@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('produksi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('nama_user');
-            $table->foreign('nama_user')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('nama_user');
+            $table->foreign('nama_user')->references('full_name')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->string('daftarproses', 30);
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->integer('kapasitas_pcs');

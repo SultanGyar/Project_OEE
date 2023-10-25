@@ -55,7 +55,7 @@ class Produksi extends Model
     ];
 
     public function fuser(){
-        return $this->belongsTo(User::class, 'nama_user', 'id');
+        return $this->belongsTo(User::class, 'nama_user', 'full_name');
     }
 
 

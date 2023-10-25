@@ -188,7 +188,7 @@ class ProduksiController extends Controller
             'h_end_time',
             'h_time'
         ]);
-        $array['nama_user'] = $user->id;
+        $array['nama_user'] = auth()->user()->full_name;
         $produksi = Produksi::create($array);
         return redirect()->route('produksi.index')->with('success_message', 'Berhasil menambah data baru');
     }
@@ -284,6 +284,7 @@ class ProduksiController extends Controller
     
         $produksi = Produksi::findOrFail($id);
         $produksi->update([
+            'nama_user' => auth()->user()->full_name,
             'tanggal' => $request->input('tanggal'),
             'kapasitas_pcs' => $request->input('kapasitas_pcs'),
             'target_quantity' => $request->input('target_quantity'),
