@@ -53,7 +53,6 @@ class AnggotaKelompokSeeder extends Seeder
             ['daftarproses' => 'Poles Ring 2', 'daftarkelompok' => 'Ring 3'],
             ['daftarproses' => 'Shearing 2', 'daftarkelompok' => 'Ring 3'],
             ['daftarproses' => 'Stratening', 'daftarkelompok' => 'Ring 3'],
-            ['daftarproses' => 'Bubut 5', 'daftarkelompok' => 'Sealing Element'],
             ['daftarproses' => 'Laser Marking', 'daftarkelompok' => 'Sealing Element'],
             ['daftarproses' => 'Preshaping', 'daftarkelompok' => 'Sealing Element'],
             ['daftarproses' => 'Roll SWG', 'daftarkelompok' => 'Sealing Element'],

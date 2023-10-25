@@ -24,7 +24,7 @@ class ProduksiController extends Controller
     
         if ($user->role === 'Operator') {
             // Jika pengguna adalah operator, hanya tampilkan data produksi mereka sendiri
-            $produksi = Produksi::where('nama_user', $user->id)->get();
+            $produksi = Produksi::where('nama_user', $user->full_name)->get();
         } else {
             // Jika pengguna bukan operator, tampilkan semua data produksi
             $produksi = Produksi::all();

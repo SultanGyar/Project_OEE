@@ -41,7 +41,7 @@ class HomeController extends Controller
             ->whereNotExists(function ($query) use ($currentDate) {
                 $query->select(DB::raw(1))
                     ->from('produksi')
-                    ->whereRaw('produksi.nama_user = users.id')
+                    ->whereRaw('produksi.nama_user = users.full_name')
                     ->whereDate('produksi.tanggal', $currentDate);
             })
             ->count();

@@ -15,19 +15,19 @@ return new class extends Migration
         Schema::create('produksi', function (Blueprint $table) {
             $table->id();
             $table->string('nama_user');
-            $table->foreign('nama_user')->references('full_name')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('nama_user')->references('full_name')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->string('daftarproses', 30);
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->integer('kapasitas_pcs');
             $table->integer('target_quantity');
             $table->string('daftarkelompok', 50);
             $table->string('kode', 30);
-            $table->foreign('kode')->references('kode')->on('cycletime_produk')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('kode')->references('kode')->on('cycletime_produk')->onDelete('restrict')->onUpdate('cascade');
             $table->integer('quantity');
             $table->integer('finish_good');
             $table->integer('reject')->nullable();
             $table->string('daftarketerangan', 50)->nullable();
-            $table->foreign('daftarketerangan')->references('daftarketerangan')->on('keterangan')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('daftarketerangan')->references('daftarketerangan')->on('keterangan')->onDelete('restrict')->onUpdate('cascade');
             $table->time('operating_start_time')->nullable();
             $table->time('operating_end_time')->nullable();
             $table->time('operating_time');

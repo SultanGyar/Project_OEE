@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 return new class extends Migration
 {
@@ -14,12 +15,13 @@ return new class extends Migration
         Schema::create('cycletime_produk', function (Blueprint $table) {
             $table->id();
             $table->string('daftarproses', 30);
-            $table->foreign('daftarproses')->references('daftarproses')->on('proses')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('daftarproses')->references('daftarproses')->on('proses')->onDelete('restrict')->onUpdate('cascade');
             $table->string('size', 30);
             $table->string('class', 30);
             $table->integer('kapasitas_pcs');
             $table->string('kode', 30)->unique(); // Tipe data dan panjang karakter yang sama.
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
