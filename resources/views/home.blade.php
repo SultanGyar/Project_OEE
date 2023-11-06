@@ -22,6 +22,7 @@
 @stop
 
 @section('content')
+@can('admin-only')
 <div class="row">
     <div class="col-lg-3 col-6">
       <div class="small-box bg-info">
@@ -76,6 +77,7 @@
       </div>
     </div>
 </div>
+@endcan
 <div class="row">
     @foreach($getData as $kelompok => $data)
     <div class="col-lg-3 col-md-4" id="oeeCard{{ $loop->index }}">

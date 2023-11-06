@@ -7,7 +7,7 @@
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 5000
+        timer: 3000
     });
 
     function toast_show(icon, message) {
