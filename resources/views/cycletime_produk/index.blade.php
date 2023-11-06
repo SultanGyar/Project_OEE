@@ -210,9 +210,8 @@
 
                     <div class="form-group">
                         <label for="size{{ $data->id }}">Size</label>
-                        <input type="string" class="form-control @error('size') is-invalid @enderror"
-                            id="size{{ $data->id }}" placeholder="Size" name="size"
-                            value="{{$data->size ?? old('size') }}">
+                        <input type="text" class="form-control @error('size') is-invalid @enderror" id="size{{ $data->id }}" 
+                        placeholder="Size" name="size" value="{{$data->size ?? old('size') }}">
                         @error('size')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -230,9 +229,9 @@
 
                     <div class="form-group">
                         <label for="kapasitas_pcs{{ $data->id }}">Kapasitas/Pcs</label>
-                        <input type="integer" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
-                            id="kapasitas_pcs{{ $data->id }}" placeholder="Kapasitas/Pcs" name="kapasitas_pcs"
-                            value="{{$data->kapasitas_pcs ?? old('kapasitas_pcs') }}">
+                        <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror" id="kapasitas_pcs{{ $data->id }}" 
+                        placeholder="Kapasitas/Pcs" name="kapasitas_pcs" value="{{$data->kapasitas_pcs ?? old('kapasitas_pcs') }}">
+
                         @error('kapasitas_pcs')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror

@@ -58,7 +58,7 @@ class ProsesController extends Controller
             return redirect()->route('proses.index')->with('error_message', 'Proses tidak ditemukan.');
         }
 
-        return view('proses.edit', ['proses' => $proses]);
+        return view('proses.index', ['proses' => $proses]);
     }
 
     /**
@@ -70,21 +70,22 @@ class ProsesController extends Controller
             'daftarproses.required' => 'Nama Proses harus diisi',
             'daftarproses.unique' => 'Proses sudah terdaftar dalam sistem',
         ];
-
+    
         $request->validate([
-            'daftarproses' => 'required|unique:proses,daftarproses'
+            'daftarproses' => 'required|unique:proses,daftarproses,' . $id
         ], $message);
-
+    
         $proses = Proses::find($id);
         if (!$proses) {
             return redirect()->route('proses.index')->with('error_message', 'Proses tidak ditemukan');
         }
-
-        $proses->daftarproses = $request->input('daftarproses');
-        $proses->save();
-
+    
+        $prosesData = $request->only('daftarproses');
+        $proses->update($prosesData);
+    
         return redirect()->route('proses.index')->with('success_message', 'Proses berhasil diperbarui');
     }
+    
 
     /**
      * Remove the specified resource from storage.

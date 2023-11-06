@@ -89,19 +89,18 @@ class CycletimeProdukController extends Controller
             'size' => 'required',
             'class' => 'required',
             'kapasitas_pcs' => 'required',
-            'kode' => 'required|unique:cycletime_produk,kode'
+            'kode' => 'required|unique:cycletime_produk,kode,' . $id
         ]);
-
+    
         $produk = CycletimeProduk::findOrFail($id);
-        $produk->update([
-            'daftar_proses' => $request->input('daftar_proses'),
-            'size' => $request->input('size'),
-            'class' => $request->input('class'),
-            'kapasitas_pcs' => $request->input('kapasitas_pcs'),
-            'kode' => $request->input('kode')
-        ]);
-
-        return redirect()->route('cycletime_produk.index')->with('success_message', 'Berhasil Memperbarui Data Produk');
+        $produk->daftarproses = $request->input('daftarproses');
+        $produk->size = $request->input('size');
+        $produk->class = $request->input('class');
+        $produk->kapasitas_pcs = $request->input('kapasitas_pcs');
+        $produk->kode = $request->input('kode');
+        $produk->save();
+    
+        return redirect()->route('cycletime_produk.index')->with('success_message', 'Berhasil Memperbarui Data');
     }
 
     /**
@@ -124,12 +123,21 @@ class CycletimeProdukController extends Controller
             Excel::import(new CycletimeProdukImport, public_path('/fileImportCycletime/' . $namafile));
 
             return redirect()->route('cycletime_produk.index')->with('success_message', 'Berhasil Meng-Import data');
-        } catch (LaravelExcelException $e) {
-            // Tangkap kesalahan yang disebabkan oleh Excel Import
-            return redirect()->route('cycletime_produk.index')->with('error_message', 'Gagal meng-import data. Pastikan format file Excel sesuai.');
         } catch (\Exception $e) {
-            // Tangkap kesalahan umum lainnya
-            return redirect()->route('cycletime_produk.index')->with('error_message', 'Terjadi kesalahan saat meng-import data.');
+            if (strpos($e->getMessage(), 'Integrity constraint violation') !== false) {
+                if (strpos($e->getMessage(), 'Cannot add or update a child row: a foreign key constraint fails') !== false) {
+                    return redirect()->route('cycletime_produk.index')->with('error_message', 'Import Error: Terdapat nilai Proses yang tidak terdaftar pada Database');
+                } else {
+                    // Extract the duplicate value from the exception message
+                    preg_match('/Duplicate entry \'(.*?)\' for key/', $e->getMessage(), $matches);
+                    $duplicateValue = $matches[1] ?? '';
+    
+                    return redirect()->route('cycletime_produk.index')->with('error_message', 'Import Error: Terdapat nilai duplikat yaitu; ' . $duplicateValue . '. Pada file import');
+                }
+            } else {
+                // Handle other exceptions
+                return redirect()->route('cycletime_produk.index')->with('error_message','Terjadi kesalahan saat meng-import data.');
+            }
         }
     }
 }

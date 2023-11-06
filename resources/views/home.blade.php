@@ -25,11 +25,11 @@
 @can('admin-only')
 <div class="row">
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-info">
+      <div class="small-box bg-secondary">
         <div class="inner">
           <h3>{{ $userCount }}</h3>
 
-          <p>Pengguna Sistem</p>
+          <p>System Users</p>
         </div>
         <div class="icon">
             <i class="fa fa-users"></i>
@@ -38,11 +38,11 @@
       </div>
     </div>
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-success">
+      <div class="small-box bg-info">
         <div class="inner">
           <h3>{{ $harianCount }}</h3>
 
-          <p>Data Produksi Hari Ini</p>
+          <p>Today's News</p>
         </div>
         <div class="icon">
             <i class="ion ion-stats-bars"></i>
@@ -51,11 +51,11 @@
       </div>
     </div>
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-warning">
+      <div class="small-box bg-success">
         <div class="inner">
           <h3>{{ $bulananCount }}</h3>
 
-          <p>Data Produksi Bulan Ini</p>
+          <p>Monthly Summary</p>
         </div>
         <div class="icon">
             <i class="fa fa-chart-bar"></i>
@@ -68,7 +68,7 @@
         <div class="inner">
           <h3>{{ $operNoData }}</h3>
 
-          <p>Operator Non-Data Hari Ini</p>
+          <p>Non-Data Operator Today</p>
         </div>
         <div class="icon">
             <i class="fa fa-exclamation-circle"></i>

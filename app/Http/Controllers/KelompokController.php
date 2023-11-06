@@ -81,7 +81,7 @@ class KelompokController extends Controller
         ];
 
         $request->validate([
-            'daftarkelompok' => 'required|unique:kelompok,daftarkelompok'
+            'daftarkelompok' => 'required|unique:kelompok,daftarkelompok,' . $id
         ], $message);
 
         $kelompok = Kelompok::find($id);

@@ -148,12 +148,17 @@ class UserController extends Controller
             Excel::import(new UserImport, public_path('/fileImportUser/' . $namafile));
 
             return redirect()->route('users.index')->with('success_message', 'Berhasil Meng-Import data');
-        } catch (LaravelExcelException $e) {
-            // Tangkap kesalahan yang disebabkan oleh Excel Import
-            return redirect()->route('users.index')->with('error_message', 'Gagal meng-import data. Pastikan format file Excel sesuai.');
         } catch (\Exception $e) {
-            // Tangkap kesalahan umum lainnya
-            return redirect()->route('users.index')->with('error_message', 'Terjadi kesalahan saat meng-import data.');
+            if (strpos($e->getMessage(), 'Integrity constraint violation') !== false) {
+                // Extract the duplicate value from the exception message
+                preg_match('/Duplicate entry \'(.*?)\' for key/', $e->getMessage(), $matches);
+                $duplicateValue = $matches[1] ?? '';
+    
+                return redirect()->route('cycletime_produk.index')->with('error_message',  'Import Error: Terdapat nilai duplikat yaitu; ' . $duplicateValue . '. Pada file import');
+            } else {
+                // Handle other exceptions
+                return redirect()->route('cycletime_produk.index')->with('error_message', 'Terjadi kesalahan saat meng-import data.');
+            }
         }
     }
 }

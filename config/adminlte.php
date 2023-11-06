@@ -335,12 +335,6 @@ return [
                     'can' => 'admin-only',
                 ],
                 [
-                    'text' => 'Daftar Keterangan',
-                    'url' => '/keterangan',
-                    'icon' => 'fa fa-arrow-alt-circle-right',
-                    'can' => 'admin-only',
-                ],
-                [
                     'text' => 'Daftar Kelompok',
                     'url' => '/kelompok',
                     'icon' => 'fa fa-arrow-alt-circle-right',
@@ -349,6 +343,12 @@ return [
                 [
                     'text' => 'Anggota Kelompok',
                     'url' => '/anggota_kelompok',
+                    'icon' => 'fa fa-arrow-alt-circle-right',
+                    'can' => 'admin-only',
+                ],
+                [
+                    'text' => 'Daftar Keterangan',
+                    'url' => '/keterangan',
                     'icon' => 'fa fa-arrow-alt-circle-right',
                     'can' => 'admin-only',
                 ],
