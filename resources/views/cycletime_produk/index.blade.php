@@ -58,11 +58,13 @@
                                             data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
+                                        @can('admin-only')
                                         <a href="{{ route('cycletime_produk.destroy', $data) }}"
                                             onclick="notificationBeforeDelete(event, this)"
                                             class="btn btn-danger btn-xs">
                                             Delete
                                         </a>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @endforeach
