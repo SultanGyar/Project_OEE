@@ -262,7 +262,7 @@
     $(document).ready(function () {
         $('#example2').DataTable({
             "responsive": true,
-            "scrollY": true,
+            "scrollX": true,
         });
 
         $('#modalTambah').on('hidden.bs.modal', function () {
