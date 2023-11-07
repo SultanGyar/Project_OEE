@@ -39,7 +39,7 @@
                                     <th>Proses</th>
                                     <th>Size</th>
                                     <th>Class</th>
-                                    <th>Kapasitas/Pcs</th>
+                                    <th>Kapasitas <br>/Pcs</th>
                                     <th>Kode</th>
                                     <th>Opsi</th>
                                 </tr>

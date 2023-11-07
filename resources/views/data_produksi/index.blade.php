@@ -33,10 +33,10 @@
                             $currentDate = "{$currentYear}-{$currentMonth}";
                             $selectedMonth = request('filterMonth', $currentDate);
                             @endphp
-                            <label for="filterMonth" class="mr-1">Pilih :</label>
-                            <input type="month" class="form-control" id="filterMonth" style="width: 55%"
+                            <label for="filterMonth" class="mr-1 mt-1">Pilih :</label>
+                            <input type="month" class="form-control mt-1" id="filterMonth" style="width: 55%"
                                 name="filterMonth" value="{{ $selectedMonth }}" max="{{ $currentDate }}">
-                            <button type="submit" class="btn btn-info ml-2">Submit</button>
+                            <button type="submit" class="btn btn-info ml-2 mt-1">Submit</button>
                         </form>
                         @can('admin-only')
                         <button id="exportOptions" class="btn btn-secondary mt-1 dropdown-toggle" type="button"
