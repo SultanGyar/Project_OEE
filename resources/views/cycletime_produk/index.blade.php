@@ -58,13 +58,11 @@
                                             data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
-                                        @can('admin-only')
-                                        <a href="{{ route('cycletime_produk.destroy', $data) }}"
+                                        {{-- <a href="{{ route('cycletime_produk.destroy', $data) }}"
                                             onclick="notificationBeforeDelete(event, this)"
                                             class="btn btn-danger btn-xs">
                                             Delete
-                                        </a>
-                                        @endcan
+                                        </a> --}}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -295,17 +293,17 @@
         });
     });
 
-    function notificationBeforeDelete(event, el) {
-        event.preventDefault();
-        if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-            $("#delete-form").attr('action', $(el).attr('href'));
-            $("#delete-form").submit();
-        }
-    }
+    // function notificationBeforeDelete(event, el) {
+    //     event.preventDefault();
+    //     if (confirm('Apakah anda yakin akan menghapus data ? ')) {
+    //         $("#delete-form").attr('action', $(el).attr('href'));
+    //         $("#delete-form").submit();
+    //     }
+    // }
 </script>
 
-<form action="" id="delete-form" method="post">
+{{-- <form action="" id="delete-form" method="post">
     @method('delete')
     @csrf
-</form>
+</form> --}}
 @endpush
