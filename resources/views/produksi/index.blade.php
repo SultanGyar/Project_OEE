@@ -60,6 +60,8 @@
                                     <th>Tanggal</th>
                                     <th>Proses</th>
                                     <th>Kelompok</th>
+                                    <th>Size</th>
+                                    <th>Class</th>
                                     <th>Kode</th>
                                     <th>Kapasitas /Pcs</th>
                                     <th>Target Quantity</th>
@@ -95,10 +97,12 @@
                                 <tr class="data-row"
                                     data-bulan="{{ strtolower(date('Y-m-d', strtotime($item->tanggal))) }}">
                                     <td>{{ $no }}</td>
-                                    <td>{{ $item->fuser->full_name }}</td>
+                                    <td>{{ $item->nama_user }}</td>
                                     <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{ $item->daftarproses }}</td>
                                     <td>{{ $item->daftarkelompok }}</td>
+                                    <td>{{ $item->produk_size }}</td>
+                                    <td>{{ $item->produk_class }}</td>
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->kapasitas_pcs }}</td>
                                     <td>{{ $item->target_quantity }}</td>
@@ -109,14 +113,14 @@
                                     <td>{{ formatTime($item->operating_time) }}</td>
                                     <td>{{ formatTime($item->actual_time) }}</td>
                                     <td>{{ formatTime($item->down_time) }}</td>
-                                    <td>{{ formatTime($item->a_time) }}</td>
-                                    <td>{{ formatTime($item->b_time) }}</td>
-                                    <td>{{ formatTime($item->c_time) }}</td>
-                                    <td>{{ formatTime($item->d_time) }}</td>
-                                    <td>{{ formatTime($item->e_time) }}</td>
-                                    <td>{{ formatTime($item->f_time) }}</td>
-                                    <td>{{ formatTime($item->g_time) }}</td>
-                                    <td>{{ formatTime($item->h_time) }}</td>
+                                    <td>{{ $item->a_time ? $item->a_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->b_time ? $item->b_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->c_time ? $item->c_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->d_time ? $item->d_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->e_time ? $item->e_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->f_time ? $item->f_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->g_time ? $item->g_time . ' Minutes' : '' }}</td>
+                                    <td>{{ $item->h_time ? $item->h_time . ' Minutes' : '' }}</td>                                    
                                     @can('admin-only')
                                     <td>
                                         <a href="{{route('produksi.edit',
@@ -200,7 +204,7 @@
                                     <tr class="data-row"
                                         data-bulan="{{ strtolower(date('F', strtotime($item->tanggal))) }}">
                                         <td>{{ $no }}</td>
-                                        <td>{{ $item->fuser->name }}</td>
+                                        <td>{{ $item->nama_user }}</td>
                                         <td>{{ $item->daftarproses }}</td>
                                         <td>{{ date('d-F-Y', strtotime($item->tanggal)) }}</td>
                                         @if ($header == 'Performance')
@@ -210,14 +214,14 @@
                                         <td>{{ formatTime($item->operating_time) }}</td>
                                         <td>{{ formatTime($item->actual_time) }}</td>
                                         <td>{{ formatTime($item->down_time) }}</td>
-                                        <td>{{ formatTime($item->a_time) }}</td>
-                                        <td>{{ formatTime($item->b_time) }}</td>
-                                        <td>{{ formatTime($item->c_time) }}</td>
-                                        <td>{{ formatTime($item->d_time) }}</td>
-                                        <td>{{ formatTime($item->e_time) }}</td>
-                                        <td>{{ formatTime($item->f_time) }}</td>
-                                        <td>{{ formatTime($item->g_time) }}</td>
-                                        <td>{{ formatTime($item->h_time) }}</td>
+                                        <td>{{ $item->a_time ? $item->a_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->b_time ? $item->b_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->c_time ? $item->c_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->d_time ? $item->d_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->e_time ? $item->e_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->f_time ? $item->f_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->g_time ? $item->g_time . ' Minutes' : '' }}</td>
+                                        <td>{{ $item->h_time ? $item->h_time . ' Minutes' : '' }}</td>                                        
                                         @else
                                         <td>{{ $item->quantity }}</td>
                                         <td>{{ $item->finish_good }}</td>

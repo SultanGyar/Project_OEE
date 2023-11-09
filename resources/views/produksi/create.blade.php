@@ -28,6 +28,47 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
+                    <div class="form-group">
+                        <label for="daftarproses">Proses <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('daftarproses') is-invalid @enderror"
+                            id="daftarproses" placeholder="Proses" name="daftarproses"
+                            value="{{ old('daftarproses') }}" readonly >
+                        @error('daftarproses')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="daftarkelompok">Kelompok <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('daftarkelompok') is-invalid @enderror"
+                            id="daftarkelompok" placeholder="kelompok" name="daftarkelompok"
+                            value="{{ old('daftarkelompok') }}" readonly>
+                        @error('daftarkelompok')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produk_size">Size <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('produk_size') is-invalid @enderror"
+                            id="produk_size" placeholder="Size" name="produk_size"
+                            value="{{ old('produk_size') }}" readonly>
+                        @error('produk_size')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="produk_class">Class <span class="font-weight-normal">(Otomatis)</span></label>
+                        <input type="string" class="form-control @error('produk_class') is-invalid @enderror"
+                            id="produk_class" placeholder="Class" name="produk_class"
+                            value="{{ old('produk_class') }}" readonly>
+                        @error('produk_class')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
                     <div class="form-group">
                         <label for="kapasitas_pcs">Kapasitas/Pcs <span class="font-weight-normal">(Otomatis)</span></label>
                         <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
@@ -46,26 +87,7 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-group">
-                        <label for="daftarkelompok">Kelompok <span class="font-weight-normal">(Otomatis)</span></label>
-                        <input type="string" class="form-control @error('daftarkelompok') is-invalid @enderror"
-                            id="daftarkelompok" placeholder="kelompok" name="daftarkelompok"
-                            value="{{ old('daftarkelompok') }}" readonly>
-                        @error('daftarkelompok')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="daftarproses">Proses <span class="font-weight-normal">(Otomatis)</span></label>
-                        <input type="string" class="form-control @error('daftarproses') is-invalid @enderror"
-                            id="daftarproses" placeholder="Proses" name="daftarproses"
-                            value="{{ old('daftarproses') }}" readonly >
-                        @error('daftarproses')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>  
-                                
+                    
                     <div class="form-group">
                         <label for="kode">Kode</label>
                         <select class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode" style="width: 100%">
@@ -199,211 +221,66 @@
                     </div>
 
                     <div id="formA">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="a_start_time">Kategori A Mulai</label>
-                                    <input type="time" class="form-control @error('a_start_time') is-invalid @enderror"
-                                        id="a_start_time" placeholder="" name="a_start_time"
-                                        value="{{ old('a_start_time') }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="a_end_time">Kategori A Selesai</label>
-                                    <input type="time" class="form-control @error('a_end_time') is-invalid @enderror"
-                                        id="a_end_time" placeholder="" name="a_end_time"
-                                        value="{{ old('a_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="a_time">Total Waktu Kategori A</label>
-                            <input type="time" class="form-control @error('a_time') is-invalid @enderror" id="a_time"
-                                placeholder="A Time" name="a_time" value="{{ old('a_time') }}" readonly>
+                            <input type="number" class="form-control @error('a_time') is-invalid @enderror" id="a_time"
+                                placeholder="A Time" name="a_time" value="{{ old('a_time') }}">
                         </div>
                     </div>
 
                     <div id="formB">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="b_start_time">Kategori B Mulai</label>
-                                    <input type="time" class="form-control @error('b_start_time') is-invalid @enderror"
-                                        id="b_start_time" placeholder="" name="b_start_time"
-                                        value="{{ old('b_start_time') }}" />
-
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="b_end_time">Kategori B Selesai</label>
-                                    <input type="time" class="form-control @error('b_end_time') is-invalid @enderror"
-                                        id="b_end_time" placeholder="" name="b_end_time"
-                                        value="{{ old('b_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="b_time">Total Waktu Kategori B</label>
-                            <input type="time" class="form-control @error('b_time') is-invalid @enderror" id="b_time"
-                                placeholder="B Time" name="b_time" value="{{ old('b_time') }}" readonly>
+                            <input type="number" class="form-control @error('b_time') is-invalid @enderror" id="b_time"
+                                placeholder="B Time" name="b_time" value="{{ old('b_time') }}">
                         </div>
                     </div>
 
                     <div id="formC">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="c_start_time">Kategori C Mulai</label>
-                                    <input type="time" class="form-control @error('c_start_time') is-invalid @enderror"
-                                        id="c_start_time" placeholder="" name="c_start_time"
-                                        value="{{ old('c_start_time') }}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="c_end_time">Kategori C Selesai</label>
-                                    <input type="time" class="form-control @error('c_end_time') is-invalid @enderror"
-                                        id="c_end_time" placeholder="" name="c_end_time"
-                                        value="{{ old('c_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="c_time">Total Waktu Kategori C</label>
-                            <input type="time" class="form-control @error('c_time') is-invalid @enderror" id="c_time"
-                                placeholder="C Time" name="c_time" value="{{ old('c_time') }}" readonly>
+                            <input type="number" class="form-control @error('c_time') is-invalid @enderror" id="c_time"
+                                placeholder="C Time" name="c_time" value="{{ old('c_time') }}">
                         </div>
                     </div>
 
                     <div id="formD">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="d_start_time">Kategori D Mulai</label>
-                                    <input type="time" class="form-control @error('d_start_time') is-invalid @enderror"
-                                        id="d_start_time" placeholder="" name="d_start_time"
-                                        value="{{ old('d_start_time') }}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="d_end_time">Kategori D Selesai</label>
-                                    <input type="time" class="form-control @error('d_end_time') is-invalid @enderror"
-                                        id="d_end_time" placeholder="" name="d_end_time"
-                                        value="{{ old('d_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="d_time">Total Waktu Kategori D</label>
-                            <input type="time" class="form-control @error('d_time') is-invalid @enderror" id="d_time"
-                                placeholder="D Time" name="d_time" value="{{ old('d_time') }}" readonly>
+                            <input type="number" class="form-control @error('d_time') is-invalid @enderror" id="d_time"
+                                placeholder="D Time" name="d_time" value="{{ old('d_time') }}">
                         </div>
                     </div>
 
                     <div id="formE">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="e_start_time">Kategori E Mulai</label>
-                                    <input type="time" class="form-control @error('e_start_time') is-invalid @enderror"
-                                        id="e_start_time" placeholder="" name="e_start_time"
-                                        value="{{ old('e_start_time') }}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="e_end_time">Kategori E Selesai</label>
-                                    <input type="time" class="form-control @error('e_end_time') is-invalid @enderror"
-                                        id="e_end_time" placeholder="" name="e_end_time"
-                                        value="{{ old('e_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="e_time">Total Waktu Kategori E</label>
-                            <input type="time" class="form-control @error('e_time') is-invalid @enderror" id="e_time"
-                                placeholder="E Time" name="e_time" value="{{ old('e_time') }}" readonly>
+                            <input type="number" class="form-control @error('e_time') is-invalid @enderror" id="e_time"
+                                placeholder="E Time" name="e_time" value="{{ old('e_time') }}">
                         </div>
                     </div>
 
                     <div id="formF">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="f_start_time">Kategori F Mulai</label>
-                                    <input type="time" class="form-control @error('f_start_time') is-invalid @enderror"
-                                        id="f_start_time" placeholder="" name="f_start_time"
-                                        value="{{ old('f_start_time') }}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="f_end_time">Kategori F Selesai</label>
-                                    <input type="time" class="form-control @error('f_end_time') is-invalid @enderror"
-                                        id="f_end_time" placeholder="" name="f_end_time"
-                                        value="{{ old('f_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="f_time">Total Waktu Kategori F</label>
-                            <input type="time" class="form-control @error('f_time') is-invalid @enderror" id="f_time"
-                                placeholder="F Time" name="f_time" value="{{ old('f_time') }}" readonly>
+                            <input type="number" class="form-control @error('f_time') is-invalid @enderror" id="f_time"
+                                placeholder="F Time" name="f_time" value="{{ old('f_time') }}">
                         </div>
                     </div>
 
                     <div id="formG">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="g_start_time">Kategori G Mulai</label>
-                                    <input type="time" class="form-control @error('g_start_time') is-invalid @enderror"
-                                        id="g_start_time" placeholder="" name="g_start_time"
-                                        value="{{ old('g_start_time') }}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="g_end_time">Kategori G Selesai</label>
-                                    <input type="time" class="form-control @error('g_end_time') is-invalid @enderror"
-                                        id="g_end_time" placeholder="" name="g_end_time"
-                                        value="{{ old('g_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="g_time">Total Waktu Kategori G</label>
-                            <input type="time" class="form-control @error('g_time') is-invalid @enderror" id="g_time"
-                                placeholder="G Time" name="g_time" value="{{ old('g_time') }}" readonly>
+                            <input type="number" class="form-control @error('g_time') is-invalid @enderror" id="g_time"
+                                placeholder="G Time" name="g_time" value="{{ old('g_time') }}">
                         </div>
                     </div>
 
                     <div id="formH">
-                        <div class="row">
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="h_start_time">Kategori H Mulai</label>
-                                    <input type="time" class="form-control @error('h_start_time') is-invalid @enderror"
-                                        id="h_start_time" placeholder="" name="h_start_time"
-                                        value="{{ old('h_start_time') }}" />
-                                </div>
-                            </div>
-                            <div class="col-md-6 border">
-                                <div class="form-group">
-                                    <label for="h_end_time">Kategori H Selesai</label>
-                                    <input type="time" class="form-control @error('h_end_time') is-invalid @enderror"
-                                        id="h_end_time" placeholder="" name="h_end_time"
-                                        value="{{ old('h_end_time') }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="h_time">Total Waktu Kategori H</label>
-                            <input type="time" class="form-control @error('h_time') is-invalid @enderror" id="h_time"
-                                placeholder="H Time" name="h_time" value="{{ old('h_time') }}" readonly>
+                            <input type="number" class="form-control @error('h_time') is-invalid @enderror" id="h_time"
+                                placeholder="H Time" name="h_time" value="{{ old('h_time') }}">
                         </div>
                     </div>
 
@@ -455,9 +332,13 @@
                 if (response.success) {
                     var daftarproses = response.daftarproses;
                     var kapasitasPcs = response.kapasitas_pcs;
+                    var produk_size = response.produk_size;
+                    var produk_class = response.produk_class;
 
                     $('#daftarproses').val(daftarproses);
                     $('#kapasitas_pcs').val(kapasitasPcs);
+                    $('#produk_size').val(produk_size);
+                    $('#produk_class').val(produk_class);
 
                     // Langkah 2: Periksa kesamaan dengan AnggotaKelompok
                     if (response.daftarkelompok) {
@@ -516,13 +397,13 @@
     // Fungsi untuk menampilkan atau menyembunyikan form input berdasarkan checkbox
     function toggleForm() {
       formA.style.display = hideFormCheckboxA.checked ? 'block' : 'none';
-      formB.style.display = hideFormCheckboxB.checked ? 'block' : 'none';
+      formB.style.display = hideFormCheckboxB.checked ? 'none' : 'block';
       formC.style.display = hideFormCheckboxC.checked ? 'block' : 'none';
       formD.style.display = hideFormCheckboxD.checked ? 'block' : 'none';
       formE.style.display = hideFormCheckboxE.checked ? 'block' : 'none';
       formF.style.display = hideFormCheckboxF.checked ? 'block' : 'none';
       formG.style.display = hideFormCheckboxG.checked ? 'block' : 'none';
-      formH.style.display = hideFormCheckboxH.checked ? 'block' : 'none';
+      formH.style.display = hideFormCheckboxH.checked ? 'none' : 'block';
     }
   
     // Panggil fungsi saat checkbox diubah
@@ -538,8 +419,86 @@
     // Panggil fungsi untuk mengatur tampilan awal halaman
     toggleForm();
 
-    
+     // Fungsi untuk menghitung total waktu dari Form A hingga Form H
+     function calculateDownTime() {
+        var aTimeValue = parseInt(document.getElementById('a_time').value) || 0;
+        var bTimeValue = parseInt(document.getElementById('b_time').value) || 0;
+        var cTimeValue = parseInt(document.getElementById('c_time').value) || 0;
+        var dTimeValue = parseInt(document.getElementById('d_time').value) || 0;
+        var eTimeValue = parseInt(document.getElementById('e_time').value) || 0;
+        var fTimeValue = parseInt(document.getElementById('f_time').value) || 0;
+        var gTimeValue = parseInt(document.getElementById('g_time').value) || 0;
+        var hTimeValue = parseInt(document.getElementById('h_time').value) || 0;
+
+        // Menghitung total waktu dari Form A hingga Form H
+        var totalTime = aTimeValue + bTimeValue + cTimeValue + dTimeValue + eTimeValue + fTimeValue + gTimeValue + hTimeValue;
+
+        // Memastikan bahwa total waktu adalah angka positif
+        if (!isNaN(totalTime) && totalTime >= 0) {
+            // Menghitung waktu dalam format 'hh:mm' berdasarkan total waktu
+            var hours = Math.floor(totalTime / 60);
+            var minutes = totalTime % 60;
+
+            // Menetapkan nilai yang dihitung ke input Down Time
+            document.getElementById('down_time').value = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+        } else {
+            // Jika total waktu tidak valid, kosongkan input Down Time
+            document.getElementById('down_time').value = '';
+        }
+    }
+
+    // Menghubungkan event listener ke semua Form A hingga Form H
+    document.getElementById('a_time').addEventListener('input', calculateDownTime);
+    document.getElementById('b_time').addEventListener('input', calculateDownTime);
+    document.getElementById('c_time').addEventListener('input', calculateDownTime);
+    document.getElementById('d_time').addEventListener('input', calculateDownTime);
+    document.getElementById('e_time').addEventListener('input', calculateDownTime);
+    document.getElementById('f_time').addEventListener('input', calculateDownTime);
+    document.getElementById('g_time').addEventListener('input', calculateDownTime);
+    document.getElementById('h_time').addEventListener('input', calculateDownTime);
+
+
     document.addEventListener('DOMContentLoaded', function () {
+
+        // Fungsi bantuan untuk mengonversi durasi dalam format "HH:mm:ss" menjadi menit
+        function parseDuration(duration) {
+            const [hours, minutes] = duration.split(':').map(Number);
+            return (hours * 60) + minutes;
+        }
+
+        // Fungsi untuk menghitung actual_time sebagai selisih dari operating_time dan b_time dalam menit
+        function calculateActualTime() {
+            const operating_timeInput = document.getElementById('operating_time');
+            const b_timeInput = document.getElementById('b_time');
+            const actual_timeInput = document.getElementById('actual_time');
+            const kapasitasPcsInput = document.getElementById('kapasitas_pcs');
+
+            const operating_time = parseDuration(operating_timeInput.value);
+            const b_time = b_timeInput.value;
+            console.log('b', b_time)
+            
+            // Hitung actual_time dalam menit
+            const actualTimeInMinutes = operating_time - b_time;
+            console.log('total', actualTimeInMinutes)
+
+            // Ubah durasi menjadi format jam dan menit (HH:mm) dan perbarui nilai pada input actual_time
+            const formattedDuration = `${Math.floor(actualTimeInMinutes / 60).toString().padStart(2, '0')}:${(actualTimeInMinutes % 60).toString().padStart(2, '0')}`;
+            actual_timeInput.value = formattedDuration;
+            console.log('actual', formattedDuration);
+
+            // Hitung actual_time dalam detik
+            const actualTimeInSeconds = actualTimeInMinutes * 60;
+
+            // Ambil nilai kapasitas_pcs
+            const kapasitasPcs = parseFloat(kapasitasPcsInput.value) || 0;
+
+            // Hitung target_quantity dan isi nilai ke form target_quantity
+            const targetQuantity = actualTimeInSeconds / kapasitasPcs;
+            document.getElementById('target_quantity').value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
+        }
+
+        const b_timeInput = document.getElementById('b_time');
+        b_timeInput.addEventListener('input', calculateActualTime);
 
         // Fungsi untuk menghitung durasi waktu
         function calculateTimeDuration(startInputId, endInputId, durationInputId) {
@@ -574,90 +533,18 @@
             // Hitung ulang total down_time dan actual_time ketika waktu a_time atau b_time diubah
             calculateDownTime();
             calculateActualTime();
-        }
+            }
 
             // Inisialisasi durasi ketika halaman pertama kali dimuat
             updateDuration();
         }
 
-        // Fungsi untuk menghitung total durasi dari a_time sampai f_time dalam menit
-        function calculateDownTime() {
-            const a_timeInput = document.getElementById('a_time');
-            const b_timeInput = document.getElementById('b_time');
-            const c_timeInput = document.getElementById('c_time');
-            const d_timeInput = document.getElementById('d_time');
-            const e_timeInput = document.getElementById('e_time');
-            const f_timeInput = document.getElementById('f_time');
-            const g_timeInput = document.getElementById('g_time');
-            const h_timeInput = document.getElementById('h_time');
-            const down_timeInput = document.getElementById('down_time');
-
-            const a_time = a_timeInput.value ? parseDuration(a_timeInput.value) : 0;
-            const b_time = b_timeInput.value ? parseDuration(b_timeInput.value) : 0;
-            const c_time = c_timeInput.value ? parseDuration(c_timeInput.value) : 0;
-            const d_time = d_timeInput.value ? parseDuration(d_timeInput.value) : 0;
-            const e_time = e_timeInput.value ? parseDuration(e_timeInput.value) : 0;
-            const f_time = f_timeInput.value ? parseDuration(f_timeInput.value) : 0;
-            const g_time = g_timeInput.value ? parseDuration(g_timeInput.value) : 0;
-            const h_time = h_timeInput.value ? parseDuration(h_timeInput.value) : 0;
-
-            // Hitung total durasi dalam menit
-            const totalDurationInMinutes = a_time + b_time + c_time + d_time + e_time + f_time + g_time + h_time;
-
-            // Ubah durasi menjadi format jam dan menit (HH:mm) dan perbarui nilai pada input down_time
-            const formattedDuration = `${Math.floor(totalDurationInMinutes / 60).toString().padStart(2, '0')}:${(totalDurationInMinutes % 60).toString().padStart(2, '0')}`;
-            down_timeInput.value = formattedDuration;
-        }
-
-        // Fungsi untuk menghitung actual_time sebagai selisih dari operating_time dan b_time dalam menit
-        function calculateActualTime() {
-            const operating_timeInput = document.getElementById('operating_time');
-            const b_timeInput = document.getElementById('b_time');
-            const actual_timeInput = document.getElementById('actual_time');
-            const kapasitasPcsInput = document.getElementById('kapasitas_pcs'); // Tambahkan ini
-
-            const operating_time = parseDuration(operating_timeInput.value);
-            const b_time = b_timeInput.value ? parseDuration(b_timeInput.value) : 0;
-
-            // Hitung actual_time dalam menit
-            const actualTimeInMinutes = operating_time - b_time;
-
-            // Ubah durasi menjadi format jam dan menit (HH:mm) dan perbarui nilai pada input actual_time
-            const formattedDuration = `${Math.floor(actualTimeInMinutes / 60).toString().padStart(2, '0')}:${(actualTimeInMinutes % 60).toString().padStart(2, '0')}`;
-            actual_timeInput.value = formattedDuration;
-
-            // Hitung actual_time dalam detik
-            const actualTimeInSeconds = actualTimeInMinutes * 60;
-
-            // Ambil nilai kapasitas_pcs
-            const kapasitasPcs = parseFloat(kapasitasPcsInput.value) || 0;
-
-            // Hitung target_quantity dan isi nilai ke form target_quantity
-            const targetQuantity = actualTimeInSeconds / kapasitasPcs;
-            document.getElementById('target_quantity').value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
-        }
-
-        // Fungsi bantuan untuk mengonversi durasi dalam format "HH:mm:ss" menjadi menit
-        function parseDuration(duration) {
-            const [hours, minutes] = duration.split(':').map(Number);
-            return (hours * 60) + minutes;
-        }
-
-        // Panggil fungsi calculateTimeDuration untuk setiap form A, B, C, D, E, dan F
+        // Panggil fungsi calculateTimeDuration 
         calculateTimeDuration('operating_start_time', 'operating_end_time', 'operating_time');
-        calculateTimeDuration('a_start_time', 'a_end_time', 'a_time');
-        calculateTimeDuration('b_start_time', 'b_end_time', 'b_time');
-        calculateTimeDuration('c_start_time', 'c_end_time', 'c_time');
-        calculateTimeDuration('d_start_time', 'd_end_time', 'd_time');
-        calculateTimeDuration('e_start_time', 'e_end_time', 'e_time');
-        calculateTimeDuration('f_start_time', 'f_end_time', 'f_time');
-        calculateTimeDuration('g_start_time', 'g_end_time', 'g_time');
-        calculateTimeDuration('h_start_time', 'h_end_time', 'h_time');
-
-        // Hitung dan tampilkan nilai down_time dan actual_time
         calculateDownTime();
         calculateActualTime();
     });
+
 </script>
 
 @endpush

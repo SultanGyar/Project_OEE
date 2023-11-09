@@ -55,7 +55,9 @@ class ProduksiController extends Controller
             'success' => false,
             'daftarproses' => null,
             'kapasitas_pcs' => null,
-            'daftarkelompok' => null, // Tambahkan daftarkelompok
+            'produk_size' => null,
+            'produk_class' => null,
+            'daftarkelompok' => null,
         ];
     
         // Cek parameter kode
@@ -68,6 +70,8 @@ class ProduksiController extends Controller
             if ($produk) {
                 $response['daftarproses'] = $produk->daftarproses;
                 $response['kapasitas_pcs'] = $produk->kapasitas_pcs;
+                $response['produk_size'] = $produk->size;
+                $response['produk_class'] = $produk->class;
                 $response['success'] = true;
             }
             
@@ -96,6 +100,8 @@ class ProduksiController extends Controller
             'target_quantity' => 'required',
             'daftarproses' => 'required',
             'daftarkelompok' => 'required',
+            'produk_size' => 'required',
+            'produk_class' => 'required',
             'kode' => 'required',
             'quantity' => 'required',
             'finish_good' => 'required',
@@ -106,29 +112,13 @@ class ProduksiController extends Controller
             'operating_time' => 'required',
             'down_time' => 'nullable',
             'actual_time' => 'required',
-            'a_start_time' => 'nullable',
-            'a_end_time' => 'nullable',
             'a_time' => 'nullable',
-            'b_start_time' => 'nullable',
-            'b_end_time' => 'nullable',
             'b_time' => 'nullable',
-            'c_start_time' => 'nullable',
-            'c_end_time' => 'nullable',
             'c_time' => 'nullable',
-            'd_start_time' => 'nullable',
-            'd_end_time' => 'nullable',
             'd_time' => 'nullable',
-            'e_start_time' => 'nullable',
-            'e_end_time' => 'nullable',
             'e_time' => 'nullable',
-            'f_start_time' => 'nullable',
-            'f_end_time' => 'nullable',
             'f_time' => 'nullable',
-            'g_start_time' => 'nullable',
-            'g_end_time' => 'nullable',
             'g_time' => 'nullable',
-            'h_start_time' => 'nullable',
-            'h_end_time' => 'nullable',
             'h_time' => 'nullable'
         ]);
 
@@ -153,6 +143,8 @@ class ProduksiController extends Controller
             'target_quantity',
             'daftarproses',
             'daftarkelompok',
+            'produk_size',
+            'produk_class',
             'kode',
             'quantity',
             'finish_good',
@@ -163,29 +155,13 @@ class ProduksiController extends Controller
             'operating_time',
             'down_time',
             'actual_time',
-            'a_start_time',
-            'a_end_time',
             'a_time',
-            'b_start_time',
-            'b_end_time',
             'b_time',
-            'c_start_time',
-            'c_end_time',
             'c_time',
-            'd_start_time',
-            'd_end_time',
             'd_time',
-            'e_start_time',
-            'e_end_time',
             'e_time',
-            'f_start_time',
-            'f_end_time',
             'f_time',
-            'g_start_time',
-            'g_end_time',
             'g_time',
-            'h_start_time',
-            'h_end_time',
             'h_time'
         ]);
         $array['nama_user'] = auth()->user()->full_name;
@@ -226,11 +202,14 @@ class ProduksiController extends Controller
     {
         $user = auth()->user();
         $request->validate([
+            'nama_user' => 'required',
             'tanggal' => 'required',
             'kapasitas_pcs' => 'required',
             'target_quantity' => 'required',
             'daftarproses' => 'required',
             'daftarkelompok' => 'required',
+            'produk_size' => 'required',
+            'produk_class' => 'required',
             'kode' => 'required',
             'quantity' => 'required',
             'finish_good' => 'required',
@@ -241,29 +220,13 @@ class ProduksiController extends Controller
             'operating_time' => 'required',
             'down_time' => 'nullable',
             'actual_time' => 'required',
-            'a_start_time' => 'nullable',
-            'a_end_time' => 'nullable',
             'a_time' => 'nullable',
-            'b_start_time' => 'nullable',
-            'b_end_time' => 'nullable',
             'b_time' => 'nullable',
-            'c_start_time' => 'nullable',
-            'c_end_time' => 'nullable',
             'c_time' => 'nullable',
-            'd_start_time' => 'nullable',
-            'd_end_time' => 'nullable',
             'd_time' => 'nullable',
-            'e_start_time' => 'nullable',
-            'e_end_time' => 'nullable',
             'e_time' => 'nullable',
-            'f_start_time' => 'nullable',
-            'f_end_time' => 'nullable',
             'f_time' => 'nullable',
-            'g_start_time' => 'nullable',
-            'g_end_time' => 'nullable',
             'g_time' => 'nullable',
-            'h_start_time' => 'nullable',
-            'h_end_time' => 'nullable',
             'h_time' => 'nullable'
         ]);
     
@@ -284,12 +247,14 @@ class ProduksiController extends Controller
     
         $produksi = Produksi::findOrFail($id);
         $produksi->update([
-            'nama_user' => auth()->user()->full_name,
+            'nama_user' => $request->input('nama_user'),
             'tanggal' => $request->input('tanggal'),
             'kapasitas_pcs' => $request->input('kapasitas_pcs'),
             'target_quantity' => $request->input('target_quantity'),
             'daftarproses' => $request->input('daftarproses'),
             'daftarkelompok' => $request->input('daftarkelompok'),
+            'produk_size' => $request->input('produk_size'),
+            'produk_class' => $request->input('daftarkelompok'),
             'kode' => $request->input('kode'),
             'quantity' => $request->input('quantity'),
             'finish_good' => $request->input('finish_good'),
@@ -300,29 +265,13 @@ class ProduksiController extends Controller
             'operating_time' => $request->input('operating_time'),
             'down_time' => $request->input('down_time'),
             'actual_time' => $request->input('actual_time'),
-            'a_start_time' => $request->input('a_start_time'),
-            'a_end_time' => $request->input('a_end_time'),
             'a_time' => $request->input('a_time'),
-            'b_start_time' => $request->input('b_start_time'),
-            'b_end_time' => $request->input('b_end_time'),
             'b_time' => $request->input('b_time'),
-            'c_start_time' => $request->input('c_start_time'),
-            'c_end_time' => $request->input('c_end_time'),
             'c_time' => $request->input('c_time'),
-            'd_start_time' => $request->input('d_start_time'),
-            'd_end_time' => $request->input('d_end_time'),
             'd_time' => $request->input('d_time'),
-            'e_start_time' => $request->input('e_start_time'),
-            'e_end_time' => $request->input('e_end_time'),
             'e_time' => $request->input('e_time'),
-            'f_start_time' => $request->input('f_start_time'),
-            'f_end_time' => $request->input('f_end_time'),
             'f_time' => $request->input('f_time'),
-            'g_start_time' => $request->input('g_start_time'),
-            'g_end_time' => $request->input('g_end_time'),
             'g_time' => $request->input('g_time'),
-            'h_start_time' => $request->input('h_start_time'),
-            'h_end_time' => $request->input('h_end_time'),
             'h_time' => $request->input('h_time')
         ]);
     
