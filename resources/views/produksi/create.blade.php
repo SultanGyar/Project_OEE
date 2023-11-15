@@ -397,13 +397,13 @@
     // Fungsi untuk menampilkan atau menyembunyikan form input berdasarkan checkbox
     function toggleForm() {
       formA.style.display = hideFormCheckboxA.checked ? 'block' : 'none';
-      formB.style.display = hideFormCheckboxB.checked ? 'none' : 'block';
+      formB.style.display = hideFormCheckboxB.checked ? 'block' : 'none';
       formC.style.display = hideFormCheckboxC.checked ? 'block' : 'none';
       formD.style.display = hideFormCheckboxD.checked ? 'block' : 'none';
       formE.style.display = hideFormCheckboxE.checked ? 'block' : 'none';
       formF.style.display = hideFormCheckboxF.checked ? 'block' : 'none';
       formG.style.display = hideFormCheckboxG.checked ? 'block' : 'none';
-      formH.style.display = hideFormCheckboxH.checked ? 'none' : 'block';
+      formH.style.display = hideFormCheckboxH.checked ? 'block' : 'none';
     }
   
     // Panggil fungsi saat checkbox diubah
