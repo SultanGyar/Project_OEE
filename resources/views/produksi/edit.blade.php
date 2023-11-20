@@ -24,8 +24,7 @@
                     <div class="form-group">
                         <label for="tanggal">Tanggal</label>
                         <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
-                            placeholder="Tanggal" name="tanggal" value="{{ $produksi->tanggal ?? old('tanggal') }}"
-                            readonly>
+                            placeholder="Tanggal" name="tanggal" value="{{ $produksi->tanggal ?? old('tanggal') }}">
                         @error('tanggal')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
