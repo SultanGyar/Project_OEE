@@ -115,32 +115,32 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Username</label>
+                        <label for="name">Username<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name"
                             placeholder="Masukan Username" name="name">
                         @error('name') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                     <div class="form-group">
-                        <label for="full_name">Nama Lengkap</label>
+                        <label for="full_name">Nama Lengkap<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control  @error('full_name') is-invalid @enderror" id="full_name"
                             placeholder="Masukan Nama Lengkap" name="full_name">
                         @error('full_name') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                     <div class="form-group">
-                        <label for="password">Kata Sandi</label>
+                        <label for="password">Kata Sandi<span class="font-weight-normal text-danger">*</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="password" placeholder="Masukan Kata Sandi (min: 5)" name="password" minlength="5"
                             autocomplete="off">
                         @error('password') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-group">
-                        <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+                        <label for="password_confirmation">Konfirmasi Kata Sandi<span class="font-weight-normal text-danger">*</label>
                         <input type="password" class="form-control" id="password_confirmation"
                             placeholder="Konfirmasi Kata Sandi (min: 5)" name="password_confirmation" minlength="5"
                             autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label for="role">Role</label>
+                        <label for="role">Role<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('role') is-invalid @enderror" id="role" name="role">
                             <option disabled selected>Pilih Role</option>
                             <option value="Admin" @if(old('role')=='Admin' )selected @endif>Admin</option>
@@ -152,7 +152,7 @@
                         <input type="checkbox" class="form-check-input" id="checkbox" onclick="showingPassword()">
                         <label class="form-check-label" for="checkbox">
                             <span id="checkboxText">Tampilkan</span>
-                        </label>
+                        <span class="font-weight-normal text-danger">*</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -181,7 +181,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="edit_name_{{ $data->id }}">Username</label>
+                        <label for="edit_name_{{ $data->id }}">Username<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror"
                             id="edit_name_{{ $data->id }}" placeholder="Masukkan Username" name="name"
                             value="{{ $data->name }}">
@@ -190,7 +190,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="edit_full_name_{{ $data->id }}">Nama Lengkap</label>
+                        <label for="edit_full_name_{{ $data->id }}">Nama Lengkap<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('full_name') is-invalid @enderror"
                             id="edit_full_name_{{ $data->id }}" placeholder="Masukkan Nama Lengkap" name="full_name"
                             value="{{ $data->full_name }}">
@@ -199,7 +199,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="edit_password_{{ $data->id }}">Password</label>
+                        <label for="edit_password_{{ $data->id }}">Password<span class="font-weight-normal text-danger">*</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="edit_password_{{ $data->id }}" placeholder="Password" name="password" minlength="5"
                             autocomplete="off">
@@ -208,13 +208,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="edit_password_confirmation_{{ $data->id }}">Konfirmasi Password</label>
+                        <label for="edit_password_confirmation_{{ $data->id }}">Konfirmasi Password<span class="font-weight-normal text-danger">*</label>
                         <input type="password" class="form-control" id="edit_password_confirmation_{{ $data->id }}"
                             placeholder="Konfirmasi Password" name="password_confirmation" minlength="5"
                             autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label for="edit_role_{{ $data->id }}">Role</label>
+                        <label for="edit_role_{{ $data->id }}">Role<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('role') is-invalid @enderror" id="edit_role_{{ $data->id }}"
                             name="role">
                             <option value="Admin" {{ $data->role === 'Admin' ? 'selected' : '' }}>Admin</option>

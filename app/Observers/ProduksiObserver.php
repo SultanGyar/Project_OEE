@@ -181,7 +181,6 @@ class ProduksiObserver
      */
     public function updated(Produksi $produksi): void
     {
-        // Cek apakah kolom-kolom tertentu dalam model Produksi telah diubah
         if ($produksi->isDirty([
             'daftarproses',
             'daftarkelompok',
@@ -193,42 +192,64 @@ class ProduksiObserver
             'actual_time', 
             'down_time',
             'tanggal'
-            ])) {
-            // Ambil nilai kolom-kolom yang diubah
-            $updatedProses = $produksi->daftarproses;
-            $updatedKelompok = $produksi->daftarkelompok;
-            $updatedTargetQuantity = $produksi->target_quantity;
-            $updatedQuantity = $produksi->quantity;
-            $updatedFinishGood = $produksi->finish_good;
-            $updatedReject = $produksi->reject;
-            $updatedOperatingTime = $produksi->operating_time;
-            $updatedActualTime = $produksi->actual_time;
-            $updatedDownTime = $produksi->down_time;
-            $updatedTanggal = $produksi->tanggal;
+        ])) {
+            // Dapatkan nilai lama dari kolom yang diubah
+            $oldValues = $produksi->getOriginal();
 
+            // Cari entri DataProduksi yang sesuai dengan data lama
+            $dataProduksiLama = DataProduksi::where('proses', $oldValues['daftarproses'])
+                ->whereMonth('tanggal', Carbon::parse($oldValues['tanggal'])->format('m'))
+                ->whereYear('tanggal', Carbon::parse($oldValues['tanggal'])->format('Y'))
+                ->first();
 
-            $bulan = Carbon::parse($updatedTanggal)->format('m');
-            $tahun = Carbon::parse($updatedTanggal)->format('Y');
-            // Cari entri DataProduksi yang sesuai
-            $dataProduksi = DataProduksi::where('proses', $produksi->daftarproses)
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->first();
+            // Hapus nilai lama dari DataProduksi
+            if ($dataProduksiLama) {
+                $dataProduksiLama->target_quantity -= $oldValues['target_quantity'];
+                $dataProduksiLama->quantity -= $oldValues['quantity'];
+                $dataProduksiLama->finish_good -= $oldValues['finish_good'];
+                $dataProduksiLama->reject -= $oldValues['reject'];
+                $dataProduksiLama->operating_time = $this->subtractTimes($dataProduksiLama->operating_time, $oldValues['operating_time']);
+                $dataProduksiLama->actual_time = $this->subtractTimes($dataProduksiLama->actual_time, $oldValues['actual_time']);
+                $dataProduksiLama->down_time = $this->subtractTimes($dataProduksiLama->down_time, $oldValues['down_time']);
 
-            if ($dataProduksi) {
-                // Perbarui nilai-nilai sesuai dengan perubahan pada Produksi
-                $dataProduksi->proses = $updatedProses;
-                $dataProduksi->kelompokan = $updatedKelompok;
-                $dataProduksi->target_quantity = $updatedTargetQuantity;
-                $dataProduksi->quantity = $updatedQuantity;
-                $dataProduksi->finish_good = $updatedFinishGood;
-                $dataProduksi->reject = $updatedReject;
-                $dataProduksi->operating_time = $updatedOperatingTime;
-                $dataProduksi->actual_time = $updatedActualTime;
-                $dataProduksi->down_time = $updatedDownTime;
-                $dataProduksi->tanggal = $updatedTanggal;
-                $dataProduksi->save();
+                // Cek apakah nilai quantity setelah dikurangi menjadi 0 atau minus
+                if ($dataProduksiLama->quantity <= 0) {
+                    $dataProduksiLama->delete();
+                } else {
+                    $dataProduksiLama->save();
+                }
             }
+
+            // Cari atau buat entri DataProduksi yang sesuai dengan data baru
+            $dataProduksiBaru = DataProduksi::firstOrCreate([
+                'proses' => $produksi->daftarproses,
+                'kelompokan' => $produksi->daftarkelompok,
+                'tanggal' => $produksi->tanggal,
+                'target_quantity' => $produksi->target_quantity, 
+                'quantity' => $produksi->quantity,
+                'finish_good' => $produksi->finish_good, 
+                'reject' => $produksi->reject,
+                'operating_time' => $produksi->operating_time,
+                'actual_time' => $produksi->actual_time,
+                'down_time' => $produksi->down_time,
+            ]);
+
+            // Hitung perubahan nilai
+            $changedTargetQuantity = $produksi->target_quantity - $oldValues['target_quantity'];
+            $changedQuantity = $produksi->quantity - $oldValues['quantity'];
+            $changedFinishGood = $produksi->finish_good - $oldValues['finish_good'];
+            $changedReject = $produksi->reject - $oldValues['reject'];
+
+            // Perbarui nilai sesuai dengan perubahan pada Produksi
+            $dataProduksiBaru->target_quantity += $changedTargetQuantity;
+            $dataProduksiBaru->quantity += $changedQuantity;
+            $dataProduksiBaru->finish_good += $changedFinishGood;
+            $dataProduksiBaru->reject += $changedReject;
+            $dataProduksiBaru->operating_time = $produksi->operating_time;
+            $dataProduksiBaru->actual_time = $produksi->actual_time;
+            $dataProduksiBaru->down_time = $produksi->down_time;
+            $dataProduksiBaru->save();
         }
     }
+ 
 }

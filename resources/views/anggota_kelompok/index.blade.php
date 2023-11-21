@@ -80,7 +80,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarproses">Nama Proses</label>
+                        <label for="daftarproses">Nama Proses<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses" name="daftarproses">
                             <option value="" selected disabled>Pilih Proses</option>
                             @foreach ($dataproses as $value => $label)
@@ -92,7 +92,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="daftarkelompok">Kelompok</label>
+                        <label for="daftarkelompok">Kelompok<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('daftarkelompok') is-invalid @enderror" id="daftarkelompok" name="daftarkelompok">
                             <option value="" selected disabled>Pilih Kelompok</option>
                             @foreach ($datakelompok as $value => $label)
@@ -130,7 +130,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarproses{{ $data->id }}">Nama Proses</label>
+                        <label for="daftarproses{{ $data->id }}">Nama Proses<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses{{ $data->id }}" name="daftarproses">
                             <option value="">Pilih Proses</option>
                             @foreach ($dataproses as $value => $label)
@@ -145,7 +145,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="daftarkelompok">Kelompok</label>
+                        <label for="daftarkelompok">Kelompok<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('daftarkelompok') is-invalid @enderror" id="daftarkelompok{{ $data->id }}" name="daftarkelompok">
                             <option value="">Pilih Proses</option>
                             @foreach ($datakelompok as $value => $label)

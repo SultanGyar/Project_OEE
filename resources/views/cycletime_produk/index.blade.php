@@ -121,7 +121,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarproses">Nama Proses</label>
+                        <label for="daftarproses">Nama Proses<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('daftarproses') is-invalid @enderror" id="daftarproses"
                             name="daftarproses">
                             <option value="" selected disabled>Pilih Proses</option>
@@ -134,7 +134,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="size">Size</label>
+                        <label for="size">Size<span class="font-weight-normal text-danger">*</label>
                         <input type="string" class="form-control @error('size') is-invalid @enderror" id="size"
                             placeholder="Size" name="size" value="{{ old('size') }}">
                         @error('size')
@@ -142,7 +142,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="class">Class</label>
+                        <label for="class">Class<span class="font-weight-normal text-danger">*</label>
                         <input type="string" class="form-control @error('class') is-invalid @enderror" id="class"
                             placeholder="Class" name="class" value="{{ old('class') }}">
                         @error('class')
@@ -150,7 +150,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="kapasitas_pcs">Kapasitas/Pcs</label>
+                        <label for="kapasitas_pcs">Kapasitas/Pcs<span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
                             id="kapasitas_pcs" placeholder="Kapasitas/Pcs" name="kapasitas_pcs"
                             value="{{ old('kapasitas_pcs') }}">
@@ -159,7 +159,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="kode">Kode</label>
+                        <label for="kode">Kode<span class="font-weight-normal text-danger">*</label>
                         <input type="string" class="form-control @error('kode') is-invalid @enderror" id="kode"
                             placeholder="Kode" name="kode" value="{{ old('kode') }}">
                         @error('kode')
@@ -193,7 +193,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarproses{{ $data->id }}">Nama Proses</label>
+                        <label for="daftarproses{{ $data->id }}">Nama Proses<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control @error('daftarproses') is-invalid @enderror"
                             id="daftarproses{{ $data->id }}" name="daftarproses">
                             <option value="">Pilih Proses</option>
@@ -209,7 +209,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="size{{ $data->id }}">Size</label>
+                        <label for="size{{ $data->id }}">Size<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('size') is-invalid @enderror" id="size{{ $data->id }}" 
                         placeholder="Size" name="size" value="{{$data->size ?? old('size') }}">
                         @error('size')
@@ -218,7 +218,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="class{{ $data->id }}">Class</label>
+                        <label for="class{{ $data->id }}">Class<span class="font-weight-normal text-danger">*</label>
                         <input type="string" class="form-control @error('class') is-invalid @enderror"
                             id="class{{ $data->id }}" placeholder="Class" name="class"
                             value="{{$data->class ?? old('class') }}">
@@ -228,7 +228,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="kapasitas_pcs{{ $data->id }}">Kapasitas/Pcs</label>
+                        <label for="kapasitas_pcs{{ $data->id }}">Kapasitas/Pcs<span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror" id="kapasitas_pcs{{ $data->id }}" 
                         placeholder="Kapasitas/Pcs" name="kapasitas_pcs" value="{{$data->kapasitas_pcs ?? old('kapasitas_pcs') }}">
 
@@ -237,7 +237,7 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="kode{{ $data->id }}">Kode</label>
+                        <label for="kode{{ $data->id }}">Kode<span class="font-weight-normal text-danger">*</label>
                         <input type="string" class="form-control @error('kode') is-invalid @enderror"
                             id="kode{{ $data->id }}" placeholder="Kode" name="kode"
                             value="{{$data->kode ?? old('kode') }}">

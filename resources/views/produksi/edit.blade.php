@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="nama_user">Nama Operator</label>
+                        <label for="nama_user">Nama Operator<span class="font-weight-normal text-danger">*</label>
                         <div class="input-group">
                             <input type="hidden" name="nama_user" id="nama_user">
                             <input type="text" class="form-control @error('nama_user') is-invalid @enderror"
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="tanggal">Tanggal</label>
+                        <label for="tanggal">Tanggal<span class="font-weight-normal text-danger">*</label>
                         <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
                             placeholder="Tanggal" name="tanggal" value="{{ $produksi->tanggal ?? old('tanggal') }}">
                         @error('tanggal')
@@ -31,9 +31,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="daftarproses">Proses <span class="font-weight-normal">(Otomatis)</span></label>
+                        <label for="daftarproses">Proses <span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('daftarproses') is-invalid @enderror"
-                            id="daftarproses" placeholder="Proses" name="daftarproses"
+                            id="daftarproses" placeholder="(otomatis)" name="daftarproses"
                             value="{{ $produksi->daftarproses ?? old('daftarproses') }}" readonly>
                         @error('daftarproses')
                         <span class="text-danger">{{ $message }}</span>
@@ -41,9 +41,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="daftarkelompok">Kelompok <span class="font-weight-normal">(Otomatis)</span></label>
+                        <label for="daftarkelompok">Kelompok <span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('daftarkelompok') is-invalid @enderror"
-                            id="daftarkelompok" placeholder="Kelompok" name="daftarkelompok"
+                            id="daftarkelompok" placeholder="(otomatis)" name="daftarkelompok"
                             value="{{ $produksi->daftarkelompok ?? old('daftarkelompok') }}" readonly>
                         @error('daftarkelompok')
                         <span class="text-danger">{{ $message }}</span>
@@ -52,9 +52,9 @@
 
                     <div class="form-group">
                         <label for="kapasitas_pcs">Kapasitas/Pcs <span
-                                class="font-weight-normal">(Otomatis)</span></label>
+                                class="font-weight-normal">(Otomatis)</span><span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
-                            id="kapasitas_pcs" placeholder="Kapasitas/Pcs" name="kapasitas_pcs"
+                            id="kapasitas_pcs" placeholder="(otomatis)" name="kapasitas_pcs"
                             value="{{ $produksi->kapasitas_pcs ?? old('kapasitas_pcs') }}" readonly>
                         @error('kapasitas_pcs')
                         <span class="text-danger">{{ $message }}</span>
@@ -62,9 +62,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="produk_size">Size <span class="font-weight-normal">(Otomatis)</span></label>
+                        <label for="produk_size">Size <span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('produk_size') is-invalid @enderror"
-                            id="produk_size" placeholder="Size" name="produk_size"
+                            id="produk_size" placeholder="(otomatis)" name="produk_size"
                             value="{{ $produksi->produk_size ?? old('produk_size') }}" readonly>
                         @error('produk_size')
                         <span class="text-danger">{{ $message }}</span>
@@ -72,9 +72,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="produk_class">Class <span class="font-weight-normal">(Otomatis)</span></label>
+                        <label for="produk_class">Class <span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('produk_class') is-invalid @enderror"
-                            id="produk_class" placeholder="Class" name="produk_class"
+                            id="produk_class" placeholder="(otomatis)" name="produk_class"
                             value="{{ $produksi->produk_class ?? old('produk_class') }}" readonly>
                         @error('produk_class')
                         <span class="text-danger">{{ $message }}</span>
@@ -83,9 +83,9 @@
 
                     <div class="form-group">
                         <label for="target_quantity">Target Quantity <span
-                                class="font-weight-normal">(Otomatis)</span></label>
+                                class="font-weight-normal">(Otomatis)</span><span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('target_quantity') is-invalid @enderror"
-                            id="target_quantity" placeholder="Target Quantity" name="target_quantity"
+                            id="target_quantity" placeholder="(otomatis)" name="target_quantity"
                             value="{{ $produksi->target_quantity ?? old('target_quantity') }}" readonly>
                         @error('target_quantity')
                         <span class="text-danger">{{ $message }}</span>
@@ -93,7 +93,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="kode">Kode</label>
+                        <label for="kode">Kode<span class="font-weight-normal text-danger">*</label>
                         <select class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode"
                             style="width: 100%">
                             <option value="" selected disabled>Pilih Kode..</option>
@@ -108,7 +108,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="quantity">Actual Quantity</label>
+                        <label for="quantity">Actual Quantity<span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity"
                             placeholder="Actual Quantity" name="quantity"
                             value="{{ $produksi->quantity ?? old('quantity') }}">
@@ -118,7 +118,7 @@
                     </div>
 
                     <div class="form-group" hidden>
-                        <label for="finish_good">Good Quality</label>
+                        <label for="finish_good">Good Quality<span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('finish_good') is-invalid @enderror"
                             id="finish_good" placeholder="Good Quality" name="finish_good"
                             value="{{ $produksi->finish_good ?? old('finish_good') }}">
@@ -141,7 +141,7 @@
                         <label for="daftarketerangan">Keterangan Not Good</label>
                         <select class="form-control mb-10 @error('daftarketerangan') is-invalid @enderror"
                             id="daftarketerangan" name="daftarketerangan" style="width: 100%">
-                            <option value="">Batal (Pilih ini untuk membatalkan Keterangan)</option>
+                            <option value="">Batalkan Keterangan</option>
                             @foreach ($dataketerangan as $value => $label)
                             <option value="{{ $value }}" @if ($value==$produksi->daftarketerangan ||
                                 old('daftarketerangan') == $value) selected @endif>{{ $label }}</option>
@@ -155,7 +155,7 @@
                     <div class="row">
                         <div class="col-md-6 border">
                             <div class="form-group">
-                                <label for="operating_start_time">Operating Start</label>
+                                <label for="operating_start_time">Operating Start<span class="font-weight-normal text-danger">*</label>
                                 <input type="time"
                                     class="form-control @error('operating_start_time') is-invalid @enderror"
                                     id="operating_start_time" placeholder="" name="operating_start_time"
@@ -167,7 +167,7 @@
                         </div>
                         <div class="col-md-6 border">
                             <div class="form-group">
-                                <label for="operating_end_time">Operating End</label>
+                                <label for="operating_end_time">Operating End<span class="font-weight-normal text-danger">*</label>
                                 <input type="time"
                                     class="form-control @error('operating_end_time') is-invalid @enderror"
                                     id="operating_end_time" placeholder="" name="operating_end_time"
@@ -180,7 +180,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="operating_time">Operating Time</label>
+                        <label for="operating_time">Operating Time<span class="font-weight-normal text-danger">*</label>
                         <input type="time" class="form-control @error('operating_time') is-invalid @enderror"
                             id="operating_time" placeholder="Operating Time" name="operating_time"
                             value="{{ $produksi->operating_time ?? old('operating_time') }}" readonly>
@@ -296,14 +296,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="down_time">Down Time</label>
+                        <label for="down_time">Actual Down Time<span class="font-weight-normal text-danger">*</label>
                         <input type="time" class="form-control @error('down_time') is-invalid @enderror" id="down_time"
                             placeholder="Down Time" name="down_time"
                             value="{{ $produksi->down_time ?? old('down_time') }}" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label for="actual_time">Actual Time</label>
+                        <label for="actual_time">Actual Time<span class="font-weight-normal text-danger">*</label>
                         <input type="time" class="form-control @error('actual_time') is-invalid @enderror"
                             id="actual_time" placeholder="Actual Time" name="actual_time"
                             value="{{ $produksi->actual_time ?? old('actual_time') }}" readonly>
@@ -328,6 +328,40 @@
 
 <script>
 
+    // Fungsi bantuan untuk mengonversi durasi dalam format "HH:mm:ss" menjadi menit
+    function parseDuration(duration) {
+        const [hours, minutes] = duration.split(':').map(Number);
+        return (hours * 60) + minutes;
+    }
+
+    // Fungsi untuk menghitung actual_time sebagai selisih dari operating_time dan b_time dalam menit
+    function calculateActualTime() {
+        const operating_timeInput = document.getElementById('operating_time');
+        const b_timeInput = document.getElementById('b_time');
+        const actual_timeInput = document.getElementById('actual_time');
+        const kapasitasPcsInput = document.getElementById('kapasitas_pcs');
+
+        const operating_time = parseDuration(operating_timeInput.value);
+        const b_time = b_timeInput.value;
+        
+        // Hitung actual_time dalam menit
+        const actualTimeInMinutes = operating_time - b_time;
+
+        // Ubah durasi menjadi format jam dan menit (HH:mm) dan perbarui nilai pada input actual_time
+        const formattedDuration = `${Math.floor(actualTimeInMinutes / 60).toString().padStart(2, '0')}:${(actualTimeInMinutes % 60).toString().padStart(2, '0')}`;
+        actual_timeInput.value = formattedDuration;
+
+        // Hitung actual_time dalam detik
+        const actualTimeInSeconds = actualTimeInMinutes * 60;
+
+        // Ambil nilai kapasitas_pcs
+        const kapasitasPcs = parseFloat(kapasitasPcsInput.value) || 0;
+
+        // Hitung target_quantity dan isi nilai ke form target_quantity
+        const targetQuantity = actualTimeInSeconds / kapasitasPcs;
+        document.getElementById('target_quantity').value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
+    }
+
     function getDataAuto() {
         var selectedKode = $('#kode').val();
         
@@ -339,7 +373,6 @@
                 kode: selectedKode,
             },
             success: function(response) {
-                console.log('Step 1:', response);
 
                 if (response.success) {
                     var daftarproses = response.daftarproses;
@@ -358,6 +391,8 @@
                     } else {
                         // Jika tidak ada kesamaan, Anda dapat melakukan tindakan lain
                     }
+
+                    calculateActualTime();
                 }
             },
             error: function() {
@@ -471,43 +506,6 @@
 
 
     document.addEventListener('DOMContentLoaded', function () {
-
-        // Fungsi bantuan untuk mengonversi durasi dalam format "HH:mm:ss" menjadi menit
-        function parseDuration(duration) {
-            const [hours, minutes] = duration.split(':').map(Number);
-            return (hours * 60) + minutes;
-        }
-
-        // Fungsi untuk menghitung actual_time sebagai selisih dari operating_time dan b_time dalam menit
-        function calculateActualTime() {
-            const operating_timeInput = document.getElementById('operating_time');
-            const b_timeInput = document.getElementById('b_time');
-            const actual_timeInput = document.getElementById('actual_time');
-            const kapasitasPcsInput = document.getElementById('kapasitas_pcs');
-
-            const operating_time = parseDuration(operating_timeInput.value);
-            const b_time = b_timeInput.value;
-            console.log('b', b_time)
-            
-            // Hitung actual_time dalam menit
-            const actualTimeInMinutes = operating_time - b_time;
-            console.log('total', actualTimeInMinutes)
-
-            // Ubah durasi menjadi format jam dan menit (HH:mm) dan perbarui nilai pada input actual_time
-            const formattedDuration = `${Math.floor(actualTimeInMinutes / 60).toString().padStart(2, '0')}:${(actualTimeInMinutes % 60).toString().padStart(2, '0')}`;
-            actual_timeInput.value = formattedDuration;
-            console.log('actual', formattedDuration);
-
-            // Hitung actual_time dalam detik
-            const actualTimeInSeconds = actualTimeInMinutes * 60;
-
-            // Ambil nilai kapasitas_pcs
-            const kapasitasPcs = parseFloat(kapasitasPcsInput.value) || 0;
-
-            // Hitung target_quantity dan isi nilai ke form target_quantity
-            const targetQuantity = actualTimeInSeconds / kapasitasPcs;
-            document.getElementById('target_quantity').value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
-        }
 
         const b_timeInput = document.getElementById('b_time');
         b_timeInput.addEventListener('input', calculateActualTime);

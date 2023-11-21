@@ -79,7 +79,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarkelompok">Tambahkan Kelompok</label>
+                        <label for="daftarkelompok">Tambahkan Kelompok<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('daftarkelompok') is-invalid @enderror" id="daftarkelompok" 
                         placeholder="Masukan nama Kelompok" name="daftarkelompok" autofocus>
                         @error('daftarkelompok') <span class="text-danger">{{ $message}}</span> @enderror
@@ -110,7 +110,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="daftarkelompok">Edit Kelompok</label>
+                        <label for="daftarkelompok">Edit Kelompok<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('daftarkelompok') is-invalid @enderror" id="daftarkelompok" 
                         placeholder="Masukan nama Kelompok" name="daftarkelompok" value="{{ $data->daftarkelompok }}" autofocus>
                         @error('daftarkelompok') <span class="text-danger">{{ $message}}</span> @enderror
