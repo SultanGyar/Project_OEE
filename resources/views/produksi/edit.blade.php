@@ -51,26 +51,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="produk_size">Size <span class="font-weight-normal">(Otomatis)</span></label>
-                        <input type="string" class="form-control @error('produk_size') is-invalid @enderror"
-                            id="produk_size" placeholder="Size" name="produk_size"
-                            value="{{ $produksi->produk_size ?? old('produk_size') }}" readonly>
-                        @error('produk_size')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="produk_class">Class <span class="font-weight-normal">(Otomatis)</span></label>
-                        <input type="string" class="form-control @error('produk_class') is-invalid @enderror"
-                            id="produk_class" placeholder="Class" name="produk_class"
-                            value="{{ $produksi->produk_class ?? old('produk_class') }}" readonly>
-                        @error('produk_class')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
                         <label for="kapasitas_pcs">Kapasitas/Pcs <span
                                 class="font-weight-normal">(Otomatis)</span></label>
                         <input type="number" class="form-control @error('kapasitas_pcs') is-invalid @enderror"
