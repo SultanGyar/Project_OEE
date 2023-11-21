@@ -10,6 +10,7 @@ use App\Models\Produksi;
 use App\Models\Keterangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Exceptions\LaravelExcelException;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -183,6 +184,14 @@ class ProduksiController extends Controller
     public function edit($id)
     {
         $produksi = Produksi::findOrFail($id); // Temukan data produksi berdasarkan ID yang diberikan
+
+        // Periksa apakah pengguna memiliki izin untuk mengedit berdasarkan gate 'admin-only'
+        if (Gate::denies('admin-only')) {
+            // Jika pengguna bukan admin, Anda bisa mengarahkannya atau memberikan respons error
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Lanjutkan menampilkan formulir edit jika pengguna memiliki izin
         $datakode = CycletimeProduk::pluck('kode', 'kode');
         $dataketerangan = Keterangan::pluck('daftarketerangan', 'daftarketerangan');
 

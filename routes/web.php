@@ -27,23 +27,26 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('/advance', \App\Http\Controllers\AdvanceController::class)->middleware('auth');
-Route::resource('users', \App\Http\Controllers\UserController::class)->middleware('auth');
 Route::resource('produksi', \App\Http\Controllers\ProduksiController::class)->middleware('auth');
 Route::resource('data_produksi', \App\Http\Controllers\DataProduksiController::class)->middleware('auth');
-Route::resource('cycletime_produk', \App\Http\Controllers\CycletimeProdukController::class)->middleware('auth');
-Route::resource('proses', \App\Http\Controllers\ProsesController::class)->middleware('auth');
-Route::resource('kelompok', \App\Http\Controllers\KelompokController::class)->middleware('auth');
-Route::resource('anggota_kelompok', \App\Http\Controllers\AnggotaKelompokController::class)->middleware('auth');
-Route::resource('keterangan', \App\Http\Controllers\KeteranganController::class)->middleware('auth');
+
+//membatasi akses operator ke halaman tertentu
+Route::group(['middleware' => ['auth', 'role:Admin']], function () {
+    Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::resource('proses', \App\Http\Controllers\ProsesController::class);
+    Route::resource('cycletime_produk', \App\Http\Controllers\CycletimeProdukController::class);
+    Route::resource('kelompok', \App\Http\Controllers\KelompokController::class);
+    Route::resource('anggota_kelompok', \App\Http\Controllers\AnggotaKelompokController::class);
+    Route::resource('keterangan', \App\Http\Controllers\KeteranganController::class);
+});
+
 
 Route::get('/get-data-auto', [ProduksiController::class, 'getDataAuto'])->name('get-data-auto'); 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
 Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);
 
 Route::post('produksi-import', [ProduksiController::class, 'import'])->name('produksi.import');
-
 Route::post('cycletime-import', [CycletimeProdukController::class, 'import'])->name('cycletime.import');
-
 Route::post('user-import', [UserController::class, 'import'])->name('user.import');
 
 Auth::routes();

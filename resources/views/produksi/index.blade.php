@@ -122,7 +122,7 @@
                                     <td>{{ $item->g_time ? $item->g_time . ' Minutes' : '' }}</td>
                                     <td>{{ $item->h_time ? $item->h_time . ' Minutes' : '' }}</td>                                    
                                     @can('admin-only')
-                                    <td>
+                                    <td >
                                         <a href="{{route('produksi.edit',
                                             $item)}}" class="btn btn-primary btn-xs">
                                             Edit

@@ -355,10 +355,10 @@ return [
             ],
         ],
         
-        [
-            'text' => 'Laporan Produksi',
-            'icon' => 'fa angle-left right',
-            'submenu' => [
+        // [
+            // 'text' => 'Laporan Produksi',
+            // 'icon' => 'fa angle-left right',
+            // 'submenu' => [
 
                 [
                     'text' => 'Cycle Time Produk',
@@ -376,8 +376,8 @@ return [
                     'url' => '/data_produksi',
                     'icon' => 'fa fa-folder-open',
                 ],
-            ],
-        ],
+            // ],
+        // ],
 
     ],
 

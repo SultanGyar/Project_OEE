@@ -42,17 +42,16 @@
                                 @foreach($proses as $data)
                                 <tr>
                                     <td>{{ $data->daftarproses }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
                                         
-                                        <a href="{{ route('proses.destroy', $data) }}"
-                                            onclick="notificationBeforeDelete(event, this)"
-                                            class="btn btn-danger btn-xs">
+                                        <a href="{{ route('proses.destroy', $data) }}" onclick="notificationBeforeDelete(event, this)" class="btn btn-danger btn-xs">
                                             Delete
                                         </a>
                                     </td>
+                                    
                                 </tr>
                                 @endforeach
                             </tbody>

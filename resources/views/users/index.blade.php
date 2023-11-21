@@ -46,7 +46,7 @@
                                     <td>{{$data->full_name}}</td>
                                     <td>{{$data->name}}</td>
                                     <td>{{$data->role}}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal"
                                             data-target="#modalEdit{{ $data->id }}">
                                             Edit

@@ -53,7 +53,7 @@
                                     <td>{{ $data->class }}</td>
                                     <td>{{ $data->kapasitas_pcs }}</td>
                                     <td>{{ $data->kode }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal"
                                             data-target="#modalEdit{{ $data->id }}">
                                             Edit

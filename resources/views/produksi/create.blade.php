@@ -21,9 +21,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        @php
+                        $currentMonth = now()->endOfMonth()->toDateString();
+                        @endphp                    
                         <label for="tanggal">Tanggal<span class="font-weight-normal text-danger">*</label>
                         <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
-                            placeholder="Tanggal" name="tanggal" value="{{ old('tanggal') }}" >
+                            placeholder="Tanggal" name="tanggal" value="{{ old('tanggal') }} " max="{{ $currentMonth }}">
                         @error('tanggal')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
