@@ -2,14 +2,17 @@
 
 namespace App\Observers;
 
-use App\Models\Produksi;
 use App\Models\DataProduksi;
+use App\Models\Produksi;
 use Carbon\Carbon;
 
 class ProduksiObserver
 {
-    /**
+     /**
      * Handle the Produksi "created" event.
+     *
+     * @param  \App\Models\Produksi  $produksi
+     * @return void
      */
     public function created(Produksi $produksi): void
     {
@@ -63,56 +66,141 @@ class ProduksiObserver
         }
     }
 
-    // Metode untuk melakukan penambahan waktu pada kolom waktu yang telah disediakan sebelumnya
+    
     private function addTimes($time1, $time2)
     {
-        // Konversi waktu menjadi menit sebelum dilakukan perhitungan
-        $time1 = $this->convertToMinutes($time1);
-        $time2 = $this->convertToMinutes($time2);
-
-        // Hitung total waktu dalam menit
-        $totalMinutes = $time1 + $time2;
-
-        // Ubah total waktu dalam menit menjadi format 'HH:mm:ss'
-        return $this->formatDuration($totalMinutes);
-    }
-
-    // Metode untuk mengonversi total waktu dalam menit menjadi format 'HH:mm:ss'
-    private function formatDuration($totalMinutes)
-    {
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-        $seconds = 0; // Set detik ke 0.
-
-        // Format ke format 'HH:mm:ss'
-        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-    }
-
-    private function convertToMinutes($time)
-    {
-        // Memeriksa apakah waktu sesuai dengan format 'HH:mm:ss'
-        if (preg_match('/^(\d{2}:\d{2}:\d{2})$/', $time)) {
-            // Pecah waktu menjadi jam, menit, dan detik
-            list($hours, $minutes, $seconds) = explode(':', $time);
-            
-            // Hitung total waktu dalam menit
-            $totalMinutes = $hours * 60 + $minutes + $seconds / 60; // Konversi detik ke menit
+        // Convert time values to minutes
+        $minutes1 = $this->timeToMinutes($time1);
+        $minutes2 = $this->timeToMinutes($time2);
     
-            return $totalMinutes;
+        // Add minutes
+        $totalMinutes = $minutes1 + $minutes2;
+    
+        // Convert total minutes back to 'H:i:s' format
+        return $this->minutesToTime($totalMinutes);
+    }
+    
+    private function timeToMinutes($time)
+    {
+        $timeArray = explode(':', $time);
+
+        $hours = isset($timeArray[0]) ? (int)$timeArray[0] : 0;
+        $minutes = isset($timeArray[1]) ? (int)$timeArray[1] : 0;
+
+        return ($hours * 60) + $minutes;
+    }
+    
+    private function minutesToTime($minutes)
+    {
+        $hours = floor($minutes / 60);
+        $minutes = $minutes % 60;
+    
+        return sprintf('%02d:%02d:00', $hours, $minutes);
+    }
+
+    /**
+     * Handle the Produksi "updated" event.
+     */
+    public function updated(Produksi $produksi): void
+{
+    if ($produksi->isDirty([
+        'daftarproses',
+        'daftarkelompok',
+        'target_quantity',
+        'quantity',
+        'finish_good',
+        'reject',
+        'operating_time',
+        'actual_time',
+        'down_time',
+        'tanggal'
+    ])) {
+        // Dapatkan nilai lama dari kolom yang diubah
+        $oldValues = $produksi->getOriginal();
+
+        // Cari entri DataProduksi yang sesuai dengan data lama
+        $dataProduksiLama = DataProduksi::where('proses', $oldValues['daftarproses'])
+            ->whereMonth('tanggal', Carbon::parse($oldValues['tanggal'])->format('m'))
+            ->whereYear('tanggal', Carbon::parse($oldValues['tanggal'])->format('Y'))
+            ->first();
+
+        // Hapus nilai lama dari DataProduksi
+        if ($dataProduksiLama) {
+            $dataProduksiLama->target_quantity -= $oldValues['target_quantity'];
+            $dataProduksiLama->quantity -= $oldValues['quantity'];
+            $dataProduksiLama->finish_good -= $oldValues['finish_good'];
+            $dataProduksiLama->reject -= $oldValues['reject'];
+            $dataProduksiLama->operating_time = $this->subtractTimes($dataProduksiLama->operating_time, $oldValues['operating_time']);
+            $dataProduksiLama->actual_time = $this->subtractTimes($dataProduksiLama->actual_time, $oldValues['actual_time']);
+            $dataProduksiLama->down_time = $this->subtractTimes($dataProduksiLama->down_time, $oldValues['down_time']);
+
+            // Cek apakah nilai quantity setelah dikurangi menjadi 0 atau minus
+            if ($dataProduksiLama->quantity <= 0) {
+                $dataProduksiLama->delete();
+            } else {
+                $dataProduksiLama->save();
+            }
+        }
+
+        // Cari entri DataProduksi yang sesuai dengan data baru
+        $data_produksi = DataProduksi::where('proses', $produksi->daftarproses)
+            ->whereMonth('tanggal', Carbon::parse($produksi->tanggal)->format('m'))
+            ->whereYear('tanggal', Carbon::parse($produksi->tanggal)->format('Y'))
+            ->first();
+
+        if ($data_produksi) {
+            // Jika entri dengan proses yang sama, bulan yang sama, dan tahun yang sama sudah ada, tambahkan nilai baru ke entri tersebut
+            $data_produksi->target_quantity += $produksi->target_quantity;
+            $data_produksi->quantity += $produksi->quantity;
+            $data_produksi->finish_good += $produksi->finish_good;
+            $data_produksi->reject += $produksi->reject;
+            $data_produksi->operating_time = $this->addTimes($data_produksi->operating_time, $produksi->operating_time);
+            $data_produksi->actual_time = $this->addTimes($data_produksi->actual_time, $produksi->actual_time);
+            $data_produksi->down_time = $this->addTimes($data_produksi->down_time, $produksi->down_time);
+            $data_produksi->save();
         } else {
-            // Format waktu tidak valid, Anda dapat menangani kesalahan di sini
-            return 0; // Atau nilai yang sesuai dengan kebutuhan Anda
+            // Jika entri dengan proses yang sama, bulan yang sama, dan tahun yang sama belum ada
+            // Buat entri baru di tabel Data_produksi
+            DataProduksi::create([
+                'proses' => $produksi->daftarproses,
+                'kelompokan' => $produksi->daftarkelompok,
+                'target_quantity' => $produksi->target_quantity,
+                'quantity' => $produksi->quantity,
+                'finish_good' => $produksi->finish_good,
+                'reject' => $produksi->reject,
+                'operating_time' => $produksi->operating_time,
+                'actual_time' => $produksi->actual_time,
+                'down_time' => $produksi->down_time,
+                'tanggal' => $produksi->tanggal,
+            ]);
         }
     }
-    
-    
+}
+
+
+     private function subtractTimes($time1, $time2)
+    {
+        // Konversi waktu menjadi menit sebelum dilakukan perhitungan
+        $time1 = $this->timeToMinutes($time1);
+        $time2 = $this->timeToMinutes($time2);
+
+        // Hitung total waktu dalam menit
+        $totalMinutes = $time1 - $time2;
+
+        // Ubah total waktu dalam menit menjadi format 'HH:mm:ss'
+        return $this->minutesToTime($totalMinutes);
+    }
+
     /**
      * Handle the Produksi "deleted" event.
      */
     public function deleted(Produksi $produksi): void
     {
         // Ambil data produksi yang sesuai
-        $data_produksi = DataProduksi::where('proses', $produksi->daftarproses)->first();
+        $data_produksi = DataProduksi::where('proses', $produksi->daftarproses)
+            ->whereMonth('tanggal', Carbon::parse($produksi->tanggal)->format('m'))
+            ->whereYear('tanggal', Carbon::parse($produksi->tanggal)->format('Y'))
+            ->first();
 
         if ($data_produksi) {
             // Simpan data asli sebelum pengurangan
@@ -124,16 +212,10 @@ class ProduksiObserver
             $data_produksi->decrement('finish_good', $produksi->finish_good);
             $data_produksi->decrement('reject', $produksi->reject);
 
-            // Ubah waktu menjadi objek Carbon
-            $originalOperatingTime = Carbon::createFromFormat('H:i:s', $data_produksi->operating_time);
-            $originalActualTime = Carbon::createFromFormat('H:i:s', $data_produksi->actual_time);
-
-            $produksiOperatingTime = Carbon::createFromFormat('H:i:s', $produksi->operating_time);
-            $produksiActualTime = Carbon::createFromFormat('H:i:s', $produksi->actual_time);
-
             // Kurangi waktu
-            $data_produksi->operating_time = $originalOperatingTime->subMinutes($produksiOperatingTime->diffInMinutes($originalOperatingTime));
-            $data_produksi->actual_time = $originalActualTime->subMinutes($produksiActualTime->diffInMinutes($originalActualTime));
+            $data_produksi->operating_time = $this->subtractTimes($data_produksi->operating_time, $produksi->operating_time);
+            $data_produksi->actual_time = $this->subtractTimes($data_produksi->actual_time, $produksi->actual_time);
+            $data_produksi->down_time = $this->subtractTimes($data_produksi->down_time, $produksi->down_time);
 
             // Cek apakah nilai quantity setelah dikurangi menjadi 0 atau minus
             if ($data_produksi->quantity <= 0) {
@@ -142,21 +224,6 @@ class ProduksiObserver
                 $data_produksi->save();
             }
         }
-    }
-
-
-    // Metode untuk melakukan pengurangan waktu pada kolom waktu yang telah disediakan sebelumnya
-    private function subtractTimes($time1, $time2)
-    {
-        // Konversi waktu menjadi menit sebelum dilakukan perhitungan
-        $time1 = $this->convertToMinutes($time1);
-        $time2 = $this->convertToMinutes($time2);
-
-        // Hitung total waktu dalam menit
-        $totalMinutes = $time1 - $time2;
-
-        // Ubah total waktu dalam menit menjadi format 'HH:mm:ss'
-        return $this->formatDuration($totalMinutes);
     }
 
 
@@ -175,81 +242,4 @@ class ProduksiObserver
     {
         //
     }
-
-    /**
-     * Handle the Produksi "updated" event.
-     */
-    public function updated(Produksi $produksi): void
-    {
-        if ($produksi->isDirty([
-            'daftarproses',
-            'daftarkelompok',
-            'target_quantity', 
-            'quantity',
-            'finish_good', 
-            'reject', 
-            'operating_time', 
-            'actual_time', 
-            'down_time',
-            'tanggal'
-        ])) {
-            // Dapatkan nilai lama dari kolom yang diubah
-            $oldValues = $produksi->getOriginal();
-
-            // Cari entri DataProduksi yang sesuai dengan data lama
-            $dataProduksiLama = DataProduksi::where('proses', $oldValues['daftarproses'])
-                ->whereMonth('tanggal', Carbon::parse($oldValues['tanggal'])->format('m'))
-                ->whereYear('tanggal', Carbon::parse($oldValues['tanggal'])->format('Y'))
-                ->first();
-
-            // Hapus nilai lama dari DataProduksi
-            if ($dataProduksiLama) {
-                $dataProduksiLama->target_quantity -= $oldValues['target_quantity'];
-                $dataProduksiLama->quantity -= $oldValues['quantity'];
-                $dataProduksiLama->finish_good -= $oldValues['finish_good'];
-                $dataProduksiLama->reject -= $oldValues['reject'];
-                $dataProduksiLama->operating_time = $this->subtractTimes($dataProduksiLama->operating_time, $oldValues['operating_time']);
-                $dataProduksiLama->actual_time = $this->subtractTimes($dataProduksiLama->actual_time, $oldValues['actual_time']);
-                $dataProduksiLama->down_time = $this->subtractTimes($dataProduksiLama->down_time, $oldValues['down_time']);
-
-                // Cek apakah nilai quantity setelah dikurangi menjadi 0 atau minus
-                if ($dataProduksiLama->quantity <= 0) {
-                    $dataProduksiLama->delete();
-                } else {
-                    $dataProduksiLama->save();
-                }
-            }
-
-            // Cari atau buat entri DataProduksi yang sesuai dengan data baru
-            $dataProduksiBaru = DataProduksi::firstOrCreate([
-                'proses' => $produksi->daftarproses,
-                'kelompokan' => $produksi->daftarkelompok,
-                'tanggal' => $produksi->tanggal,
-                'target_quantity' => $produksi->target_quantity, 
-                'quantity' => $produksi->quantity,
-                'finish_good' => $produksi->finish_good, 
-                'reject' => $produksi->reject,
-                'operating_time' => $produksi->operating_time,
-                'actual_time' => $produksi->actual_time,
-                'down_time' => $produksi->down_time,
-            ]);
-
-            // Hitung perubahan nilai
-            $changedTargetQuantity = $produksi->target_quantity - $oldValues['target_quantity'];
-            $changedQuantity = $produksi->quantity - $oldValues['quantity'];
-            $changedFinishGood = $produksi->finish_good - $oldValues['finish_good'];
-            $changedReject = $produksi->reject - $oldValues['reject'];
-
-            // Perbarui nilai sesuai dengan perubahan pada Produksi
-            $dataProduksiBaru->target_quantity += $changedTargetQuantity;
-            $dataProduksiBaru->quantity += $changedQuantity;
-            $dataProduksiBaru->finish_good += $changedFinishGood;
-            $dataProduksiBaru->reject += $changedReject;
-            $dataProduksiBaru->operating_time = $produksi->operating_time;
-            $dataProduksiBaru->actual_time = $produksi->actual_time;
-            $dataProduksiBaru->down_time = $produksi->down_time;
-            $dataProduksiBaru->save();
-        }
-    }
- 
 }
