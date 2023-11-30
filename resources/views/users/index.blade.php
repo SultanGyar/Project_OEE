@@ -43,9 +43,9 @@
                             <tbody>
                                 @foreach($users as $key => $data)
                                 <tr>
-                                    <td>{{$data->full_name}}</td>
-                                    <td>{{$data->name}}</td>
-                                    <td>{{$data->role}}</td>
+                                    <td class="text-center">{{$data->full_name}}</td>
+                                    <td class="text-center">{{$data->name}}</td>
+                                    <td class="text-center">{{$data->role}}</td>
                                     <td class="text-center">
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal"
                                             data-target="#modalEdit{{ $data->id }}">

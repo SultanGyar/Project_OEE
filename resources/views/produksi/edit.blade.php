@@ -467,7 +467,8 @@
     toggleForm();
 
      // Fungsi untuk menghitung total waktu dari Form A hingga Form H
-     function calculateDownTime() {
+    function calculateDownTime() {
+        // Mengambil nilai waktu dari Form A hingga H
         var aTimeValue = parseInt(document.getElementById('a_time').value) || 0;
         var bTimeValue = parseInt(document.getElementById('b_time').value) || 0;
         var cTimeValue = parseInt(document.getElementById('c_time').value) || 0;
@@ -477,19 +478,28 @@
         var gTimeValue = parseInt(document.getElementById('g_time').value) || 0;
         var hTimeValue = parseInt(document.getElementById('h_time').value) || 0;
 
-        // Menghitung total waktu dari Form A hingga Form H
+        // Menghitung total waktu dari Form A hingga H
         var totalTime = aTimeValue + bTimeValue + cTimeValue + dTimeValue + eTimeValue + fTimeValue + gTimeValue + hTimeValue;
 
-        // Memastikan bahwa total waktu adalah angka positif
-        if (!isNaN(totalTime) && totalTime >= 0) {
-            // Menghitung waktu dalam format 'hh:mm' berdasarkan total waktu
-            var hours = Math.floor(totalTime / 60);
-            var minutes = totalTime % 60;
+        // Memastikan bahwa setidaknya satu nilai dari Form A hingga H tidak sama dengan nilai default atau kosong
+        var isAnyValueSet = aTimeValue !== 0 || bTimeValue !== 0 || cTimeValue !== 0 || dTimeValue !== 0 || eTimeValue !== 0 || fTimeValue !== 0 || gTimeValue !== 0 || hTimeValue !== 0;
 
-            // Menetapkan nilai yang dihitung ke input Down Time
-            document.getElementById('down_time').value = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+        // Jika setidaknya satu nilai tidak sama dengan nilai default atau kosong
+        if (isAnyValueSet) {
+            // Memastikan bahwa total waktu adalah angka positif
+            if (!isNaN(totalTime) && totalTime >= 0) {
+                // Menghitung waktu dalam format 'hh:mm' berdasarkan total waktu
+                var hours = Math.floor(totalTime / 60);
+                var minutes = totalTime % 60;
+
+                // Menetapkan nilai yang dihitung ke input Down Time
+                document.getElementById('down_time').value = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+            } else {
+                // Jika total waktu tidak valid, kosongkan input Down Time
+                document.getElementById('down_time').value = '';
+            }
         } else {
-            // Jika total waktu tidak valid, kosongkan input Down Time
+            // Jika semua nilai dari Form A hingga H adalah nilai default atau kosong, kosongkan input Down Time
             document.getElementById('down_time').value = '';
         }
     }

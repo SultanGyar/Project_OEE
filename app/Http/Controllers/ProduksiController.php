@@ -263,7 +263,7 @@ class ProduksiController extends Controller
             'daftarproses' => $request->input('daftarproses'),
             'daftarkelompok' => $request->input('daftarkelompok'),
             'produk_size' => $request->input('produk_size'),
-            'produk_class' => $request->input('daftarkelompok'),
+            'produk_class' => $request->input('produk_class'),
             'kode' => $request->input('kode'),
             'quantity' => $request->input('quantity'),
             'finish_good' => $request->input('finish_good'),
