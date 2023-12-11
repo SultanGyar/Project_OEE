@@ -36,6 +36,7 @@
                             @can('admin-only')
                             <button type="button" class="btn btn-success ml-2 mb-2 " id="importButton">Import Data</button>
                             @endcan
+                            <button type="button" class="btn btn-primary ml-2 mb-2" id="scanQRCodeButton">Scan QR Code</button>
                         </div>
                         <form id="filterForm" method="get" class="form-inline">
                             @php
@@ -241,6 +242,24 @@
             </div>
             @endcan
 
+            <div class="modal fade" id="cameraPreviewModal" tabindex="-1" role="dialog" aria-labelledby="cameraPreviewModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cameraPreviewModalLabel">Camera Preview</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <video id="video-preview" playsinline style="width: 100%;"></video>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -274,6 +293,25 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="qrCodeContentModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeContentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrCodeContentModalLabel">QR Code Content</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="qrCodeContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
 @php
@@ -281,45 +319,85 @@ include_once(app_path('helper/helpers.php'))
 @endphp
 
 @push('js')
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var lanjutanButton = document.querySelector(".btn-lanjutan");
         var lanjutanSection = document.getElementById("lanjutan");
+        var videoPreview = document.getElementById("video-preview");
+        var scanQRCodeButton = document.getElementById('scanQRCodeButton');
+        var cameraPreviewModal = $('#cameraPreviewModal');
 
-        lanjutanButton.addEventListener("click", function () {
-            if (lanjutanSection.style.display === "none") {
-                lanjutanSection.style.display = "block";
-            } else {
-                lanjutanSection.style.display = "none";
+        // Initialize instascan scanner
+        let scanner = new Instascan.Scanner({ video: videoPreview });
+
+        // Handle QR code scan
+        scanner.addListener('scan', function (content) {
+            // Display the scanned QR code content in the modal
+            displayQRCodeContent(content);
+
+            // Additional actions based on the scanned content can be added here
+        });
+
+        // Existing DataTable initialization
+        $('table[id^="example"]').each(function () {
+            if (!$(this).hasClass('dataTable')) {
+                var table = $(this).DataTable({
+                    "responsive": true,
+                    "scrollX": false,
+                });
             }
         });
-    });
-    $(document).ready(function () {
-        var table = 
-        $('#example').DataTable({
-            "responsive": true,
-            "scrollX": true,
+
+        // Existing Import Button click event
+        $('#importButton').click(function () {
+            $('#modalImport').modal('show');
         });
 
-        $('table[id^="example"]').each(function () {
-        if (!$(this).hasClass('dataTable')) {
-            var table = $(this).DataTable({
-                "responsive": true,
-                "scrollX": false,
+        // New QR Code Scan Button click event
+        scanQRCodeButton.addEventListener('click', function () {
+            // Open the camera preview modal
+            cameraPreviewModal.modal('show');
+
+            // Start scanning when the modal is shown
+            cameraPreviewModal.on('shown.bs.modal', function () {
+                Instascan.Camera.getCameras().then(function (cameras) {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                    } else {
+                        alert('No cameras found.');
+                    }
+                }).catch(function (e) {
+                    console.error('Error accessing camera:', e);
+                });
             });
-        }
 
-        $('#importButton').click(function() {
-        $('#modalImport').modal('show');
-
+            // Stop scanning when the modal is closed
+            cameraPreviewModal.on('hidden.bs.modal', function () {
+                scanner.stop();
+            });
         });
+
+        // Function to display QR code content in the modal
+        function displayQRCodeContent(content) {
+            // Set the content in the modal body
+            document.getElementById('qrCodeContent').innerText = content;
+
+            // Open the modal
+            $('#qrCodeContentModal').modal('show');
+        }
     });
 
+    // Existing DataTable initialization
+    var table = $('#example').DataTable({
+        "responsive": true,
+        "scrollX": true,
     });
 
     function notificationBeforeDelete(event, el) {
         event.preventDefault();
-        if (confirm('Apakah anda yakin akan menghapus data ? ')) {
+        if (confirm('Apakah anda yakin akan menghapus data?')) {
             $("#delete-form").attr('action', $(el).attr('href'));
             $("#delete-form").submit();
         }
