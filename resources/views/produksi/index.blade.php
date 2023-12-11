@@ -242,24 +242,6 @@
             </div>
             @endcan
 
-            <div class="modal fade" id="cameraPreviewModal" tabindex="-1" role="dialog" aria-labelledby="cameraPreviewModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="cameraPreviewModalLabel">Camera Preview</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <video id="video-preview" playsinline style="width: 100%;"></video>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -293,17 +275,19 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="qrCodeContentModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeContentModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+
+<div class="modal fade" id="qrCodeScannerModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeScannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="qrCodeContentModalLabel">QR Code Content</h5>
+                <h5 class="modal-title" id="qrCodeScannerModalLabel">QR Code Scanner</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p id="qrCodeContent"></p>
+                <!-- Container for displaying QR Code Scanner -->
+                <div id="qrCodeScannerContainerModal" style="display: 100%;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -311,6 +295,7 @@
         </div>
     </div>
 </div>
+
 @stop
 
 @php
@@ -318,20 +303,56 @@ include_once(app_path('helper/helpers.php'))
 @endphp
 
 @push('js')
-<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var lanjutanButton = document.querySelector(".btn-lanjutan");
         var lanjutanSection = document.getElementById("lanjutan");
-        var videoPreview = document.getElementById("video-preview");
-        var scanQRCodeButton = document.getElementById('scanQRCodeButton');
-        var cameraPreviewModal = $('#cameraPreviewModal');
 
-        // Initialize instascan scanner
-        let scanner;
+        lanjutanButton.addEventListener("click", function () {
+            if (lanjutanSection.style.display === "none") {
+                lanjutanSection.style.display = "block";
+            } else {
+                lanjutanSection.style.display = "none";
+            }
+        });
 
-        // Existing DataTable initialization
+        // Function to initialize QR code scanning
+        function initQRCodeScanner() {
+            const qrCodeScannerContainerModal = document.getElementById('qrCodeScannerContainerModal');
+
+            // Initialize the QR Code scanner
+            const html5QrcodeScanner = new Html5QrcodeScanner(
+                'qrCodeScannerContainerModal', // Container ID for displaying the scanner
+                {
+                    fps: 10, // Frames per second
+                    qrbox: 250, // Size of the QR code scanning box
+                }
+            );
+
+            // Show the QR code scanner modal
+            $('#qrCodeScannerModal').modal('show');
+
+            // Handle when a QR code is scanned
+            html5QrcodeScanner.render(onScanSuccessModal);
+        }
+
+        // Function to handle the QR code scan success in modal
+        function onScanSuccessModal(qrCodeMessage) {
+            // Handle the QR code message, e.g., redirect to a specific URL
+            window.location.href = qrCodeMessage;
+        }
+
+        // Attach click event to the Scan QR Code button
+        document.getElementById('scanQRCodeButton').addEventListener('click', initQRCodeScanner);
+    });
+
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            "responsive": true,
+            "scrollX": true,
+        });
+
         $('table[id^="example"]').each(function () {
             if (!$(this).hasClass('dataTable')) {
                 var table = $(this).DataTable({
@@ -339,98 +360,22 @@ include_once(app_path('helper/helpers.php'))
                     "scrollX": false,
                 });
             }
-        });
 
-        // Existing Import Button click event
-        $('#importButton').click(function () {
-            $('#modalImport').modal('show');
-        });
-
-        // New QR Code Scan Button click event
-        scanQRCodeButton.addEventListener('click', function () {
-            // Check camera permission before opening the modal
-            checkCameraPermission().then(function (permissionGranted) {
-                if (permissionGranted) {
-                    // Open the camera preview modal
-                    cameraPreviewModal.modal('show');
-
-                    // Start scanning when the modal is shown
-                    cameraPreviewModal.on('shown.bs.modal', function () {
-                        Instascan.Camera.getCameras().then(function (cameras) {
-                            if (cameras.length > 0) {
-                                // Apply a mirrored effect to the video feed
-                                videoPreview.style.transform = 'scaleX(-1)';
-                                scanner = new Instascan.Scanner({ video: videoPreview });
-                                scanner.addListener('scan', function (content) {
-                                    // Display the scanned QR code content in the modal
-                                    displayQRCodeContent(content);
-                                });
-                                scanner.start(cameras[0]);
-                            } else {
-                                alert('No cameras found.');
-                            }
-                        }).catch(function (e) {
-                            console.error('Error accessing camera:', e);
-                        });
-                    });
-
-                    // Stop scanning when the modal is closed
-                    cameraPreviewModal.on('hidden.bs.modal', function () {
-                        // Reset the transformation when the modal is closed
-                        videoPreview.style.transform = 'scaleX(1)';
-                        if (scanner) {
-                            scanner.stop();
-                        }
-                    });
-                } else {
-                    alert('Camera access denied.');
-                }
+            $('#importButton').click(function () {
+                $('#modalImport').modal('show');
             });
         });
-
-        // Function to check camera permission
-        function checkCameraPermission() {
-            return new Promise(function (resolve) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(function (stream) {
-                        // Permission granted
-                        stream.getTracks().forEach(function (track) {
-                            track.stop();
-                        });
-                        resolve(true);
-                    })
-                    .catch(function (error) {
-                        // Permission denied or an error occurred
-                        console.error('Error accessing camera:', error);
-                        resolve(false);
-                    });
-            });
-        }
-
-        // Function to display QR code content in the modal
-        function displayQRCodeContent(content) {
-            // Set the content in the modal body
-            document.getElementById('qrCodeContent').innerText = content;
-
-            // Open the modal
-            $('#qrCodeContentModal').modal('show');
-        }
-    });
-
-    // Existing DataTable initialization
-    var table = $('#example').DataTable({
-        "responsive": true,
-        "scrollX": true,
     });
 
     function notificationBeforeDelete(event, el) {
         event.preventDefault();
-        if (confirm('Apakah anda yakin akan menghapus data?')) {
+        if (confirm('Apakah anda yakin akan menghapus data ? ')) {
             $("#delete-form").attr('action', $(el).attr('href'));
             $("#delete-form").submit();
         }
     }
 </script>
+
 <form action="" id="delete-form" method="post">
     @method('delete')
     @csrf
