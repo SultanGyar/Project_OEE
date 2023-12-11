@@ -293,7 +293,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="qrCodeContentModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeContentModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -330,15 +329,7 @@ include_once(app_path('helper/helpers.php'))
         var cameraPreviewModal = $('#cameraPreviewModal');
 
         // Initialize instascan scanner
-        let scanner = new Instascan.Scanner({ video: videoPreview });
-
-        // Handle QR code scan
-        scanner.addListener('scan', function (content) {
-            // Display the scanned QR code content in the modal
-            displayQRCodeContent(content);
-
-            // Additional actions based on the scanned content can be added here
-        });
+        let scanner;
 
         // Existing DataTable initialization
         $('table[id^="example"]').each(function () {
@@ -357,27 +348,64 @@ include_once(app_path('helper/helpers.php'))
 
         // New QR Code Scan Button click event
         scanQRCodeButton.addEventListener('click', function () {
-            // Open the camera preview modal
-            cameraPreviewModal.modal('show');
+            // Check camera permission before opening the modal
+            checkCameraPermission().then(function (permissionGranted) {
+                if (permissionGranted) {
+                    // Open the camera preview modal
+                    cameraPreviewModal.modal('show');
 
-            // Start scanning when the modal is shown
-            cameraPreviewModal.on('shown.bs.modal', function () {
-                Instascan.Camera.getCameras().then(function (cameras) {
-                    if (cameras.length > 0) {
-                        scanner.start(cameras[0]);
-                    } else {
-                        alert('No cameras found.');
-                    }
-                }).catch(function (e) {
-                    console.error('Error accessing camera:', e);
-                });
-            });
+                    // Start scanning when the modal is shown
+                    cameraPreviewModal.on('shown.bs.modal', function () {
+                        Instascan.Camera.getCameras().then(function (cameras) {
+                            if (cameras.length > 0) {
+                                // Apply a mirrored effect to the video feed
+                                videoPreview.style.transform = 'scaleX(-1)';
+                                scanner = new Instascan.Scanner({ video: videoPreview });
+                                scanner.addListener('scan', function (content) {
+                                    // Display the scanned QR code content in the modal
+                                    displayQRCodeContent(content);
+                                });
+                                scanner.start(cameras[0]);
+                            } else {
+                                alert('No cameras found.');
+                            }
+                        }).catch(function (e) {
+                            console.error('Error accessing camera:', e);
+                        });
+                    });
 
-            // Stop scanning when the modal is closed
-            cameraPreviewModal.on('hidden.bs.modal', function () {
-                scanner.stop();
+                    // Stop scanning when the modal is closed
+                    cameraPreviewModal.on('hidden.bs.modal', function () {
+                        // Reset the transformation when the modal is closed
+                        videoPreview.style.transform = 'scaleX(1)';
+                        if (scanner) {
+                            scanner.stop();
+                        }
+                    });
+                } else {
+                    alert('Camera access denied.');
+                }
             });
         });
+
+        // Function to check camera permission
+        function checkCameraPermission() {
+            return new Promise(function (resolve) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                        // Permission granted
+                        stream.getTracks().forEach(function (track) {
+                            track.stop();
+                        });
+                        resolve(true);
+                    })
+                    .catch(function (error) {
+                        // Permission denied or an error occurred
+                        console.error('Error accessing camera:', error);
+                        resolve(false);
+                    });
+            });
+        }
 
         // Function to display QR code content in the modal
         function displayQRCodeContent(content) {
