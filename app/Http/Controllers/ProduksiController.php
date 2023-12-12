@@ -39,14 +39,24 @@ class ProduksiController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $datakode = CycletimeProduk::pluck('kode', 'kode');
         $dataketerangan = Keterangan::pluck('daftarketerangan', 'daftarketerangan');
+
+        // Jika terdapat parameter URL 'kode', gunakan nilainya
+        $urlKode = $request->route('kode');
+        if (!empty($urlKode)) {
+            $selectedKode = $urlKode;
+        } else {
+            $selectedKode = old('kode');
+        }
+
         return view('produksi.create', [
             'datakode' => $datakode,
             'dataketerangan' => $dataketerangan,
-            'user' => User::all()
+            'user' => User::all(),
+            'selectedKode' => $selectedKode,
         ]);
     }
 
@@ -86,6 +96,27 @@ class ProduksiController extends Controller
         }
     
         return response()->json($response);
+    }
+
+    public function createDynamic($kode)
+    {
+        // Dapatkan data yang sesuai dengan kode dari tabel CycletimeProduk
+        $cycletimeProduk = CycletimeProduk::where('kode', $kode)->first();
+
+        if (!$cycletimeProduk) {
+            // Redirect jika data tidak ditemukan atau jika $kode tidak sesuai
+            return redirect()->route('produksi.index')->with('error_message', 'Kode tidak valid atau tidak ditemukan.');
+        }
+
+        $dataketerangan = Keterangan::pluck('daftarketerangan', 'daftarketerangan');
+        $user = User::all();
+
+        return view('produksi.create', [
+            'datakode' => $kode,
+            'dataketerangan' => $dataketerangan,
+            'user' => $user,
+            'cycletimeProduk' => $cycletimeProduk,
+        ]);
     }
 
     /**

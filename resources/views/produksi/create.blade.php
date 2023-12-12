@@ -93,16 +93,23 @@
                     
                     <div class="form-group">
                         <label for="kode">Kode<span class="font-weight-normal text-danger">*</label>
-                        <select class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode" style="width: 100%">
-                            <option value="" selected disabled>Pilih Kode..</option>
-                            @foreach ($datakode as $value => $label)
-                            <option value="{{ $value }}" @if (old('kode') == $value) selected @endif>{{ $label }}</option>
-                            @endforeach
-                        </select>
+                        
+                        @if (is_array($datakode) || is_object($datakode))
+                            <select class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode" style="width: 100%">
+                                <option value="" selected disabled>Pilih Kode..</option>
+                                
+                                @foreach ($datakode as $value => $label)
+                                    <option value="{{ $value }}" @if ($selectedKode == $value) selected @endif>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <input type="text" class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode" value="{{ $datakode }}" readonly>
+                        @endif
+                    
                         @error('kode')
-                        <span class="text-danger">{{ $message }}</span>
+                            <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>   
+                    </div>                                       
 
                     <div class="form-group">
                         <label for="quantity">Actual Quantity<span class="font-weight-normal text-danger">*</label>
@@ -352,6 +359,16 @@
         targetQuantitys.value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
     }
 
+    $(document).ready(function() {
+        // Panggil fungsi getDataAuto saat halaman dimuat
+        getDataAuto();
+
+        // Panggil fungsi getDataAuto juga saat nilai 'kode' berubah
+        $('#kode').on('change', function() {
+            getDataAuto();
+        });
+    });
+
     function getDataAuto() {
         var selectedKode = $('#kode').val();
         
@@ -391,10 +408,6 @@
         });
     }
 
-    // Panggil fungsi getDataAuto saat nilai 'kode' berubah
-    $('#kode').on('change', function() {
-        getDataAuto();
-    });
 
 
     document.getElementById('quantity').addEventListener('input', function () {

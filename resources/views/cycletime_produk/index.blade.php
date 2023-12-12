@@ -26,11 +26,24 @@
                     <h3 class="card-title" style="color: white">Cycle Time Produk</h3>
                 </div>
                 <div class="card-body">
-                    <div style="display: flex; align-items: center;">
-                        <a href="#" class="text-btn-center btn btn-md btn-info mb-2 " data-toggle="modal"
-                            data-target="#modalTambah">
-                            Tambah</a>
-                        <button type="button" class="btn btn-success ml-2 mb-2" id="importButton">Import Data</button>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center">
+                            <a href="#" class="text-btn-center btn btn-md btn-info mb-2 mr-2" data-toggle="modal" data-target="#modalTambah">
+                                Tambah
+                            </a>
+                            <button type="button" class="btn btn-success mb-2" id="importButton">Import Data</button>
+                        </div>
+                        @can('admin-only')
+                        <button id="exportOptions" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Export
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" data-value="excel">
+                                <i class="fas fa-file-excel"></i> Excel
+                            </a>
+                        </div>
+                        @endcan
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered table-striped" style="width: 100%" id="example2">
@@ -41,28 +54,29 @@
                                     <th>Class</th>
                                     <th>Kapasitas <br>/Pcs</th>
                                     <th>Kode</th>
+                                    <th>QR</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($produk as $data)
-
                                 <tr>
-                                    <td>{{ $data->daftarproses }}</td>
-                                    <td>{{ $data->size }}</td>
-                                    <td>{{ $data->class }}</td>
-                                    <td>{{ $data->kapasitas_pcs }}</td>
-                                    <td>{{ $data->kode }}</td>
+                                    <td class="text-center">{{ $data->daftarproses }}</td>
+                                    <td class="text-center">{{ $data->size }}</td>
+                                    <td class="text-center">{{ $data->class }}</td>
+                                    <td class="text-center">{{ $data->kapasitas_pcs }}</td>
+                                    <td class="text-center">{{ $data->kode }}</td>
+                                    <td class="text-center">
+                                        {!! $data->qr
+                                            ? '<img src="data:image/svg+xml;base64,'.base64_encode($data->qr).'" alt="QR Code" class="btn-pratinjau-qr" data-toggle="modal" data-target="#modalPratinjauQR">'
+                                            : 'No QR Code'
+                                        !!}
+                                    </td>
                                     <td class="text-center">
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal"
                                             data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
-                                        {{-- <a href="{{ route('cycletime_produk.destroy', $data) }}"
-                                            onclick="notificationBeforeDelete(event, this)"
-                                            class="btn btn-danger btn-xs">
-                                            Delete
-                                        </a> --}}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -75,6 +89,24 @@
     </div>
 </div>
 
+<!-- Modal Pratinjau QR Code -->
+<div class="modal fade" id="modalPratinjauQR" tabindex="-1" role="dialog" aria-labelledby="modalPratinjauQRLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="imgPratinjauQR" src="" alt="QR Code" class="img-fluid qr-img">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal import excel-->
 <div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel"
@@ -256,54 +288,95 @@
 </div>
 @endforeach
 
+<style>
+    .qr-img {
+        width: 50%;
+        max-height: 80vh;
+        margin: auto;
+        display: block;
+    }
+</style>
+
 @stop
 @push('js')
+<script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+
 <script>
-    $(document).ready(function () {
-        $('#example2').DataTable({
-            "responsive": true,
-            "scrollX": true,
-        });
+$(document).ready(function () {
+    var exportColumns = [0, 1, 2, 3, 4];
 
-        $('#modalTambah').on('hidden.bs.modal', function () {
-            $('#produkForm')[0].reset();
-            $('.is-invalid').removeClass('is-invalid');
-            $('.text-danger').remove();
-        });
-
-        if ($('.is-invalid').length > 0) {
-            $('#modalTambah').modal('show');
-        }
-
-         // Fungsi untuk membuka modal edit
-         function openEditModal(id) {   
-            var modalId = '#modalEdit' + id;
-            $(modalId).modal('show');
-        }
-
-        // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
-        $('.btn-edit').click(function () {
-            var id = $(this).data('id');
-            openEditModal(id);
-        });
-
-        $('#importButton').click(function() {
-        $('#modalImport').modal('show');
-
-        });
+    var table = $('#example2').DataTable({
+        "responsive": true,
+        "scrollX": true,
+        buttons: [
+            {
+                extend: "excel",
+                text: "Excel",
+                title: "Data Cycle Time Produk",
+                exportOptions: {
+                    columns: exportColumns
+                }
+            }
+        ]
     });
 
-    // function notificationBeforeDelete(event, el) {
-    //     event.preventDefault();
-    //     if (confirm('Apakah anda yakin akan menghapus data ? ')) {
-    //         $("#delete-form").attr('action', $(el).attr('href'));
-    //         $("#delete-form").submit();
-    //     }
-    // }
-</script>
+    $('#modalTambah').on('hidden.bs.modal', function () {
+        $('#produkForm')[0].reset();
+        $('.is-invalid').removeClass('is-invalid');
+        $('.text-danger').remove();
+    });
 
-{{-- <form action="" id="delete-form" method="post">
-    @method('delete')
-    @csrf
-</form> --}}
+    if ($('.is-invalid').length > 0) {
+        $('#modalTambah').modal('show');
+    }
+
+    // Fungsi untuk membuka modal edit
+    function openEditModal(id) {   
+        var modalId = '#modalEdit' + id;
+        $(modalId).modal('show');
+    }
+
+    // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
+    $('.btn-edit').click(function () {
+        var id = $(this).data('id');
+        openEditModal(id);
+    });
+
+    // Fungsi untuk membuka modal preview QR code
+    function openQRModal(id) {
+        var modalId = '#qrModal' + id;
+        $(modalId).modal('show');
+    }
+
+    // Memanggil fungsi openQRModal saat tombol "Lihat QR Code" ditekan
+    $('.btn-qr-preview').click(function () {
+        var id = $(this).data('id');
+        openQRModal(id);
+    });
+
+    $('#importButton').click(function() {
+        $('#modalImport').modal('show');
+    });
+
+    $('.btn-pratinjau-qr').click(function () {
+        var src = $(this).attr('src');
+        $('#imgPratinjauQR').attr('src', src);
+    });
+
+    $('.dropdown-item').click(function() {
+        var selectedValue = $(this).data('value');
+
+        if (selectedValue === 'excel') {
+            table.button(0).trigger();
+        }
+    });
+});
+
+</script>
 @endpush

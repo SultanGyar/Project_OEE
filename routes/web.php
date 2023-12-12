@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth', 'role:Admin']], function () {
     Route::resource('keterangan', \App\Http\Controllers\KeteranganController::class);
 });
 
-
+Route::get('/produksi/create/{kode}', [ProduksiController::class, 'createDynamic'])->name('produksi.create.dynamic');
 Route::get('/get-data-auto', [ProduksiController::class, 'getDataAuto'])->name('get-data-auto'); 
 Route::get('/filter-chart-data', [HomeController::class, 'filterChartData'])->middleware('auth');
 Route::get('/get-proses-data', [HomeController::class, 'getProsesData']);
