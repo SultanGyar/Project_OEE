@@ -26,13 +26,13 @@ class CycletimeProduk extends Model
         parent::boot();
     
         static::creating(function ($model) {
-            $url = 'http://oee.fajarbenua.co.id/produksi/create/' . $model->kode;
+            $url = 'http://oee.fajarbenua.co.id:1053/produksi/create/' . $model->kode;
             $qrCode = QrCode::size(40)->generate($url);
             $model->qr = $qrCode;
         });
 
         static::updating(function ($model) {
-            $url = 'http://oee.fajarbenua.co.id/produksi/create/' . $model->kode;
+            $url = 'http://oee.fajarbenua.co.id:1053/produksi/create/' . $model->kode;
             $qrCode = QrCode::size(40)->generate($url);
             $model->qr = $qrCode;
         });
