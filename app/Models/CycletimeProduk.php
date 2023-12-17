@@ -32,7 +32,7 @@ class CycletimeProduk extends Model
 
         // Register the creating and updating events
         static::creating(function ($model) {
-            $url = 'http://oee.fajarbenua.co.id:153/produksi/create/' . $model->kode;
+            $url = 'http://oee.fajarbenua.co.id:1053/produksi/create/' . $model->kode;
             $barcode = new DNS2D();
             $barcode->setStorPath(__DIR__.'/cache/');
             $qrCode = $barcode->getBarcodeSVG($url, 'QRCODE', 1.2, 1.2);
@@ -40,7 +40,7 @@ class CycletimeProduk extends Model
         });
 
         static::updating(function ($model) {
-            $url = 'http://oee.fajarbenua.co.id:153/produksi/create/' . $model->kode;
+            $url = 'http://oee.fajarbenua.co.id:1053/produksi/create/' . $model->kode;
             $barcode = new DNS2D();
             $barcode->setStorPath(__DIR__.'/cache/');
             $qrCode = $barcode->getBarcodeSVG($url, 'QRCODE', 1.2, 1.2);
