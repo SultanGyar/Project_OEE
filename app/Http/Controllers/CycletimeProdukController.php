@@ -126,10 +126,7 @@ class CycletimeProdukController extends Controller
             $file->move('fileImportCycletime', $namafile);
         
             Excel::import(new CycletimeProdukImport, public_path('/fileImportCycletime/' . $namafile));
-    
-            // Delete the file after successful import
-            unlink(public_path('/fileImportCycletime/' . $namafile));
-    
+
             return redirect()->route('cycletime_produk.index')->with('success_message', 'Berhasil Meng-Import data');
         } catch (\Exception $e) {
             if (strpos($e->getMessage(), 'Integrity constraint violation') !== false) {
