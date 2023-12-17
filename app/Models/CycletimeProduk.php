@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Milon\Barcode\DNS2D;
 
 class CycletimeProduk extends Model
 {
@@ -21,19 +21,29 @@ class CycletimeProduk extends Model
         'kode',
     ];
 
-    protected static function boot()
+    public static function boot()
     {
         parent::boot();
-    
+
+        // Trigger updating event for existing records
+        static::all()->each(function ($model) {
+            $model->update([]);
+        });
+
+        // Register the creating and updating events
         static::creating(function ($model) {
-            $url = 'http://oee.fajarbenua.co.id:1053/produksi/create/' . $model->kode;
-            $qrCode = QrCode::size(40)->generate($url);
+            $url = 'http://oee.fajarbenua.co.id:153/produksi/create/' . $model->kode;
+            $barcode = new DNS2D();
+            $barcode->setStorPath(__DIR__.'/cache/');
+            $qrCode = $barcode->getBarcodeSVG($url, 'QRCODE', 1.2, 1.2);
             $model->qr = $qrCode;
         });
 
         static::updating(function ($model) {
-            $url = 'http://oee.fajarbenua.co.id:1053/produksi/create/' . $model->kode;
-            $qrCode = QrCode::size(40)->generate($url);
+            $url = 'http://oee.fajarbenua.co.id:153/produksi/create/' . $model->kode;
+            $barcode = new DNS2D();
+            $barcode->setStorPath(__DIR__.'/cache/');
+            $qrCode = $barcode->getBarcodeSVG($url, 'QRCODE', 1.2, 1.2);
             $model->qr = $qrCode;
         });
     }

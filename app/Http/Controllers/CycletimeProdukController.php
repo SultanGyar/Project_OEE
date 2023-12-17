@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\CycletimeProdukImport;
 use App\Models\Proses;
 use App\Models\CycletimeProduk;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Exceptions\LaravelExcelException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,13 +17,17 @@ class CycletimeProdukController extends Controller
      */
     public function index()
     {
-        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
         $produk = CycletimeProduk::all();
+        $groupedData = $produk->groupBy('daftarproses');
+        $dataproses = Proses::pluck('daftarproses', 'daftarproses');
+
         return view('cycletime_produk.index', [
             'dataproses' => $dataproses,
-            'produk' => $produk
+            'produk' => $produk,
+            'groupedData' => $groupedData
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -143,4 +148,20 @@ class CycletimeProdukController extends Controller
             }
         }
     }
+
+   
+    public function cetakQr(Request $request, $daftarproses)
+{
+    // Mendapatkan semua data dengan nilai 'daftarproses' yang sama
+    $dataproduk = CycletimeProduk::where('daftarproses', $daftarproses)->get();
+
+    // Load view dan generate PDF
+    $pdf = PDF::loadView('cycletime_produk.cetak', compact('dataproduk'));
+    $pdf->setPaper('a4', 'portrait');
+
+    // Menggunakan daftarproses sebagai bagian dari nama file PDF
+    return $pdf->stream("Kode Qr {$daftarproses}.pdf");
+}
+
+    
 }

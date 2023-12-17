@@ -34,15 +34,25 @@
                             <button type="button" class="btn btn-success mb-2" id="importButton">Import Data</button>
                         </div>
                         @can('admin-only')
-                        <button id="exportOptions" class="btn btn-secondary mb-2 dropdown-toggle" type="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Export
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" data-value="excel">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </a>
+                        <div class="inline">
+                            <button type="button" class="btn btn-secondary mr-1 mb-2 d-inline" id="cetakQrButton">Cetak QR</button>
+                            <button id="exportOptions" class="btn btn-secondary mb-2 dropdown-toggle d-inline" type="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Export
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" data-value="excel">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </a>
+                                <a class="dropdown-item" data-value="print">
+                                    <i class="fas fa-print"></i> Print
+                                </a>
+                                <a class="dropdown-item" data-value="pdf">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </a>
+                            </div>
                         </div>
+                        
                         @endcan
                     </div>
                     <div class="table-responsive">
@@ -68,15 +78,17 @@
                                     <td class="text-center">{{ $data->kode }}</td>
                                     <td class="text-center">
                                         {!! $data->qr
-                                            ? '<img src="data:image/svg+xml;base64,'.base64_encode($data->qr).'" alt="QR Code" class="btn-pratinjau-qr" data-toggle="modal" data-target="#modalPratinjauQR">'
+                                            ? '<img id="qrCode_' . $data->id . '" src="data:image/svg+xml;base64,'.base64_encode($data->qr).'" alt="QR Code" class="btn-pratinjau-qr" data-toggle="modal" data-target="#modalPratinjauQR">'
                                             : 'No QR Code'
                                         !!}
-                                    </td>
+                                    </td>                               
                                     <td class="text-center">
-                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal"
-                                            data-target="#modalEdit{{ $data->id }}">
+                                        <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
                                             Edit
                                         </a>
+                                        <a href="{{ route('cycletime_produk.cetak', ['daftarproses' => $data->daftarproses]) }}" class="btn btn-secondary btn-xs" target="_blank">
+                                            Cetak
+                                        </a>                                      
                                     </td>
                                 </tr>
                                 @endforeach
@@ -108,6 +120,38 @@
     </div>
 </div>
 
+{{-- <!-- Modal Cetak QR -->
+<div class="modal fade" id="cetakQrModal" tabindex="-1" role="dialog" aria-labelledby="cetakQrModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakQrModalLabel">Cetak QR Code</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="daftarprosesSelect">Pilih Daftar Proses</label>
+                    <select class="form-control" id="daftarprosesSelect">
+                        <option value="">-- Pilih Daftar Proses --</option>
+                        @foreach($dataproses as $daftarproses)
+                            <option value="{{ $daftarproses }}">{{ $daftarproses }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div id="selectedData"></div>
+                <!-- You can add more content or customize this section based on your needs -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <!-- Add a JavaScript function to handle the print action -->
+                <button type="button" class="btn btn-primary" id="cetakQrButton">Cetak</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
 <!-- Modal import excel-->
 <div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel"
     aria-hidden="true">
@@ -133,7 +177,6 @@
                     </div>
                 </div>
             </form>
-            
         </div>
     </div>
 </div>
@@ -308,75 +351,167 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 
 <script>
-$(document).ready(function () {
-    var exportColumns = [0, 1, 2, 3, 4];
+    $(document).ready(function () {
+    //     $('#daftarprosesSelect').change(function () {
+    //     var selectedDaftarproses = $(this).val();
+    //     var selectedDataHtml = '';
 
-    var table = $('#example2').DataTable({
-        "responsive": true,
-        "scrollX": true,
-        buttons: [
-            {
-                extend: "excel",
-                text: "Excel",
-                title: "Data Cycle Time Produk",
-                exportOptions: {
-                    columns: exportColumns
-                }
-            }
-        ]
-    });
+    //     // Ensure the groupedData is properly formatted as JSON
+    //     var group = {!! json_encode($groupedData) !!};
 
-    $('#modalTambah').on('hidden.bs.modal', function () {
-        $('#produkForm')[0].reset();
-        $('.is-invalid').removeClass('is-invalid');
-        $('.text-danger').remove();
-    });
+    //     if (selectedDaftarproses && group[selectedDaftarproses]) {
+    //         selectedDataHtml += '<h3>' + selectedDaftarproses + '</h3>';
+    //         selectedDataHtml += '<table class="table">';
+    //         selectedDataHtml += '<thead><tr><th>ID</th><th>Proses</th><th>Size</th></tr></thead>';
+    //         selectedDataHtml += '<tbody>';
 
-    if ($('.is-invalid').length > 0) {
-        $('#modalTambah').modal('show');
-    }
+    //         group[selectedDaftarproses].forEach(function (data) {
+    //             selectedDataHtml += '<tr>';
+    //             selectedDataHtml += '<td>' + data.id + '</td>';
+    //             selectedDataHtml += '<td>' + data.daftarproses + '</td>';
+    //             selectedDataHtml += '<td>' + data.size + '</td>';
+    //             selectedDataHtml += '</tr>';
+    //             console.log('p', data)
+    //         });
 
-    // Fungsi untuk membuka modal edit
-    function openEditModal(id) {   
-        var modalId = '#modalEdit' + id;
-        $(modalId).modal('show');
-    }
+    //         selectedDataHtml += '</tbody></table>';
+    //     }
 
-    // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
-    $('.btn-edit').click(function () {
-        var id = $(this).data('id');
-        openEditModal(id);
-    });
+    //     $('#selectedData').html(selectedDataHtml);
+    // });
 
-    // Fungsi untuk membuka modal preview QR code
-    function openQRModal(id) {
-        var modalId = '#qrModal' + id;
-        $(modalId).modal('show');
-    }
+//     var groupedData = @json($groupedData);
+//     // Add an event listener for the Cetak button to open the print route with the selected ID
+//     $('#cetakQrButton').click(function () {
+//     var selectedDaftarproses = $('#daftarprosesSelect').val();
 
-    // Memanggil fungsi openQRModal saat tombol "Lihat QR Code" ditekan
-    $('.btn-qr-preview').click(function () {
-        var id = $(this).data('id');
-        openQRModal(id);
-    });
+//     if (selectedDaftarproses && groupedData[selectedDaftarproses]) {
+//         // Retrieve all IDs for the selected daftarproses
+//         var selectedIds = [];
+//         groupedData[selectedDaftarproses].forEach(function (data) {
+//             selectedIds.push(data.id);
+//         });
 
-    $('#importButton').click(function() {
-        $('#modalImport').modal('show');
-    });
+//         // Trigger the print action with the selected IDs
+//         window.open('{{ url("/cycletime_produk/cetak") }}?id=' + selectedIds.join(','), '_blank');
+//     }
+// });
 
-    $('.btn-pratinjau-qr').click(function () {
-        var src = $(this).attr('src');
-        $('#imgPratinjauQR').attr('src', src);
-    });
 
-    $('.dropdown-item').click(function() {
-        var selectedValue = $(this).data('value');
-
-        if (selectedValue === 'excel') {
-            table.button(0).trigger();
+        // Fungsi untuk menangani pratinjau QR Code
+        function handleQRPreview(src) {
+            $('#imgPratinjauQR').attr('src', src);
+            $('#modalPratinjauQR').modal('show');
         }
+
+        $('.btn-pratinjau-qr').click(function () {
+            // Ambil ID produk dari ID QR Code
+            var productId = $(this).attr('id').replace('qrCode_', '');
+
+            // Ambil sumber gambar QR Code
+            var qrCodeSrc = $(this).attr('src');
+
+            // Tampilkan modal pratinjau QR Code
+            handleQRPreview(qrCodeSrc);
+        });
+
+        var exportColumns = [0, 1, 2, 3, 4, 5];
+
+        var table = $('#example2').DataTable({
+            "responsive": true,
+            "scrollX": true,
+            buttons: [
+                {
+                    extend: "excel",
+                    text: "Excel",
+                    title: "Data Cycle Time Produk",
+                    exportOptions: {
+                        columns: exportColumns,
+                        format: {
+                            body: function (data, row, column, node) {
+                                return column === 5 ? data : node.innerText;
+                            }
+                        }
+                    }
+                },
+                {
+                    extend: "print",
+                    text: "Print",
+                    title: "Data Cycle Time Produk",
+                    exportOptions: {
+                        columns: exportColumns
+                    }
+                },
+                {
+                    extend: "pdf",
+                    text: "PDF", 
+                    title: "Data Cycle Time Produk", 
+                    exportOptions: {
+                        columns: exportColumns
+                    }
+                },
+            ]
+        });
+
+        $('#modalTambah').on('hidden.bs.modal', function () {
+            $('#produkForm')[0].reset();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.text-danger').remove();
+        });
+
+        $('#cetakQrButton').click(function () {
+            $('#cetakQrModal').modal('show');
+        });
+
+        if ($('.is-invalid').length > 0) {
+            $('#modalTambah').modal('show');
+        }
+
+        // Fungsi untuk membuka modal edit
+        function openEditModal(id) {   
+            var modalId = '#modalEdit' + id;
+            $(modalId).modal('show');
+        }
+
+        // Memanggil fungsi openEditModal saat tombol "Edit" ditekan
+        $('.btn-edit').click(function () {
+            var id = $(this).data('id');
+            openEditModal(id);
+        });
+
+        // Fungsi untuk membuka modal preview QR code
+        function openQRModal(id) {
+            var modalId = '#qrModal' + id;
+            $(modalId).modal('show');
+        }
+
+        // Memanggil fungsi openQRModal saat tombol "Lihat QR Code" ditekan
+        $('.btn-qr-preview').click(function () {
+            var id = $(this).data('id');
+            openQRModal(id);
+        });
+
+        $('#importButton').click(function() {
+            $('#modalImport').modal('show');
+        });
+
+        $('.btn-pratinjau-qr').click(function () {
+            var src = $(this).attr('src');
+            $('#imgPratinjauQR').attr('src', src);
+        });
+
+        $('.dropdown-item').click(function() {
+            var selectedValue = $(this).data('value');
+
+            if (selectedValue === 'excel') {
+                table.button(0).trigger();
+            } else if (selectedValue === 'print') {
+                table.button(1).trigger(); // Mengaktifkan tombol Print
+            } else if (selectedValue === 'pdf') {
+                table.button(2).trigger(); // Mengaktifkan tombol PDF
+            }
+        });
     });
-});
 
 </script>
 @endpush

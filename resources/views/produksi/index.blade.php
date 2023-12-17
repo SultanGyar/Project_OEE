@@ -36,7 +36,6 @@
                             @can('admin-only')
                             <button type="button" class="btn btn-success ml-2 mb-2 " id="importButton">Import Data</button>
                             @endcan
-                            <button type="button" class="btn btn-primary ml-2 mb-2" id="scanQRCodeButton">Scan QR Code</button>
                         </div>
                         <form id="filterForm" method="get" class="form-inline">
                             @php
@@ -276,26 +275,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="qrCodeScannerModal" tabindex="-1" role="dialog" aria-labelledby="qrCodeScannerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="qrCodeScannerModalLabel">QR Code Scanner</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Container for displaying QR Code Scanner -->
-                <div id="qrCodeScannerContainerModal" style="display: 100%;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @stop
 
 @php
@@ -316,35 +295,6 @@ include_once(app_path('helper/helpers.php'))
                 lanjutanSection.style.display = "none";
             }
         });
-
-        // Function to initialize QR code scanning
-        function initQRCodeScanner() {
-            const qrCodeScannerContainerModal = document.getElementById('qrCodeScannerContainerModal');
-
-            // Initialize the QR Code scanner
-            const html5QrcodeScanner = new Html5QrcodeScanner(
-                'qrCodeScannerContainerModal', // Container ID for displaying the scanner
-                {
-                    fps: 10, // Frames per second
-                    qrbox: 250, // Size of the QR code scanning box
-                }
-            );
-
-            // Show the QR code scanner modal
-            $('#qrCodeScannerModal').modal('show');
-
-            // Handle when a QR code is scanned
-            html5QrcodeScanner.render(onScanSuccessModal);
-        }
-
-        // Function to handle the QR code scan success in modal
-        function onScanSuccessModal(qrCodeMessage) {
-            // Handle the QR code message, e.g., redirect to a specific URL
-            window.location.href = qrCodeMessage;
-        }
-
-        // Attach click event to the Scan QR Code button
-        document.getElementById('scanQRCodeButton').addEventListener('click', initQRCodeScanner);
     });
 
     $(document).ready(function () {
