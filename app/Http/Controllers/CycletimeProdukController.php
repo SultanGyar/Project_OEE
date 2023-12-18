@@ -124,11 +124,15 @@ class CycletimeProdukController extends Controller
             $file = $request->file('file');
             $namafile = $file->getClientOriginalName();
             $file->move('fileImportCycletime', $namafile);
-        
+
             Excel::import(new CycletimeProdukImport, public_path('/fileImportCycletime/' . $namafile));
 
+            // The import was successful, no need to delete the file
             return redirect()->route('cycletime_produk.index')->with('success_message', 'Berhasil Meng-Import data');
         } catch (\Exception $e) {
+            // Import failed, delete the file
+            unlink(public_path('/fileImportCycletime/' . $namafile));
+
             if (strpos($e->getMessage(), 'Integrity constraint violation') !== false) {
                 if (strpos($e->getMessage(), 'Cannot add or update a child row: a foreign key constraint fails') !== false) {
                     return redirect()->route('cycletime_produk.index')->with('error_message', 'Import Error: Terdapat nilai Proses yang tidak terdaftar pada Database');
@@ -136,7 +140,7 @@ class CycletimeProdukController extends Controller
                     // Extract the duplicate value from the exception message
                     preg_match('/Duplicate entry \'(.*?)\' for key/', $e->getMessage(), $matches);
                     $duplicateValue = $matches[1] ?? '';
-    
+
                     return redirect()->route('cycletime_produk.index')->with('error_message', 'Import Error: Terdapat nilai duplikat yaitu; ' . $duplicateValue . '. Pada file import');
                 }
             } else {
@@ -146,19 +150,20 @@ class CycletimeProdukController extends Controller
         }
     }
 
+
    
     public function cetakQr(Request $request, $daftarproses)
-{
-    // Mendapatkan semua data dengan nilai 'daftarproses' yang sama
-    $dataproduk = CycletimeProduk::where('daftarproses', $daftarproses)->get();
+    {
+        // Mendapatkan semua data dengan nilai 'daftarproses' yang sama
+        $dataproduk = CycletimeProduk::where('daftarproses', $daftarproses)->get();
 
-    // Load view dan generate PDF
-    $pdf = PDF::loadView('cycletime_produk.cetak', compact('dataproduk'));
-    $pdf->setPaper('a4', 'portrait');
+        // Load view dan generate PDF
+        $pdf = PDF::loadView('cycletime_produk.cetak', compact('dataproduk'));
+        $pdf->setPaper('a4', 'portrait');
 
-    // Menggunakan daftarproses sebagai bagian dari nama file PDF
-    return $pdf->stream("Kode Qr {$daftarproses}.pdf");
-}
+        // Menggunakan daftarproses sebagai bagian dari nama file PDF
+        return $pdf->stream("Kode Qr {$daftarproses} - " . now()->format('Ymd') . ".pdf");
+    }
 
     
 }

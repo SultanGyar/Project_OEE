@@ -338,14 +338,22 @@ class ProduksiController extends Controller
             $file->move('fileImportProduksi', $namafile);
         
             Excel::import(new ProduksiImport, public_path('/fileImportProduksi/' . $namafile));
-
+    
+            // Import berhasil, tidak perlu menghapus file
             return redirect()->route('produksi.index')->with('success_message', 'Berhasil Meng-Import data');
         } catch (LaravelExcelException $e) {
+            // Hapus file karena impor gagal
+            unlink(public_path('/fileImportProduksi/' . $namafile));
+    
             // Tangkap kesalahan yang disebabkan oleh Excel Import
             return redirect()->route('produksi.index')->with('error_message', 'Gagal meng-import data. Pastikan format file Excel sesuai.');
         } catch (\Exception $e) {
+            // Hapus file karena impor gagal
+            unlink(public_path('/fileImportProduksi/' . $namafile));
+    
             // Tangkap kesalahan umum lainnya
             return redirect()->route('produksi.index')->with('error_message', 'Terjadi kesalahan saat meng-import data.');
         }
     }
+    
 }
