@@ -134,7 +134,7 @@
 
 
 <!-- Modal import excel-->
-<div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambahLabel" aria-hidden="true"> 
+<div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel" aria-hidden="true"> 
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{ route('cycletime.import') }}" method="post" enctype="multipart/form-data" id="importForm">
