@@ -297,6 +297,10 @@
 @push('js')
 <script>
     $(document).ready(function () {
+        $('#example2').DataTable({
+            "responsive": true,
+            "scrollX": true,
+        });
         // Fungsi untuk menangani pratinjau QR Code
         function handleQRPreview(src) {
             $('#imgPratinjauQR').attr('src', src);
