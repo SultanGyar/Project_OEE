@@ -70,10 +70,7 @@
                                     <td class="text-center">
                                         <a href="#" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modalEdit{{ $data->id }}">
                                             Edit
-                                        </a>
-                                        <a href="{{ route('cycletime_produk.cetak', ['daftarproses' => $data->daftarproses]) }}" class="btn btn-secondary btn-xs" target="_blank">
-                                            Cetak
-                                        </a>                                      
+                                        </a>                                     
                                     </td>
                                 </tr>
                                 @endforeach
@@ -105,9 +102,39 @@
     </div>
 </div>
 
+<!-- Modal Cetak QR -->
+<div class="modal fade" id="cetakQrModal" tabindex="-1" role="dialog" aria-labelledby="cetakQrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakQrModalLabel">Cetak QR Code</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="daftarprosesSelect">Pilih Proses Untuk di Cetak</label>
+                    <select class="form-control" id="daftarprosesSelect">
+                        <option value="" selected disabled>-- Pilih Proses --</option>
+                        @foreach($daftarprosesOptions as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="cetakButtonDiModal">Cetak</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- Modal import excel-->
-<div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-labelledby="modalImportLabel"
-    aria-hidden="true">
+<div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambahLabel" aria-hidden="true"> 
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{ route('cycletime.import') }}" method="post" enctype="multipart/form-data" id="importForm">
@@ -297,6 +324,42 @@
 @push('js')
 <script>
     $(document).ready(function () {
+    // Fungsi untuk membuka tautan di tab baru
+    function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+
+        $('#cetakQrButton').click(function () {
+            $('#cetakQrModal').modal('show');
+        });
+
+        $('#cetakButtonDiModal').click(function () {
+            var selectedDaftarproses = $('#daftarprosesSelect').val();
+
+            if (selectedDaftarproses) {
+                // Tautan untuk membuka di tab baru
+                var printUrl = "{{ url('/cycletime_produk/cetak') }}/" + encodeURIComponent(selectedDaftarproses);
+                
+                // Membuka tautan di tab baru
+                openInNewTab(printUrl);
+
+                // Menutup modal
+                $('#cetakQrModal').modal('hide');
+
+                // Menghapus nilai yang dipilih pada dropdown
+                $('#daftarprosesSelect').val('');
+            } else {
+                alert('Pilih Proses terlebih dahulu.');
+            }
+        });
+        
+        // Fungsi untuk menangani penutupan modal
+        $('#cetakQrModal').on('hidden.bs.modal', function () {
+            // Mereset nilai dropdown saat modal tertutup
+            $('#daftarprosesSelect').val('');
+        });
+
         $('#example2').DataTable({
             "responsive": true,
             "scrollX": true,
@@ -325,9 +388,7 @@
             $('.text-danger').remove();
         });
 
-        $('#cetakQrButton').click(function () {
-            $('#cetakQrModal').modal('show');
-        });
+        
 
         if ($('.is-invalid').length > 0) {
             $('#modalTambah').modal('show');

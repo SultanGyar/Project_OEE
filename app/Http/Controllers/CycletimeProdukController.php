@@ -17,14 +17,14 @@ class CycletimeProdukController extends Controller
      */
     public function index()
     {
+        $daftarprosesOptions = CycletimeProduk::distinct()->pluck('daftarproses');
         $produk = CycletimeProduk::all();
-        $groupedData = $produk->groupBy('daftarproses');
         $dataproses = Proses::pluck('daftarproses', 'daftarproses');
 
         return view('cycletime_produk.index', [
             'dataproses' => $dataproses,
             'produk' => $produk,
-            'groupedData' => $groupedData
+            'daftarprosesOptions' => $daftarprosesOptions,
         ]);
     }
 
