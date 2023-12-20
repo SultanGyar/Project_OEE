@@ -27,9 +27,9 @@
     <div class="col-lg-3 col-6">
       <div class="small-box bg-secondary">
         <div class="inner">
-          <h3>{{ $userCount }}</h3>
+          <h3>{{ $operatorCount }}</h3>
 
-          <p>System Users</p>
+          <p><strong>Operator</strong></p>
         </div>
         <div class="icon">
             <i class="fa fa-users"></i>
@@ -42,7 +42,7 @@
         <div class="inner">
           <h3>{{ $harianCount }}</h3>
 
-          <p>Today's News</p>
+          <p><strong>Total Data</strong></strong></p>
         </div>
         <div class="icon">
             <i class="ion ion-stats-bars"></i>
@@ -53,9 +53,9 @@
     <div class="col-lg-3 col-6">
       <div class="small-box bg-success">
         <div class="inner">
-          <h3>{{ $bulananCount }}</h3>
+          <h3>{{ $prosesUsed }}</h3>
 
-          <p>Monthly Summary</p>
+          <p><strong>Mesin Digunakan</strong></p>
         </div>
         <div class="icon">
             <i class="fa fa-chart-bar"></i>
@@ -66,9 +66,9 @@
     <div class="col-lg-3 col-6">
       <div class="small-box bg-danger">
         <div class="inner">
-          <h3>{{ $operNoData }}</h3>
+          <h3>{{ $prosesNoUsed }}</h3>
 
-          <p>Non-Data Operator Today</p>
+          <p><strong>Mesin Tidak Digunakan</strong></p>
         </div>
         <div class="icon">
             <i class="fa fa-exclamation-circle"></i>

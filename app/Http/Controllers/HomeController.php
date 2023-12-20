@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataProduksi;
 use App\Models\Produksi;
+use App\Models\Proses;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,32 +30,26 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $selectedMonth = $request->input('filterMonth', date('Y-m'));
-        $currentDate = Carbon::now()->format('Y-m-d');
-        $userCount = User::count();
+        $operatorCount = User::where('role', 'Operator')->count();
         $getData = $this->getProsesData('array', $selectedMonth);
-        $harianCount = Produksi::whereDate('tanggal', today())->count();
-        $bulananCount = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))
-            ->whereMonth('tanggal', substr($selectedMonth, 5, 2))
-            ->count();
-
-        $operNoData = User::where('role', 'Operator')
-            ->whereNotExists(function ($query) use ($currentDate) {
-                $query->select(DB::raw(1))
-                    ->from('produksi')
-                    ->whereRaw('produksi.nama_user = users.full_name')
-                    ->whereDate('produksi.tanggal', $currentDate);
-            })
-            ->count();
+        $harianCount = Produksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
+        $prosesUsed = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
+        $daftarProsesModel = Proses::pluck('daftarproses')->count();
+        $daftarProsesProduksi = Produksi::distinct()->pluck('daftarproses')->count();
+        $prosesNoUsed = ($daftarProsesModel - $daftarProsesProduksi );
     
         return view('home', [
             'getData' => $getData,
             'selectedMonth' => $selectedMonth,
-            'userCount' => $userCount,
+            'operatorCount' => $operatorCount,
             'harianCount' => $harianCount,
-            'bulananCount' => $bulananCount,
-            'operNoData' => $operNoData,
+            'prosesUsed' => $prosesUsed,
+            'prosesNoUsed' => $prosesNoUsed,
         ]);
     }
+    
+
+
     
     
     public function getProsesData($format = 'array', $selectedMonth = null)
