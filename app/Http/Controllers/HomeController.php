@@ -34,9 +34,9 @@ class HomeController extends Controller
         $getData = $this->getProsesData('array', $selectedMonth);
         $harianCount = Produksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
         $prosesUsed = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
-        $daftarProsesModel = Proses::pluck('daftarproses', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
-        $daftarProsesProduksi = Produksi::distinct()->pluck('daftarproses', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
-        $prosesNoUsed = ($daftarProsesModel - $daftarProsesProduksi );
+        $daftarProsesModel = Proses::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
+        $daftarProsesProduksi = Produksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->distinct()->pluck('daftarproses')->count();
+        $prosesNoUsed = $daftarProsesModel - $daftarProsesProduksi;
     
         return view('home', [
             'getData' => $getData,
