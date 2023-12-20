@@ -5,6 +5,9 @@
 <h1 class="m-0 text-dark">Tambah Data Produksi</h1>
 @stop
 @section('content')
+@php
+$currentMonth = now()->endOfMonth()->toDateString();
+@endphp 
 <form action="{{ route('produksi.store') }}" method="post">
     @csrf
     <div class="row">
@@ -20,13 +23,10 @@
                                 aria-describedby="cari" readonly>
                         </div>
                     </div>
-                    <div class="form-group">
-                        @php
-                        $currentMonth = now()->endOfMonth()->toDateString();
-                        @endphp                    
+                    <div class="form-group"> 
                         <label for="tanggal">Tanggal<span class="font-weight-normal text-danger">*</label>
                         <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"
-                            placeholder="Tanggal" name="tanggal" value="{{ old('tanggal') }} " max="{{ $currentMonth }}">
+                            placeholder="Tanggal" name="tanggal" max="{{ $currentMonth }}" value="{{ old('tanggal') }}">
                         @error('tanggal')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -109,8 +109,7 @@
                         @error('kode')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </div>                                       
-
+                    </div>                                      
                     <div class="form-group">
                         <label for="quantity">Actual Quantity<span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity"
@@ -119,7 +118,6 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-    
                     <div class="form-group" hidden>
                         <label for="finish_good">Good Quality<span class="font-weight-normal text-danger">*</label>
                         <input type="number" class="form-control @error('finish_good') is-invalid @enderror"
@@ -137,7 +135,6 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
                     <div class="form-group">
                         <label for="daftarketerangan">Keterangan Not Good</label>
                         <select class="form-control mb-10 @error('daftarketerangan') is-invalid @enderror" id="daftarketerangan" name="daftarketerangan" style="width: 100%">
@@ -150,8 +147,6 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    
-
                     <div class="row">
                         <div class="col-md-6 border">
                             <div class="form-group">
@@ -201,11 +196,11 @@
                             </div>
                             <div class="dropdown-item">
                                 <input class="form-check-input" type="checkbox" id="hideFormB" data-target="formB">
-                                <label class="form-check-label" for="hideFormB">Kategori B (REPAIR)</label>
+                                <label class="form-check-label" for="hideFormB">Kategori B (PERBAIKAN)</label>
                             </div>
                             <div class="dropdown-item">
                                 <input class="form-check-input" type="checkbox" id="hideFormC" data-target="formC">
-                                <label class="form-check-label" for="hideFormC">Kategori C (MATERIAL TUNGGU)</label>
+                                <label class="form-check-label" for="hideFormC">Kategori C (MENUNGGU MATERIAL)</label>
                             </div>
                             <div class="dropdown-item">
                                 <input class="form-check-input" type="checkbox" id="hideFormD" data-target="formD">
@@ -217,7 +212,7 @@
                             </div>
                             <div class="dropdown-item">
                                 <input class="form-check-input" type="checkbox" id="hideFormF" data-target="formF">
-                                <label class="form-check-label" for="hideFormF">Kategori F (CHECKING)</label>
+                                <label class="form-check-label" for="hideFormF">Kategori F (PEMERIKSAAN)</label>
                             </div>
                             <div class="dropdown-item">
                                 <input class="form-check-input" type="checkbox" id="hideFormG" data-target="formG">
@@ -360,6 +355,14 @@
     }
 
     $(document).ready(function() {
+        $('form').submit(function () {
+            // Check if the down_time field is empty
+            if ($('#down_time').val() === '') {
+                // Set the value to "00:00:00"
+                $('#down_time').val('00:00:00');
+            }
+        });
+
         // Panggil fungsi getDataAuto saat halaman dimuat
         getDataAuto();
 
@@ -397,7 +400,6 @@
                     } else {
                         // Jika tidak ada kesamaan, Anda dapat melakukan tindakan lain
                     }
-
                     // Setelah mendapatkan nilai kapasitas_pcs, panggil fungsi untuk mengupdate target_quantity
                     calculateActualTime();
                 }
@@ -497,13 +499,7 @@
 
                 // Menetapkan nilai yang dihitung ke input Down Time
                 document.getElementById('down_time').value = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
-            } else {
-                // Jika total waktu tidak valid, kosongkan input Down Time
-                document.getElementById('down_time').value = '';
             }
-        } else {
-            // Jika semua nilai dari Form A hingga H adalah nilai default atau kosong, kosongkan input Down Time
-            document.getElementById('down_time').value = '';
         }
     }
 

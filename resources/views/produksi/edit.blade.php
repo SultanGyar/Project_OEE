@@ -141,7 +141,7 @@
                         <label for="daftarketerangan">Keterangan Not Good</label>
                         <select class="form-control mb-10 @error('daftarketerangan') is-invalid @enderror"
                             id="daftarketerangan" name="daftarketerangan" style="width: 100%">
-                            <option value="">Batalkan Keterangan</option>
+                            <option value="">Tidak ada</option>
                             @foreach ($dataketerangan as $value => $label)
                             <option value="{{ $value }}" @if ($value==$produksi->daftarketerangan ||
                                 old('daftarketerangan') == $value) selected @endif>{{ $label }}</option>
@@ -192,42 +192,48 @@
                     <div class="dropdown">
                         <button class="btn btn-info dropdown-toggle" type="button" id="toggleForm"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Pilih Kategori
+                            Pilih Kategori Down Time
                         </button>
                         <div class="dropdown-menu" aria-labelledby="toggleForm">
                             <!-- Checkbox untuk menyembunyikan atau menampilkan form input -->
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormA" data-target="formA">
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormA" data-target="formA" @if(isset($produksi) && $produksi->a_time) checked @endif>
                                 <label class="form-check-label" for="hideFormA">Kategori A (GANTI ORDER)</label>
                             </div>
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormB" data-target="formB">
-                                <label class="form-check-label" for="hideFormB">Kategori B (REPAIR)</label>
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormB" data-target="formB" @if(isset($produksi) && $produksi->b_time) checked @endif>
+                                <label class="form-check-label" for="hideFormB">Kategori B (PERBAIKAN)</label>
                             </div>
+                            
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormC" data-target="formC">
-                                <label class="form-check-label" for="hideFormC">Kategori C (MATERIAL TUNGGU)</label>
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormC" data-target="formC" @if(isset($produksi) && $produksi->c_time) checked @endif>
+                                <label class="form-check-label" for="hideFormC">Kategori C (MENUNGGU MATERIAL)</label>
                             </div>
+                            
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormD" data-target="formD">
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormD" data-target="formD" @if(isset($produksi) && $produksi->d_time) checked @endif>
                                 <label class="form-check-label" for="hideFormD">Kategori D (OPERATOR)</label>
                             </div>
+                            
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormE" data-target="formE">
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormE" data-target="formE" @if(isset($produksi) && $produksi->e_time) checked @endif>
                                 <label class="form-check-label" for="hideFormE">Kategori E (MAINTENANCE)</label>
                             </div>
+                            
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormF" data-target="formF">
-                                <label class="form-check-label" for="hideFormF">Kategori F (CHECKING)</label>
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormF" data-target="formF" @if(isset($produksi) && $produksi->f_time) checked @endif>
+                                <label class="form-check-label" for="hideFormF">Kategori F (PEMERIKSAAN)</label>
                             </div>
+                            
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormG" data-target="formG">
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormG" data-target="formG" @if(isset($produksi) && $produksi->g_time) checked @endif>
                                 <label class="form-check-label" for="hideFormG">Kategori G (REJECT)</label>
                             </div>
+                            
                             <div class="dropdown-item">
-                                <input class="form-check-input" type="checkbox" id="hideFormH" data-target="formH">
+                                <input class="form-check-input hide-checkbox" type="checkbox" id="hideFormH" data-target="formH" @if(isset($produksi) && $produksi->h_time) checked @endif>
                                 <label class="form-check-label" for="hideFormH">Kategori H (REWORK)</label>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
 
@@ -362,6 +368,26 @@
         document.getElementById('target_quantity').value = Math.round(targetQuantity); // Bulatkan ke bilangan bulat terdekat
     }
 
+    
+
+    $(document).ready(function() {
+        $('form').submit(function () {
+            // Check if the down_time field is empty
+            if ($('#down_time').val() === '') {
+                // Set the value to "00:00:00"
+                $('#down_time').val('00:00:00');
+            }
+        });
+
+         // Panggil fungsi getDataAuto saat halaman dimuat
+         getDataAuto();
+
+        // Panggil fungsi getDataAuto juga saat nilai 'kode' berubah
+        $('#kode').on('change', function() {
+            getDataAuto();
+        });
+    });
+
     function getDataAuto() {
         var selectedKode = $('#kode').val();
         
@@ -462,9 +488,27 @@
     hideFormCheckboxF.addEventListener('change', toggleForm);
     hideFormCheckboxG.addEventListener('change', toggleForm);
     hideFormCheckboxH.addEventListener('change', toggleForm);
-  
+
+
+    function toggleForm() {
+    const hideFormCheckboxes = document.querySelectorAll('.hide-checkbox');
+    
+    hideFormCheckboxes.forEach(checkbox => {
+        const formId = checkbox.getAttribute('data-target');
+        const form = document.getElementById(formId);
+
+        if (checkbox.checked) {
+        form.style.display = 'block';
+        } else {
+        form.style.display = 'none';
+        }
+    });
+    }
+
     // Panggil fungsi untuk mengatur tampilan awal halaman
     toggleForm();
+  
+    // Panggil fu
 
      // Fungsi untuk menghitung total waktu dari Form A hingga Form H
     function calculateDownTime() {
@@ -494,13 +538,7 @@
 
                 // Menetapkan nilai yang dihitung ke input Down Time
                 document.getElementById('down_time').value = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
-            } else {
-                // Jika total waktu tidak valid, kosongkan input Down Time
-                document.getElementById('down_time').value = '';
             }
-        } else {
-            // Jika semua nilai dari Form A hingga H adalah nilai default atau kosong, kosongkan input Down Time
-            document.getElementById('down_time').value = '';
         }
     }
 
