@@ -39,6 +39,7 @@
                         </div>
                         <form id="filterForm" method="get" class="form-inline">
                             @php
+                            $currentMonth = now()->endOfMonth()->toDateString();
                             $currentDate = date('Y-m-d');
                             $selectedDate = request('filterDate', $currentDate); // Ambil tanggal terpilih
                             @endphp
@@ -46,7 +47,7 @@
                                 <label for="filterDate" class="mr-2 mb-2 mb-md-0"
                                     style="flex: 0 0 auto;">Tanggal:</label>
                                 <input type="date" class="form-control" id="filterDate" name="filterDate"
-                                    value="{{ $selectedDate }}" max="{{ $currentDate }}">
+                                    value="{{ $selectedDate }}" max="{{ $currentMonth }}">
                                 <button type="submit" class="btn btn-info ml-2">Submit</button>
                             </div>
                         </form>

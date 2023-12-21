@@ -25,7 +25,7 @@
     {{-- Username Field --}}
     <div class="input-group mb-3">
         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-            value="{{ old('name') }}" placeholder="{{ __('Username') }}" autofocus>
+            value="{{ old('name') }}" placeholder="{{ __('Username') }}" autofocus autocomplete="username">
 
         <div class="input-group-append">
             <div class="input-group-text">
@@ -43,7 +43,7 @@
     {{-- Full Name Field --}}
     <div class="input-group mb-3">
         <input type="text" name="full_name" class="form-control @error('full_name') is-invalid @enderror"
-            value="{{ old('full_name') }}" placeholder="{{ __('Nama Lengkap') }}" autofocus>
+            value="{{ old('full_name') }}" placeholder="{{ __('Nama Lengkap') }}" autofocus autocomplete="name">
 
         <div class="input-group-append">
             <div class="input-group-text">
@@ -61,7 +61,7 @@
     {{-- Password field --}}
     <div class="input-group mb-3">
         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-            placeholder="{{ __('adminlte::adminlte.password') }}">
+            placeholder="{{ __('adminlte::adminlte.password') }}" autocomplete="new-password">
 
         <div class="input-group-append">
             <div class="input-group-text">
@@ -80,7 +80,7 @@
     <div class="input-group mb-3">
         <input type="password" name="password_confirmation"
             class="form-control @error('password_confirmation') is-invalid @enderror"
-            placeholder="{{ __('adminlte::adminlte.retype_password') }}">
+            placeholder="{{ __('adminlte::adminlte.retype_password') }}" autocomplete="new-password">
 
         <div class="input-group-append">
             <div class="input-group-text">

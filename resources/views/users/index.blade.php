@@ -117,27 +117,27 @@
                     <div class="form-group">
                         <label for="name">Username<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name"
-                            placeholder="Masukan Username" name="name">
+                            placeholder="Masukan Username" name="name" autocomplete="off">
                         @error('name') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                     <div class="form-group">
                         <label for="full_name">Nama Lengkap<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control  @error('full_name') is-invalid @enderror" id="full_name"
-                            placeholder="Masukan Nama Lengkap" name="full_name">
+                            placeholder="Masukan Nama Lengkap" name="full_name" autocomplete="off">
                         @error('full_name') <span class="text-danger">{{ $message}}</span> @enderror
                     </div>
                     <div class="form-group">
                         <label for="password">Kata Sandi<span class="font-weight-normal text-danger">*</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="password" placeholder="Masukan Kata Sandi (min: 5)" name="password" minlength="5"
-                            autocomplete="off">
+                            autocomplete="new-password">
                         @error('password') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-group">
                         <label for="password_confirmation">Konfirmasi Kata Sandi<span class="font-weight-normal text-danger">*</label>
                         <input type="password" class="form-control" id="password_confirmation"
                             placeholder="Konfirmasi Kata Sandi (min: 5)" name="password_confirmation" minlength="5"
-                            autocomplete="off">
+                            autocomplete="new-password">
                     </div>
                     <div class="form-group">
                         <label for="role">Role<span class="font-weight-normal text-danger">*</label>
@@ -184,7 +184,7 @@
                         <label for="edit_name_{{ $data->id }}">Username<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror"
                             id="edit_name_{{ $data->id }}" placeholder="Masukkan Username" name="name"
-                            value="{{ $data->name }}">
+                            value="{{ $data->name }}" autocomplete="off">
                         @error('name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -193,7 +193,7 @@
                         <label for="edit_full_name_{{ $data->id }}">Nama Lengkap<span class="font-weight-normal text-danger">*</label>
                         <input type="text" class="form-control @error('full_name') is-invalid @enderror"
                             id="edit_full_name_{{ $data->id }}" placeholder="Masukkan Nama Lengkap" name="full_name"
-                            value="{{ $data->full_name }}">
+                            value="{{ $data->full_name }}" autocomplete="off">
                         @error('full_name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
