@@ -28,6 +28,11 @@
 <form action="{{ $login_url }}" method="post">
     @csrf
 
+    {{-- Visually hidden username field for accessibility --}}
+    <label for="username" class="sr-only">Username</label>
+    <input type="text" name="name" class="form-control sr-only" id="username" value="{{ old('name') }}"
+        placeholder="{{ __('Username') }}" autocomplete="name">
+
     {{-- Name field --}}
     <div class="input-group mb-3">
         <input type="string" name="name" class="form-control @error('name') is-invalid @enderror"
@@ -50,20 +55,19 @@
     <div class="input-group mb-3">
         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
             placeholder="{{ __('adminlte::adminlte.password') }}" id="password-field" autocomplete="current-password">
-    
+
         <div class="input-group-append">
             <div class="input-group-text">
                 <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
         </div>
-    
+
         @error('password')
         <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
+            {{ 'Masukan kata sandi' }}
         </span>
         @enderror
     </div>
-    
 
     {{-- Login field --}}
     <div class="row">

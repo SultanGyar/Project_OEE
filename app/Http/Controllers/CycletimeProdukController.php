@@ -42,13 +42,18 @@ class CycletimeProdukController extends Controller
      */
     public function store(Request $request)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Kode sudah terdaftar dalam sistem',
+        ];
+
         $request->validate([
             'daftarproses' => 'required',
             'size' => 'required',
             'class' => 'required',
             'kapasitas_pcs' => 'required',
             'kode' => 'required|unique:cycletime_produk,kode', // Unik berdasarkan tabel cycletime_produk
-        ]);
+        ], $message);
 
         $array = $request->only([
             'daftarproses',
@@ -89,13 +94,17 @@ class CycletimeProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Kode sudah terdaftar dalam sistem',
+        ];
         $request->validate([
             'daftarproses' => 'required',
             'size' => 'required',
             'class' => 'required',
             'kapasitas_pcs' => 'required',
             'kode' => 'required|unique:cycletime_produk,kode,' . $id
-        ]);
+        ], $message);
     
         $produk = CycletimeProduk::findOrFail($id);
         $produk->daftarproses = $request->input('daftarproses');

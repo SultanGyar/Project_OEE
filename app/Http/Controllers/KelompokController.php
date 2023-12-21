@@ -34,8 +34,8 @@ class KelompokController extends Controller
     public function store(Request $request)
     {
         $message = [
-            'daftarkelompok.required' => 'Input harus diisi',
-            'daftarkelompok.unique' => 'Kelompok sudah terdaftar dalam sistem',
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Kelompok sudah terdaftar dalam sistem',
         ];
 
         $request->validate([
@@ -76,8 +76,8 @@ class KelompokController extends Controller
     public function update(Request $request, $id)
     {
         $message = [
-            'daftarkelompok.required' => 'Input harus diisi',
-            'daftarkelompok.unique' => 'Kelompok sudah terdaftar dalam sistem',
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Kelompok sudah terdaftar dalam sistem',
         ];
 
         $request->validate([

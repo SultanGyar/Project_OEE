@@ -51,15 +51,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+            'confirmed' => 'Kata sandi tidak cocok',
+            'max:30' => 'Maksimal 30 karakter',
+            'max:50' => 'Maksimal 50 karakter'
+        ];
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:100', 'unique:users'],
-            'full_name' => ['required', 'string', 'max:120', 'unique:users'],
-            'password' => ['required', 'string', 'min:5', 'confirmed'],
+            'name' => ['required', 'max:30'],
+            'full_name' => ['required', 'max:50'],
+            'password' => ['required', 'min:5', 'confirmed'],
             'role' => [
                     'required',
                     Rule::in(['Admin', 'Operator']),
                     function ($attribute, $value, $fail) {
-                        $maxAdminCount = 1; // Jumlah maksimal admin yang diizinkan
+                        $maxAdminCount = 1;
         
                         $adminCount = User::where('role', 'Admin')->count();
         
@@ -68,7 +74,7 @@ class RegisterController extends Controller
                         }
                     },
                 ],
-        ]);
+        ], $message);
     }
 
     /**

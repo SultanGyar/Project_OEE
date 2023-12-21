@@ -37,25 +37,29 @@ class AnggotaKelompokController extends Controller
      */
     public function store(Request $request)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+        ];
+        
         $request->validate([
             'daftarkelompok' => 'required',
-            'daftarproses' => 'required'
-        ]);
-    
-        $prosesKelompok = $request->input('daftarproses');
-        
-        $sudahAda = AnggotaKelompok::where('daftarproses', $prosesKelompok)
-            ->first();
-        
-        if ($sudahAda) {
-            return redirect()->route('anggota_kelompok.index')
-                ->with('warning_message', 'Data tidak dapat disimpan karena proses sudah terdaftar pada kelompok lain');
-        }
+            'daftarproses' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $sudahAda = AnggotaKelompok::where('daftarproses', $value)->first();
+                    
+                    if ($sudahAda) {
+                        $fail(__('Proses sudah terdaftar pada kelompok lain'));
+                    }
+                },
+            ],
+        ], $message);
         
         $array = $request->only([
             'daftarkelompok',
             'daftarproses'
         ]);
+        
     
         $anggotaKelompok = AnggotaKelompok::create($array);
         return redirect()->route('anggota_kelompok.index')->with('success_message', 'Berhasil menambahkan anggota baru');
@@ -90,34 +94,39 @@ class AnggotaKelompokController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+        ];
+    
         $request->validate([
-            'daftarkelompok' => 'required', // Anda juga bisa menambahkan validasi sesuai kebutuhan
-            'daftarproses' => 'required',
-        ]);
+            'daftarkelompok' => 'required',
+            'daftarproses' => [
+                'required',
+                function ($attribute, $value, $fail) use ($id, $request) {
+                    $existingAnggotaKelompok = AnggotaKelompok::where('daftarproses', $value)
+                        ->where('daftarkelompok', $request->input('daftarkelompok'))
+                        ->where('id', '<>', $id)
+                        ->first();
+    
+                    if ($existingAnggotaKelompok) {
+                        $fail(__('Proses sudah terdaftar pada kelompok lain'));
+                    }
+                },
+            ],
+        ], $message);
     
         $dataKelompok = $request->input('daftarkelompok');
         $prosesKelompok = $request->input('daftarproses');
     
-        // Check if the combination of daftarkelompok and daftarproses already exists
-        $existingAnggotaKelompok = AnggotaKelompok::where('daftarproses', $prosesKelompok)
-            ->where('daftarkelompok', $dataKelompok)
-            ->where('id', '<>', $id)
-            ->first();
-    
-        if ($existingAnggotaKelompok) {
-            // If the combination already exists, show a warning notification
-            return redirect()->route('anggota_kelompok.index')
-                ->with('warning_message', 'Data tidak dapat disimpan karena proses sudah terdaftar pada kelompok lain');
-        }
-    
         $anggotaKelompok = AnggotaKelompok::findOrFail($id);
         $anggotaKelompok->update([
-            'daftarkelompok' => $dataKelompok, // Update kolom 'daftarkelompok'
+            'daftarkelompok' => $dataKelompok,
             'daftarproses' => $prosesKelompok,
         ]);
     
         return redirect()->route('anggota_kelompok.index')->with('success_message', 'Berhasil mengupdate anggota');
     }
+    
 
     /**
      * Remove the specified resource from storage.

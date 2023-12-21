@@ -124,6 +124,9 @@ class ProduksiController extends Controller
      */
     public function store(Request $request)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+        ];
         //menyimpan  produksi
         $user = auth()->user();
         $request->validate([
@@ -152,7 +155,7 @@ class ProduksiController extends Controller
             'f_time' => 'nullable',
             'g_time' => 'nullable',
             'h_time' => 'nullable'
-        ]);
+        ], $message);
 
         $quantity = $request->input('quantity');
         $finishGood = $request->input('finish_good');
@@ -240,6 +243,10 @@ class ProduksiController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+        ];
+
         $user = auth()->user();
         $request->validate([
             'nama_user' => 'required',
@@ -268,7 +275,7 @@ class ProduksiController extends Controller
             'f_time' => 'nullable',
             'g_time' => 'nullable',
             'h_time' => 'nullable'
-        ]);
+        ], $message);
     
         $quantity = $request->input('quantity');
         $finishGood = $request->input('finish_good');

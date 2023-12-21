@@ -32,8 +32,8 @@ class KeteranganController extends Controller
     public function store(Request $request)
     {
         $message = [
-            'daftarketerangan.required' => 'Input tidak boleh kosong',
-            'daftarketerangan.unique' => 'Keterangan sudah terdaftar dalam sistem',
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Keterangan sudah terdaftar dalam sistem',
         ];
 
         $request->validate([
@@ -76,9 +76,14 @@ class KeteranganController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $message = [
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Keterangan sudah terdaftar dalam sistem',
+        ];
+
         $request->validate([
-            'daftarketerangan' => 'required'
-        ]);
+            'daftarketerangan' => 'required|unique:keterangan,daftarketerangan'
+        ], $message);
 
         $keterangan = Keterangan::find($id);
         if (!$keterangan) {

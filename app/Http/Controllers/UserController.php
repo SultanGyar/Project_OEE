@@ -35,12 +35,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $message = [
-            'name.required' => 'Nama harus diisi',
-            'name.unique' => 'Nama sudah terdaftar dalam sistem',
-            'full_name.required' => 'Nama Lengkap harus diisi',
-            'full_name.unique' => 'Nama sudah terdaftar dalam sistem',
-            'password.required' => 'Kata sandi harus diisi',
-            'password.confirmed' => 'Kata sandi tidak cocok'
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Nama sudah terdaftar dalam sistem',
+            'confirmed' => 'Kata sandi tidak cocok',
         ];
 
         $request->validate([
@@ -87,12 +84,9 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $message = [
-            'name.required' => 'Nama harus diisi',
-            'name.unique' => 'Nama sudah terdaftar dalam sistem',
-            'full_name.required' => 'Nama Lengkap harus diisi',
-            'full_name.unique' => 'Nama sudah terdaftar dalam sistem',
-            'password.required' => 'Kata sandi harus diisi',
-            'password.confirmed' => 'Kata sandi tidak cocok'
+            'required' => 'Kolom harus diisi',
+            'unique' => 'Nama sudah terdaftar dalam sistem',
+            'confirmed' => 'Kata sandi tidak cocok',
         ];
         $request->validate([
             'name' => 'required|unique:users,name,' . $id,
