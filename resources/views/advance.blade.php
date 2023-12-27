@@ -3,6 +3,11 @@
 @section('title', 'Dashboard')
 <link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
+<link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+<!-- overlayScrollbars -->
+<link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+<!-- Theme style -->
+
 <div class="d-flex flex-wrap justify-content-between align-items-center">
     <h2>Overall Equipment Effectiveness</h2>
     <form id="filterForm" method="get" class="form-inline">
@@ -21,301 +26,202 @@
 @stop
 
 @section('content')
-<div class="col-md-8 offset-md-2">
-    <div class="input-group input-group-md mb-3">
-        <input type="search" class="form-control form-control-md" placeholder="Search OEE..." id="searchInput">
-        <div class="input-group-append">
-            <button type="button" class="btn btn-md btn-default" id="searchButton">
-                <i class="fa fa-search"></i>
-            </button>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Area Chart</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart">
+                    <canvas id="areaChart"
+                        style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+            </div>
+            <!-- /.card-body -->
         </div>
     </div>
 </div>
-<style>
-    .card-footer {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Monthly Recap Report</h5>
 
-    .chart-text {
-        position: absolute;
-        top: 62%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        z-index: 1;
-    }
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
+                            <i class="fas fa-wrench"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" role="menu">
+                            <a href="#" class="dropdown-item">Action</a>
+                            <a href="#" class="dropdown-item">Another action</a>
+                            <a href="#" class="dropdown-item">Something else here</a>
+                            <a class="dropdown-divider"></a>
+                            <a href="#" class="dropdown-item">Separated link</a>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="text-center">
+                            <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                        </p>
 
-    .oee-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-    }
+                        <div class="chart">
+                            <!-- Sales Chart Canvas -->
+                            <canvas id="salesChart" height="180" style="height: 188px;"></canvas>
+                        </div>
+                        <!-- /.chart-responsive -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-4">
+                        <p class="text-center">
+                            <strong>Goal Completion</strong>
+                        </p>
 
-    .oee-title {
-        font-size: 24px;
-        font-weight: bold;
-    }
+                        <div class="progress-group">
+                            Add Products to Cart
+                            <span class="float-right"><b>160</b>/200</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <!-- /.progress-group -->
 
-    .oee-line {
-        width: 70px;
-        height: 3px;
-        background-color: #000;
-        margin: 5px auto;
-    }
+                        <div class="progress-group">
+                            Complete Purchase
+                            <span class="float-right"><b>310</b>/400</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-danger" style="width: 75%"></div>
+                            </div>
+                        </div>
 
-    .oee-value {
-        font-size: 20px;
-        font-weight: bold;
-    }
+                        <!-- /.progress-group -->
+                        <div class="progress-group">
+                            <span class="progress-text">Visit Premium Page</span>
+                            <span class="float-right"><b>480</b>/800</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-success" style="width: 60%"></div>
+                            </div>
+                        </div>
 
-    .card-body {
-        padding: 10px;
-    }
-</style>
+                        <!-- /.progress-group -->
+                        <div class="progress-group">
+                            Send Inquiries
+                            <span class="float-right"><b>250</b>/500</span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-warning" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <!-- /.progress-group -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
 @stop
 
 @section('adminlte_js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('plugins/chart.js/Chart.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+<script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- overlayScrollbars -->
+<script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
+<script src="{{ asset('plugins/raphael/raphael.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery-mapael/jquery.mapael.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery-mapael/maps/usa_states.min.js') }}"></script>
+
+
 <script>
-    var performanceCharts = [];
-    var availabilityCharts = [];
-    var qualityCharts = [];
-    var oeeCharts = []
-
-    $(document).ready(function() {
-
-        $("#searchButton").click(function() {
-            var searchText = $("#searchInput").val().toLowerCase();
-
-            // Loop melalui setiap kartu
-            $(".col-lg-3").each(function() {
-                var cardTitle = $(this).find(".card-title").text().toLowerCase();
-                var card = $(this);
-
-                // Periksa apakah judul kartu cocok dengan teks pencarian
-                if (cardTitle.includes(searchText)) {
-                    card.show(); // Tampilkan kartu jika cocok
-                } else {
-                    card.hide(); // Sembunyikan kartu jika tidak cocok
-                }
-            });
-        });
-
-        @foreach ($getData as $data)
-        var data{{ $data['id'] }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
-        console.log('data{{ $data['id'] }}', data{{ $data['id'] }});
-
-            // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
-            createPerformanceChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-            createAvailabilityChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-            createQualityChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-            createOeeChart(data{{ $data['id'] }}, "{{ $data['id'] }}");
-
-            // Mengisi teks pada elemen-elemen dengan ID yang unik
-            $('#textTargetQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.target_quantity);
-            $('#textActualQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.quantity);
-            $('#textTotalTime{{ $data['id'] }}').text(formatTimeToMinutes(data{{ $data['id'] }}.operating_time));
-            $('#textActualRuntime{{ $data['id'] }}').text(formatTimeToMinutes(data{{ $data['id'] }}.actual_time));
-            $('#textDownTime{{ $data['id'] }}').text(formatTimeToMinutes(data{{ $data['id'] }}.down_time));
-            $('#textTotalQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.quantity);
-            $('#textGoodQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.finish_good);
-            $('#textRejectedQuantity{{ $data['id'] }}').text(data{{ $data['id'] }}.reject);
-        @endforeach
-    });
-
-    function formatTimeToMinutes(time) {
-        var parts = time.split(':');
-        var hours = parseInt(parts[0]);
-        var minutes = parseInt(parts[1]);
-        var seconds = parseInt(parts[2]);
-
-        var totalMinutes = hours * 60 + minutes + seconds / 60;
-
-        return totalMinutes + ' Minutes';
-    }
-
-    function createOeeChart(data, id) {
-        var oeeChartCanvas = document.getElementById('oeeChart' + id).getContext('2d');
-        var totalTarget = data.target_quantity;
-        var actualQuantity = data.quantity;
-        var actualPercentage = (actualQuantity / totalTarget) * 100;
-
-        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
-        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
-        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
-        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
-
-        var totalGood = data.finish_good;
-        var totalRejected = data.reject;
-        var total = totalGood + totalRejected;
-        var goodPercentage = (totalGood / total) * 100;
-
-        var oeePercentage = (actualPercentage + actualTimePercentage + goodPercentage) / 3;
-        oeePercentage = oeePercentage.toFixed(2);
-
-        var oeeChartData = {
-            datasets: [{
-                data: [oeePercentage, 100 - oeePercentage],
-                backgroundColor: ['#1D5D9B', '#E21818']
-            }]
-        };
-
-        var oeeChart = new Chart(oeeChartCanvas, {
-            type: 'doughnut',
-            data: oeeChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                plugins: {
-                    datalabels: false,
-                },
-                legend: {
-                    display: false
-                }
+    $(function () {
+      var areaChartCanvas = $('#areaChart').get(0).getContext('2d');
+  
+      var areaChartData = {
+        labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [
+          {
+            label               : 'Digital Goods',
+            backgroundColor     : 'rgba(60,141,188,0.9)',
+            borderColor         : 'rgba(60,141,188,0.8)',
+            pointRadius          : 3,
+            pointColor          : '#3b8bba',
+            pointStrokeColor    : 'rgba(60,141,188,1)',
+            pointHighlightFill  : '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data                : [28, 48, 40, 19, 86, 27, 90]
+          },
+          {
+            label               : 'Electronics',
+            backgroundColor     : 'rgba(210, 214, 222, 1)',
+            borderColor         : 'rgba(210, 214, 222, 1)',
+            pointRadius         : 3,
+            pointColor          : 'rgba(210, 214, 222, 1)',
+            pointStrokeColor    : '#c1c7d1',
+            pointHighlightFill  : '#fff',
+            pointHighlightStroke: 'rgba(220,220,220,1)',
+            data                : [65, 59, 80, 81, 56, 55, 40]
+          },
+        ]
+      }
+  
+      var areaChartOptions = {
+        maintainAspectRatio : false,
+        responsive : true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines : {
+              display : false,
             }
-        });
-
-        var oeeValueText = document.getElementById('oee-value' + id);
-        oeeValueText.textContent = oeePercentage + '%';
-
-        // if (parseFloat(oeePercentage) > 85.00) {
-        //     oeeValueText.style.color = '#1ce34a'; // Mengubah warna teks menjadi hijau
-        // } else {
-        //     oeeValueText.style.color = ''; // Menghapus pengaturan warna teks jika tidak memenuhi kondisi
-        // }
-
-        oeeCharts.push(oeeChart);
-    }
-
-    function createPerformanceChart(data, id) {
-        var performanceChartCanvas = document.getElementById('performanceChart' + id).getContext('2d');
-        var totalTarget = data.target_quantity;
-        var actualQuantity = data.quantity;
-        var targetPercentage = (actualQuantity / totalTarget) * 100;
-        var actualPercentage = (actualQuantity / totalTarget) * 100;
-        targetPercentage = targetPercentage.toFixed(2);
-        actualPercentage = actualPercentage.toFixed(2);
-
-        // Calculate the difference between target and actual quantity
-        var difference = actualQuantity - totalTarget;
-        var differencePercentage = (difference / totalTarget) * 100;
-        differencePercentage = differencePercentage.toFixed(2);
-
-        // Set the difference label based on the difference value
-        var differenceLabel = `Difference (${differencePercentage}%)`;
-        var performanceChartData = {
-            datasets: [{
-                data: [actualQuantity, Math.max(0, totalTarget - actualQuantity)],
-                backgroundColor: ['#1D5D9B', '#E21818']
-            }],
-            labels: [`Actual Quantity (${actualPercentage}%)`, differenceLabel]
-        };
-        
-        var performanceChart = new Chart(performanceChartCanvas, {
-            type: 'doughnut',
-            data: performanceChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                // Additional options for the Performance donut chart
+          }],
+          yAxes: [{
+            gridLines : {
+              display : false,
+            },
+            ticks: {
+              callback: function(value, index, values) {
+                return value.toLocaleString(); // Menambahkan titik pada nilai
+              }
             }
-        });
-        
-        var performancePercentage = parseFloat(actualPercentage);
-        $('#performancePercentage' + id).text(performancePercentage.toFixed(2) + '%');
-        var textPerformance = parseFloat(actualPercentage);
-        $('#textPerformancePercentage' + id).text(textPerformance.toFixed(2) + '%');
-
-        // Simpan instance grafik performa dalam array
-        performanceCharts.push(performanceChart);
-    }
-
-    function createAvailabilityChart(data, id) {
-        var availabilityChartCanvas = document.getElementById('availabilityChart' + id).getContext('2d');
-        if (window.availabilityChart) {
-            window.availabilityChart.destroy();
+          }]
         }
-        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
-        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
-        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
-        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
-        var downTimePercentage = (downTimeInSeconds / totalTimeInSeconds) * 100;
-        actualTimePercentage = actualTimePercentage.toFixed(2);
-        downTimePercentage = downTimePercentage.toFixed(2);
-
-        var availabilityChartData = {
-            datasets: [{
-                data: [actualTimeInSeconds, downTimeInSeconds],
-                backgroundColor: ['#1D5D9B', '#E21818']
-            }],
-            labels: [`Actual Time (${actualTimePercentage}%)`, `Down Time (${downTimePercentage}%)`]
-        };
-
-        var availabilityChart = new Chart(availabilityChartCanvas, {
-            type: 'doughnut',
-            data: availabilityChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-            }
-        });
-
-        var availabilityPercentage = parseFloat(actualTimePercentage);
-        $('#availabilityPercentage' + id).text(availabilityPercentage.toFixed(2) + '%');
-
-        // Simpan instance grafik dalam array
-        availabilityCharts.push(availabilityChart);
-    }
-
-    function convertTimeToSeconds(time) {
-        var parts = time.split(':');
-        var hours = parseInt(parts[0]);
-        var minutes = parseInt(parts[1]);
-        var totalSeconds = (hours * 3600) + (minutes * 60);
-        return totalSeconds;
-    }
-
-    function createQualityChart(data, id) {
-        var qualityChartCanvas = document.getElementById('qualityChart' + id).getContext('2d');
-        var totalGood = data.finish_good;
-        var totalRejected = data.reject;
-        var total = totalGood + totalRejected;
-        var goodPercentage = (totalGood / total) * 100;
-        var rejectedPercentage = (totalRejected / total) * 100;
-        goodPercentage = goodPercentage.toFixed(2);
-        rejectedPercentage = rejectedPercentage.toFixed(2);
-
-        var qualityChartData = {
-            datasets: [{
-                data: [totalGood, totalRejected],
-                backgroundColor: ['#1D5D9B', '#E21818'] // Ganti dengan warna yang sesuai
-            }],
-            labels: [`Good Quantity (${goodPercentage}%)`, `Not Good (${rejectedPercentage}%)`]
-        };
-
-        var qualityChart = new Chart(qualityChartCanvas, {
-            type: 'doughnut',
-            data: qualityChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                // Additional options for the Quality donut chart
-            }
-        });
-
-        var qualityPercentage = parseFloat(goodPercentage);
-        $('#qualityPercentage' + id).text(qualityPercentage.toFixed(2) + '%');
-
-        // Simpan instance grafik dalam array
-        qualityCharts.push(qualityChart);
-    }
-
+      }
+  
+      new Chart(areaChartCanvas, {
+        type: 'line',
+        data: areaChartData,
+        options: areaChartOptions
+      })
+    })
 </script>
-
 
 @stop

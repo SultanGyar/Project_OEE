@@ -107,5 +107,9 @@
     @yield('adminlte_js')
 
 </body>
-
+<style>
+    body {
+        background-color: #F4F6F9;
+    }
+</style>
 </html>

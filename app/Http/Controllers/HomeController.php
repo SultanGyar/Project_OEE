@@ -32,6 +32,7 @@ class HomeController extends Controller
         $selectedMonth = $request->input('filterMonth', date('Y-m'));
         $operatorCount = User::where('role', 'Operator')->count();
         $getData = $this->getProsesData('array', $selectedMonth);
+        $timePerDay = $this->operatingTimePerDayPerMonth('array', $selectedMonth );
         $harianCount = Produksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
         $prosesUsed = DataProduksi::whereYear('tanggal', substr($selectedMonth, 0, 4))->whereMonth('tanggal', substr($selectedMonth, 5, 2))->count();
         $daftarProsesModel = Proses::pluck('daftarproses')->count();
@@ -40,6 +41,7 @@ class HomeController extends Controller
     
         return view('home', [
             'getData' => $getData,
+            'timePerDay' => $timePerDay,
             'selectedMonth' => $selectedMonth,
             'operatorCount' => $operatorCount,
             'harianCount' => $harianCount,
@@ -114,8 +116,6 @@ class HomeController extends Controller
         }
     }
     
-    
-    
     private function addTime($time1, $time2)
     {
         $time1Parts = explode(':', $time1);
@@ -133,6 +133,90 @@ class HomeController extends Controller
     
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
+
+    public function operatingTimePerDayPerMonth($format = 'array', $selectedMonth = null)
+    {
+        if (!$selectedMonth) {
+            $selectedMonth = date('Y-m');
+        }
     
+        // Ambil data produksi untuk bulan yang dipilih
+        $dataTime = Produksi::whereYear('tanggal', substr($selectedMonth, 0, 4))
+            ->whereMonth('tanggal', substr($selectedMonth, 5, 2))
+            ->get();
     
+        // Inisialisasi semua kelompok dengan data default
+        $defaultKelompokForTime = DB::table('kelompok')->get();
+    
+        // Inisialisasi array untuk menyimpan total operating time per kelompok per hari
+        $operatingTimePerDay = [];
+    
+        foreach ($defaultKelompokForTime as $defaultTime) {
+            $kelompokan = $defaultTime->daftarkelompok;
+    
+            $operatingTimePerDay[$kelompokan] = [];
+        }
+    
+        // Loop through data produksi
+        foreach ($dataTime as $entry) {
+            $kelompokan = $entry->daftarkelompok;
+            $operatingTime = $entry->operating_time;
+            $downTime = $entry->down_time;
+            $tanggal = $entry->tanggal;
+    
+            // Tambahkan operating time dan down time ke array per hari
+            if (!isset($operatingTimePerDay[$kelompokan][$tanggal])) {
+                $operatingTimePerDay[$kelompokan][$tanggal] = [
+                    'operating_time' => 0,
+                    'down_time' => 0,
+                ];
+            }
+    
+            // Konversi waktu ke menit dan tambahkan ke array
+            $operatingTimePerDay[$kelompokan][$tanggal]['operating_time'] += $this->convertTimeToMinutes($operatingTime);
+            $operatingTimePerDay[$kelompokan][$tanggal]['down_time'] += $this->convertTimeToMinutes($downTime);
+        }
+    
+        // Pastikan setiap kelompok dan setiap hari memiliki entri
+        foreach ($defaultKelompokForTime as $defaultTime) {
+            $kelompokan = $defaultTime->daftarkelompok;
+    
+            if (!isset($operatingTimePerDay[$kelompokan])) {
+                $operatingTimePerDay[$kelompokan] = [];
+            }
+    
+            $lastDay = date('t', strtotime($selectedMonth)); // Jumlah hari dalam bulan yang dipilih
+    
+            for ($day = 1; $day <= $lastDay; $day++) {
+                $tanggal = sprintf('%s-%02d', substr($selectedMonth, 0, 7), $day);
+    
+                if (!isset($operatingTimePerDay[$kelompokan][$tanggal])) {
+                    $operatingTimePerDay[$kelompokan][$tanggal] = [
+                        'operating_time' => 0,
+                        'down_time' => 0,
+                    ];
+                }
+            }
+        }
+    
+        if ($format === 'json') {
+            return response()->json($operatingTimePerDay);
+        } else {
+            return $operatingTimePerDay;
+        }
+    }
+    
+
+    private function convertTimeToMinutes($time)
+    {
+        $timeParts = explode(':', $time);
+        $hours = (int)$timeParts[0];
+        $minutes = (int)$timeParts[1];
+        $seconds = (int)$timeParts[2];
+
+        // Hitung total waktu dalam menit
+        $totalMinutes = ($hours * 60) + $minutes + ($seconds / 60);
+
+        return $totalMinutes;
+    }
 }

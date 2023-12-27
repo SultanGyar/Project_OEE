@@ -25,80 +25,121 @@
 @can('admin-only')
 <div class="row">
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-secondary">
-        <div class="inner">
-          <h3>{{ $operatorCount }}</h3>
+        <div class="small-box bg-secondary">
+            <div class="inner">
+                <h3>{{ $operatorCount }}</h3>
 
-          <p><strong>Operator</strong></p>
+                <p><strong>Operator</strong></p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-users"></i>
+            </div>
+            <a class="small-box-footer" style="width: 100%; height: 20px"></a>
         </div>
-        <div class="icon">
-            <i class="fa fa-users"></i>
-        </div>
-        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
-      </div>
     </div>
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-info">
-        <div class="inner">
-          <h3>{{ $harianCount }}</h3>
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ $harianCount }}</h3>
 
-          <p><strong>Total Data</strong></strong></p>
+                <p><strong>Total Data</strong></strong></p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a class="small-box-footer" style="width: 100%; height: 20px"></a>
         </div>
-        <div class="icon">
-            <i class="ion ion-stats-bars"></i>
-        </div>
-        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
-      </div>
     </div>
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-success">
-        <div class="inner">
-          <h3>{{ $prosesUsed }}</h3>
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $prosesUsed }}</h3>
 
-          <p><strong>Mesin Digunakan</strong></p>
+                <p><strong>Mesin Digunakan</strong></p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-chart-bar"></i>
+            </div>
+            <a class="small-box-footer" style="width: 100%; height: 20px"></a>
         </div>
-        <div class="icon">
-            <i class="fa fa-chart-bar"></i>
-        </div>
-        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
-      </div>
     </div>
     <div class="col-lg-3 col-6">
-      <div class="small-box bg-danger">
-        <div class="inner">
-          <h3>{{ $prosesNoUsed }}</h3>
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ $prosesNoUsed }}</h3>
 
-          <p><strong>Mesin Tidak Digunakan</strong></p>
+                <p><strong>Mesin Tidak Digunakan</strong></p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-exclamation-circle"></i>
+            </div>
+            <a class="small-box-footer" style="width: 100%; height: 20px"></a>
         </div>
-        <div class="icon">
-            <i class="fa fa-exclamation-circle"></i>
-        </div>
-        <a class="small-box-footer" style="width: 100%; height: 20px"></a>
-      </div>
     </div>
 </div>
 @endcan
-<div class="row">
-    @foreach($getData as $kelompok => $data)
-    <div class="col-lg-3 col-md-4" id="oeeCard{{ $loop->index }}">
-        <div class="card card-info border shadow-lg">
-            <div class="card-header d-flex justify-content-between align-items-center bg-gradient-gray-dark"
-                style="padding-top: 3px; padding-bottom: 3px;">
-                <div class="card-title" style="font-size: 15px">{{ $kelompok }}</div>
-                <a class="btn btn-link ml-auto" data-toggle="modal" data-target="#chartModal{{ $loop->index }}">View</a>
-            </div>
-            <div class="card-body position-relative">
-                <canvas id="oeeChart{{ $loop->index }}" width="200" height="250"></canvas>
-                <div class="oee-text">
-                    <span class="oee-title">OEE</span>
-                    <div class="oee-line"></div>
-                    <span class="oee-value" id="oee-value{{ $loop->index }}"></span>
+<div class="wrapper">
+    @can('admin-only')
+    <div class="row">
+        <div class="col-lg-12" id="chartArea">
+            <div class="card card-info border shadow-lg collapsed-card">
+                <div class="card-header d-flex justify-content-between align-items-center bg-gradient-gray-dark">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div class="card-title">Production Time and Downtime Overview</div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
+                                Select
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <a class="dropdown-item text-dark filter-option" data-kelompok="Ring 1">Ring 1</a>
+                                <a class="dropdown-item text-dark filter-option" data-kelompok="Ring 2">Ring 2</a>
+                                <a class="dropdown-item text-dark filter-option" data-kelompok="Ring 3">Ring 3</a>
+                                <a class="dropdown-item text-dark filter-option"
+                                    data-kelompok="Sealing Element">Sealing
+                                    Element</a>
+                                <a class="dropdown-item text-dark filter-option" data-kelompok="DJG">DJG</a>
+                            </div>
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" aria-expanded="false">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <canvas id="areaChart"
+                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @endforeach
+    @endcan
+    <div class="row">
+        @foreach($getData as $kelompok => $data)
+        <div class="col-lg-3 col-md-4 mb-4" id="oeeCard{{ $loop->index }}">
+            <div class="card card-info border shadow-lg">
+                <div class="card-header d-flex justify-content-between align-items-center bg-gradient-gray-dark"
+                    style="padding-top: 3px; padding-bottom: 3px;">
+                    <div class="card-title" style="font-size: 15px">{{ $kelompok }}</div>
+                    <a class="btn btn-link ml-auto" data-toggle="modal"
+                        data-target="#chartModal{{ $loop->index }}">View</a>
+                </div>
+                <div class="card-body position-relative">
+                    <canvas id="oeeChart{{ $loop->index }}" width="200" height="250"></canvas>
+                    <div class="oee-text">
+                        <span class="oee-title">OEE</span>
+                        <div class="oee-line"></div>
+                        <span class="oee-value" id="oee-value{{ $loop->index }}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+        
+    </div>
 </div>
+
 
 @foreach($getData as $kelompok => $data)
 <div class="modal fade" id="chartModal{{ $loop->index }}" tabindex="-1" role="dialog"
@@ -206,7 +247,7 @@
                                 <div class="chart-text">
                                     <span class="chart-title">Quality</span>
                                     <span class="chart-percentage text-bold"
-                                        id="qualityPercentage{{ $loop->index }}" ></span>
+                                        id="qualityPercentage{{ $loop->index }}"></span>
                                 </div>
                             </div>
                         </div>
@@ -214,7 +255,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" >Tutup</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -222,6 +263,7 @@
 @endforeach
 
 <style>
+   
     .card-footer {
         position: relative;
         display: flex;
@@ -271,13 +313,15 @@
 
 @section('adminlte_js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     var getData = @json($getData);
+    var timePerDay = @json($timePerDay);
+    var chartDataOpTime = [];
     var performanceCharts = [];
     var availabilityCharts = [];
     var qualityCharts = [];
     var oeeCharts = []
+    var areaChart;
 
     $(document).ready(function() {
 
@@ -298,50 +342,173 @@
             });
         });
 
+        
+        @foreach($timePerDay as $kelompokTime => $opDataTime)
+          var opDataTime{{ $loop->index }} = {!! json_encode($opDataTime) !!};
+          createTimeChart(opDataTime{{ $loop->index }}, "{{ $kelompokTime }}");
+        @endforeach
+
         @foreach($getData as $kelompok => $data)
-        var data{{ $loop->index }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
+            var data{{ $loop->index }} = {!! json_encode($data) !!}; // Ambil data dari Blade dan konversi menjadi objek JavaScript
 
-        // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
-        createPerformanceChart(data{{ $loop->index }}, "{{ $loop->index }}");
-        createAvailabilityChart(data{{ $loop->index }}, "{{ $loop->index }}");
-        createQualityChart(data{{ $loop->index }}, "{{ $loop->index }}");
-        createOeeChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            // Membuat dan menginisialisasi grafik performance, availability, dan quality untuk setiap elemen
+            createPerformanceChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            createAvailabilityChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            createQualityChart(data{{ $loop->index }}, "{{ $loop->index }}");
+            createOeeChart(data{{ $loop->index }}, "{{ $loop->index }}");
 
-        // Memeriksa apakah data memiliki nilai-nilai default
-        if (data{{ $loop->index }}.target_quantity === 0 &&
-            data{{ $loop->index }}.operating_time === '00:00:00' &&
-            data{{ $loop->index }}.actual_time === '00:00:00' &&
-            data{{ $loop->index }}.down_time === '00:00:00' &&
-            data{{ $loop->index }}.quantity === 0 &&
-            data{{ $loop->index }}.finish_good === 0 &&
-            data{{ $loop->index }}.reject === 0) {
-            // Mengganti teks pada elemen-elemen dengan "No Data Available"
-            $('#textTargetQuantity{{ $loop->index }}').text("No Data Available");
-            $('#textActualQuantity{{ $loop->index }}').text("No Data Available");
-            $('#textTotalTime{{ $loop->index }}').text("No Data Available");
-            $('#textActualRuntime{{ $loop->index }}').text("No Data Available");
-            $('#textDownTime{{ $loop->index }}').text("No Data Available");
-            $('#textTotalQuantity{{ $loop->index }}').text("No Data Available");
-            $('#textGoodQuantity{{ $loop->index }}').text("No Data Available");
-            $('#textRejectedQuantity{{ $loop->index }}').text("No Data Available");
-            $('#oee-value{{ $loop->index }}').text('No Data Available');
-            $('#performancePercentage').text('');
-            $('#availabilityPercentage').text('');
-            $('#qualityPercentage').text('');
-        } else {
-            // Mengisi teks pada elemen-elemen dengan data yang sesuai
-            $('#textTargetQuantity{{ $loop->index }}').text(data{{ $loop->index }}.target_quantity);
-            $('#textActualQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
-            $('#textTotalTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.operating_time));
-            $('#textActualRuntime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.actual_time));
-            $('#textDownTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.down_time));
-            $('#textTotalQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
-            $('#textGoodQuantity{{ $loop->index }}').text(data{{ $loop->index }}.finish_good);
-            $('#textRejectedQuantity{{ $loop->index }}').text(data{{ $loop->index }}.reject);
-        }
-    @endforeach
+            // Memeriksa apakah data memiliki nilai-nilai default
+            if (data{{ $loop->index }}.target_quantity === 0 &&
+                data{{ $loop->index }}.operating_time === '00:00:00' &&
+                data{{ $loop->index }}.actual_time === '00:00:00' &&
+                data{{ $loop->index }}.down_time === '00:00:00' &&
+                data{{ $loop->index }}.quantity === 0 &&
+                data{{ $loop->index }}.finish_good === 0 &&
+                data{{ $loop->index }}.reject === 0) {
+                // Mengganti teks pada elemen-elemen dengan "No Data Available"
+                $('#textTargetQuantity{{ $loop->index }}').text("No Data Available");
+                $('#textActualQuantity{{ $loop->index }}').text("No Data Available");
+                $('#textTotalTime{{ $loop->index }}').text("No Data Available");
+                $('#textActualRuntime{{ $loop->index }}').text("No Data Available");
+                $('#textDownTime{{ $loop->index }}').text("No Data Available");
+                $('#textTotalQuantity{{ $loop->index }}').text("No Data Available");
+                $('#textGoodQuantity{{ $loop->index }}').text("No Data Available");
+                $('#textRejectedQuantity{{ $loop->index }}').text("No Data Available");
+                $('#oee-value{{ $loop->index }}').text('No Data Available');
+                $('#performancePercentage').text('');
+                $('#availabilityPercentage').text('');
+                $('#qualityPercentage').text('');
+            } else {
+                // Mengisi teks pada elemen-elemen dengan data yang sesuai
+                $('#textTargetQuantity{{ $loop->index }}').text(data{{ $loop->index }}.target_quantity);
+                $('#textActualQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
+                $('#textTotalTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.operating_time));
+                $('#textActualRuntime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.actual_time));
+                $('#textDownTime{{ $loop->index }}').text(formatTimeToMinutes(data{{ $loop->index }}.down_time));
+                $('#textTotalQuantity{{ $loop->index }}').text(data{{ $loop->index }}.quantity);
+                $('#textGoodQuantity{{ $loop->index }}').text(data{{ $loop->index }}.finish_good);
+                $('#textRejectedQuantity{{ $loop->index }}').text(data{{ $loop->index }}.reject);
+            }
+        @endforeach
+
+        
+
+        filterChartData('Ring 1');
+
+        $('.filter-option').on('click', function () {
+            var kelompok = $(this).data('kelompok');
+            filterChartData(kelompok);
+        });
 
     });
+
+    function filterChartData(selectedKelompok) {
+      var filteredChartData = getFilteredChartData(selectedKelompok);
+      createAreaChart(filteredChartData);
+  }
+
+    function createTimeChart(opDataTime, kelompok) {
+      // Mengurutkan data berdasarkan tanggal
+      var sortedData = Object.keys(opDataTime).sort();
+
+      // Membuat objek baru yang terurut berdasarkan tanggal
+      var sortedOpDataTime = {};
+      sortedData.forEach(function (tanggal) {
+          sortedOpDataTime[tanggal] = opDataTime[tanggal];
+      });
+
+    }
+
+    function getFilteredChartData(selectedKelompok) {
+        var filteredChartData = [];
+
+        Object.keys(timePerDay).forEach(function (kelompok) {
+            if (kelompok === selectedKelompok) {
+                var operatingDataPoints = [];
+                var downDataPoints = [];
+
+                var sortedData = Object.keys(timePerDay[kelompok]).sort();
+
+                sortedData.forEach(function (tanggal) {
+                    var formattedTanggal = tanggal.split('-')[2];
+
+                    // Use operating_time
+                    operatingDataPoints.push({
+                        x: formattedTanggal,
+                        y: timePerDay[kelompok][tanggal]['operating_time']
+                    });
+
+                    // Use down_time
+                    downDataPoints.push({
+                        x: formattedTanggal,
+                        y: timePerDay[kelompok][tanggal]['down_time']
+                    });
+                });
+
+                filteredChartData.push({
+                    label: 'Operating Time',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: 3,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: operatingDataPoints
+                });
+
+                filteredChartData.push({
+                    label: 'Down Time',
+                    backgroundColor:  'rgb(255, 149, 149)', // You can adjust the color as needed
+                    borderColor: 'rgb(255, 149, 149)',
+                    pointRadius: 3,
+                    pointColor: '#FF5722',
+                    pointStrokeColor: 'rgba(255,87,34,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(255,87,34,1)',
+                    data: downDataPoints
+                });
+            }
+        });
+
+        return filteredChartData;
+    }
+    
+    function createAreaChart(chartData) {
+      var areaChartCanvas = $('#areaChart').get(0).getContext('2d');
+
+      // Destroy the existing Chart instance (if any)
+      if (areaChart) {
+          areaChart.destroy();
+      }
+
+      var areaChartData = {
+          labels: getLabels(),
+          datasets: chartData
+      };
+
+      var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+              display: true, // Set to true to display the legend
+          },
+      };
+
+      // Create a new Chart instance and store it in the global variable
+      areaChart = new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+      });
+    }
+
+    function getLabels() {
+        var sampleData = timePerDay[Object.keys(timePerDay)[0]];
+        return Object.keys(sampleData).sort().map(function (tanggal) {
+            return tanggal.split('-')[2];
+        });
+    }
 
     function formatTimeToMinutes(time) {
         var parts = time.split(':');
@@ -410,127 +577,132 @@
     }
 
     function createPerformanceChart(data, loopIndex) {
-        var performanceChartCanvas = document.getElementById('performanceChart' + loopIndex).getContext('2d');
-        var totalTarget = data.target_quantity;
-        var actualQuantity = data.quantity;
-        var targetPercentage = (actualQuantity / totalTarget) * 100;
-        var actualPercentage = (actualQuantity / totalTarget) * 100;
-        targetPercentage = targetPercentage.toFixed(2);
-        actualPercentage = actualPercentage.toFixed(2);
+    var performanceChartCanvas = document.getElementById('performanceChart' + loopIndex).getContext('2d');
+    var totalTarget = data.target_quantity;
+    var actualQuantity = data.quantity;
+    var targetPercentage = (actualQuantity / totalTarget) * 100;
+    var actualPercentage = (actualQuantity / totalTarget) * 100;
+    targetPercentage = targetPercentage.toFixed(2);
+    actualPercentage = actualPercentage.toFixed(2);
 
-        // Calculate the difference between target and actual quantity
-        var difference = actualQuantity - totalTarget;
-        var differencePercentage = (difference / totalTarget) * 100;
-        differencePercentage = differencePercentage.toFixed(2);
+    // Calculate the difference between target and actual quantity
+    var difference = actualQuantity - totalTarget;
+    var differencePercentage = (difference / totalTarget) * 100;
+    differencePercentage = differencePercentage.toFixed(2);
 
-        // Set the difference label based on the difference value
-        var differenceLabel = `Difference (${differencePercentage}%)`;
-        var performanceChartData = {
-            datasets: [{
-                data: [actualQuantity, Math.max(0, totalTarget - actualQuantity)],
-                backgroundColor: ['#1D5D9B', '#E21818']
-            }],
-            labels: [`Actual Quantity (${actualPercentage}%)`, differenceLabel]
-        };
-        
-        var performanceChart = new Chart(performanceChartCanvas, {
-            type: 'doughnut',
-            data: performanceChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                // Additional options for the Performance donut chart
+    // Set the difference label based on the difference value
+    var differenceLabel = `Difference (${differencePercentage}%)`;
+    var performanceChartData = {
+        datasets: [{
+            data: [actualQuantity, Math.max(0, totalTarget - actualQuantity)],
+            backgroundColor: ['#1D5D9B', '#E21818']
+        }],
+        labels: [`Actual Quantity (${actualPercentage}%)`, differenceLabel]
+    };
+    
+    var performanceChart = new Chart(performanceChartCanvas, {
+        type: 'doughnut',
+        data: performanceChartData,
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                datalabels: false,
+            },
+            legend: {
+                display: false
             }
-        });
-        
-        var performancePercentage = parseFloat(actualPercentage);
-        $('#performancePercentage' + loopIndex).text(performancePercentage.toFixed(2) + '%');
-        var textPerformance = parseFloat(actualPercentage);
-        $('#textPerformancePercentage' + loopIndex).text(textPerformance.toFixed(2) + '%');
-
-        // Simpan instance grafik performa dalam array
-        performanceCharts.push(performanceChart);
-    }
-
-    function createAvailabilityChart(data, loopIndex) {
-        var availabilityChartCanvas = document.getElementById('availabilityChart' + loopIndex).getContext('2d');
-        if (window.availabilityChart) {
-            window.availabilityChart.destroy();
         }
-        var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
-        var downTimeInSeconds = convertTimeToSeconds(data.down_time);
-        var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
-        var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
-        var downTimePercentage = (downTimeInSeconds / totalTimeInSeconds) * 100;
-        actualTimePercentage = actualTimePercentage.toFixed(2);
-        downTimePercentage = downTimePercentage.toFixed(2);
+    });
+    
+    var performancePercentage = parseFloat(actualPercentage);
+    $('#performancePercentage' + loopIndex).text(performancePercentage.toFixed(2) + '%');
+    var textPerformance = parseFloat(actualPercentage);
+    $('#textPerformancePercentage' + loopIndex).text(textPerformance.toFixed(2) + '%');
 
-        var availabilityChartData = {
-            datasets: [{
-                data: [actualTimeInSeconds, downTimeInSeconds],
-                backgroundColor: ['#1D5D9B', '#E21818']
-            }],
-            labels: [`Actual Time (${actualTimePercentage}%)`, `Down Time (${downTimePercentage}%)`]
-        };
+    // Simpan instance grafik performa dalam array
+    performanceCharts.push(performanceChart);
+}
 
-        var availabilityChart = new Chart(availabilityChartCanvas, {
-            type: 'doughnut',
-            data: availabilityChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-            }
-        });
-
-        var availabilityPercentage = parseFloat(actualTimePercentage);
-        $('#availabilityPercentage' + loopIndex).text(availabilityPercentage.toFixed(2) + '%');
-
-        // Simpan instance grafik dalam array
-        availabilityCharts.push(availabilityChart);
+function createAvailabilityChart(data, loopIndex) {
+    var availabilityChartCanvas = document.getElementById('availabilityChart' + loopIndex).getContext('2d');
+    if (window.availabilityChart) {
+        window.availabilityChart.destroy();
     }
+    var actualTimeInSeconds = convertTimeToSeconds(data.actual_time);
+    var downTimeInSeconds = convertTimeToSeconds(data.down_time);
+    var totalTimeInSeconds = actualTimeInSeconds + downTimeInSeconds;
+    var actualTimePercentage = (actualTimeInSeconds / totalTimeInSeconds) * 100;
+    var downTimePercentage = (downTimeInSeconds / totalTimeInSeconds) * 100;
+    actualTimePercentage = actualTimePercentage.toFixed(2);
+    downTimePercentage = downTimePercentage.toFixed(2);
 
-    function convertTimeToSeconds(time) {
-        var parts = time.split(':');
-        var hours = parseInt(parts[0]);
-        var minutes = parseInt(parts[1]);
-        var totalSeconds = (hours * 3600) + (minutes * 60);
-        return totalSeconds;
-    }
+    var availabilityChartData = {
+        datasets: [{
+            data: [actualTimeInSeconds, downTimeInSeconds],
+            backgroundColor: ['#1D5D9B', '#E21818']
+        }],
+        labels: [`Actual Time (${actualTimePercentage}%)`, `Down Time (${downTimePercentage}%)`]
+    };
 
-    function createQualityChart(data, loopIndex) {
-        var qualityChartCanvas = document.getElementById('qualityChart' + loopIndex).getContext('2d');
-        var totalGood = data.finish_good;
-        var totalRejected = data.reject;
-        var total = totalGood + totalRejected;
-        var goodPercentage = (totalGood / total) * 100;
-        var rejectedPercentage = (totalRejected / total) * 100;
-        goodPercentage = goodPercentage.toFixed(2);
-        rejectedPercentage = rejectedPercentage.toFixed(2);
+    var availabilityChart = new Chart(availabilityChartCanvas, {
+        type: 'doughnut',
+        data: availabilityChartData,
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+        }
+    });
 
-        var qualityChartData = {
-            datasets: [{
-                data: [totalGood, totalRejected],
-                backgroundColor: ['#1D5D9B', '#E21818'] // Ganti dengan warna yang sesuai
-            }],
-            labels: [`Good Quantity (${goodPercentage}%)`, `Not Good (${rejectedPercentage}%)`]
-        };
+    var availabilityPercentage = parseFloat(actualTimePercentage);
+    $('#availabilityPercentage' + loopIndex).text(availabilityPercentage.toFixed(2) + '%');
 
-        var qualityChart = new Chart(qualityChartCanvas, {
-            type: 'doughnut',
-            data: qualityChartData,
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                // Additional options for the Quality donut chart
-            }
-        });
+    // Simpan instance grafik dalam array
+    availabilityCharts.push(availabilityChart);
+}
 
-        var qualityPercentage = parseFloat(goodPercentage);
-        $('#qualityPercentage' + loopIndex).text(qualityPercentage.toFixed(2) + '%');
+function createQualityChart(data, loopIndex) {
+    var qualityChartCanvas = document.getElementById('qualityChart' + loopIndex).getContext('2d');
+    var totalGood = data.finish_good;
+    var totalRejected = data.reject;
+    var total = totalGood + totalRejected;
+    var goodPercentage = (totalGood / total) * 100;
+    var rejectedPercentage = (totalRejected / total) * 100;
+    goodPercentage = goodPercentage.toFixed(2);
+    rejectedPercentage = rejectedPercentage.toFixed(2);
 
-        // Simpan instance grafik dalam array
-        qualityCharts.push(qualityChart);
-    }
+    var qualityChartData = {
+        datasets: [{
+            data: [totalGood, totalRejected],
+            backgroundColor: ['#1D5D9B', '#E21818'] // Ganti dengan warna yang sesuai
+        }],
+        labels: [`Good Quantity (${goodPercentage}%)`, `Not Good (${rejectedPercentage}%)`]
+    };
+
+    var qualityChart = new Chart(qualityChartCanvas, {
+        type: 'doughnut',
+        data: qualityChartData,
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            // Additional options for the Quality donut chart
+        }
+    });
+
+    var qualityPercentage = parseFloat(goodPercentage);
+    $('#qualityPercentage' + loopIndex).text(qualityPercentage.toFixed(2) + '%');
+
+    // Simpan instance grafik dalam array
+    qualityCharts.push(qualityChart);
+}
+
+function convertTimeToSeconds(time) {
+    var parts = time.split(':');
+    var hours = parseInt(parts[0]);
+    var minutes = parseInt(parts[1]);
+    var totalSeconds = (hours * 3600) + (minutes * 60);
+    return totalSeconds;
+}
 
 </script>
 
