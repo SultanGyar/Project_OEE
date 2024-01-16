@@ -3,6 +3,8 @@
 <link rel="icon" href="{{ asset('vendor/adminlte/dist/img/icon-title.png') }}" type="image/png">
 @section('content_header')
 <h1 class="m-0 text-dark">Edit Data Produksi</h1>
+<link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @stop
 @section('content')
 <form action="{{ route('produksi.update', $produksi) }}" method="post">
@@ -94,7 +96,7 @@
 
                     <div class="form-group">
                         <label for="kode">Kode<span class="font-weight-normal text-danger">*</label>
-                        <select class="form-control mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode"
+                        <select class="form-control select2 mb-10 @error('kode') is-invalid @enderror" id="kode" name="kode"
                             style="width: 100%">
                             <option value="" selected disabled>Pilih Kode..</option>
                             @foreach ($datakode as $value => $label)
@@ -331,6 +333,8 @@
 
 @push('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+
 
 <script>
 
@@ -371,6 +375,14 @@
     
 
     $(document).ready(function() {
+        $('#kode').select2({
+            theme: 'bootstrap4', // Tema yang digunakan
+            width: '100%', // Lebar elemen Select2
+        });
+
+        // Mendapatkan nilai yang dipilih dari elemen select (Select2)
+        var selectedValue = $('#kode').val();
+
         $('form').submit(function () {
             // Check if the down_time field is empty
             if ($('#down_time').val() === '') {
