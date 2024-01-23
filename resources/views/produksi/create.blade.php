@@ -358,10 +358,7 @@ $currentMonth = now()->endOfMonth()->toDateString();
     }
 
     $(document).ready(function() {
-        $('#kode').select2({
-            theme: 'bootstrap4', // Tema yang digunakan
-            width: '100%', // Lebar elemen Select2
-        });
+       
 
         // Mendapatkan nilai yang dipilih dari elemen select (Select2)
         var selectedValue = $('#kode').val();
@@ -376,7 +373,10 @@ $currentMonth = now()->endOfMonth()->toDateString();
 
         // Panggil fungsi getDataAuto saat halaman dimuat
         getDataAuto();
-
+        $('#kode').select2({
+            theme: 'bootstrap4', // Tema yang digunakan
+            width: '100%', // Lebar elemen Select2
+        });
         // Panggil fungsi getDataAuto juga saat nilai 'kode' berubah
         $('#kode').on('change', function() {
             getDataAuto();
